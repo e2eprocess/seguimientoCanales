@@ -3,8 +3,8 @@
 var express = require('express');
 var api = express.Router();
 
-var db = require('../controllers/queries');
+var controller = require('../controllers/controller');
 
-api.get('/consulta', db.consulta);
+api.get('/grafico', controller.grafico1);
 
 module.exports = api;
