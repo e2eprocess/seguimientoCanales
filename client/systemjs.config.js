@@ -24,7 +24,6 @@
       // other libraries
       'rxjs':                       'npm:rxjs',
       'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
-      
       'angular2-highcharts': 'node_modules/angular2-highcharts',
       'highcharts': 'node_modules/highcharts'
     },

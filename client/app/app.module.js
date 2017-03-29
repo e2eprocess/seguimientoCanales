@@ -8,7 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var platform_browser_1 = require("@angular/platform-browser");
+var forms_1 = require("@angular/forms");
+var http_1 = require("@angular/http");
+var angular2_highcharts_1 = require("angular2-highcharts");
 var app_component_1 = require("./app.component");
+var highcharts_component_1 = require("./components/highcharts.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -16,8 +20,16 @@ var AppModule = (function () {
 }());
 AppModule = __decorate([
     core_1.NgModule({
-        imports: [platform_browser_1.BrowserModule],
-        declarations: [app_component_1.AppComponent],
+        imports: [
+            platform_browser_1.BrowserModule,
+            forms_1.FormsModule,
+            http_1.HttpModule,
+            angular2_highcharts_1.ChartModule.forRoot(require('highcharts/highstock'))
+        ],
+        declarations: [
+            app_component_1.AppComponent,
+            highcharts_component_1.Highcharts
+        ],
         bootstrap: [app_component_1.AppComponent]
     })
 ], AppModule);

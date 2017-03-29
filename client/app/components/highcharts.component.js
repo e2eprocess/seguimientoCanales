@@ -9,24 +9,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Importar Component desde el núcleo de Angular
 var core_1 = require("@angular/core");
-// Decorador component, indicamos en que etiqueta se va a cargar la plantilla
-var AppComponent = (function () {
-    function AppComponent() {
-        this.title = 'APP FAVORITOS';
-        this.description = 'Aplicacion web SPA con Angular 2 para gestionar favoritos de manera online';
+var Highcharts = (function () {
+    function Highcharts() {
+        this.options = {
+            title: { text: 'simple chart' },
+            series: [{
+                    data: [29.9, 71.5, 106.4, 129.2],
+                }]
+        };
+        this.options2 = {
+            title: { text: 'simple chart' },
+            series: [{
+                    data: [29.9, 71.5, 106.4, 129.2],
+                }]
+        };
     }
-    return AppComponent;
+    return Highcharts;
 }());
-AppComponent = __decorate([
+Highcharts = __decorate([
     core_1.Component({
-        selector: 'my-app',
-        templateUrl: 'app/views/home.html'
-    })
-    // Clase del componente donde irán los datos y funcionalidades
-    ,
+        selector: 'highcharts',
+        templateUrl: 'app/views/highcharts.html'
+    }),
     __metadata("design:paramtypes", [])
-], AppComponent);
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+], Highcharts);
+exports.Highcharts = Highcharts;
+//# sourceMappingURL=highcharts.component.js.map

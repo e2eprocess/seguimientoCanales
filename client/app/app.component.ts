@@ -1,34 +1,19 @@
+// Importar Component desde el núcleo de Angular
+import {Component} from '@angular/core';
 
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { NgModule, Component }    from '@angular/core';
-import { BrowserModule }          from '@angular/platform-browser';
-import { ChartModule }            from 'angular2-highcharts'; 
-
+// Decorador component, indicamos en que etiqueta se va a cargar la plantilla
 @Component({
     selector: 'my-app',
-    template: `<chart [options]="options"></chart>`
+    templateUrl: 'app/views/home.html'
 })
+
+// Clase del componente donde irán los datos y funcionalidades
 export class AppComponent {
-    constructor() { 
-        this.options = {
-            title : { text : 'simple chart' },
-            subtitle: {text: 'prueba'},
-            series: [{
-                data: [29.9, 71.5, 106.4, 129],
-            }]
-        };
-    }
-    options: Object;
+  public title: string;
+  public description: string;
+
+  constructor(){
+    this.title = 'APP FAVORITOS';
+    this.description = 'Aplicacion web SPA con Angular 2 para gestionar favoritos de manera online';
+  }
 }
-
-@NgModule({
-  imports:      [BrowserModule, ChartModule.forRoot(require('highcharts'))],
-  declarations: [AppComponent],
-  bootstrap:    [AppComponent]
-})
-class AppModule { }
-
-
-platformBrowserDynamic().bootstrapModule(AppModule);
-
-
