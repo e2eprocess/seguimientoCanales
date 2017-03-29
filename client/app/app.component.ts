@@ -8,7 +8,7 @@ import { ChartModule }            from 'angular2-highcharts';
     selector: 'my-app',
     template: `<chart [options]="options"></chart>`
 })
-class AppComponent {
+export class AppComponent {
     constructor() { 
         this.options = {
             title : { text : 'simple chart' },

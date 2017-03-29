@@ -32,6 +32,7 @@ AppComponent = __decorate([
     }),
     __metadata("design:paramtypes", [])
 ], AppComponent);
+exports.AppComponent = AppComponent;
 var AppModule = (function () {
     function AppModule() {
     }
