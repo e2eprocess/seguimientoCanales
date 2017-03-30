@@ -9,6 +9,8 @@ import { ChartModule } from 'angular2-highcharts';
 import { AppComponent }  from './app.component';
 import { Highcharts }  from './components/highcharts.component';
 import { HighchartsjQuery }  from './components/highchartsjQuery.component';
+import { StockChartExample }  from './components/stockChart.component';
+
 
 
 @NgModule({
@@ -16,12 +18,14 @@ import { HighchartsjQuery }  from './components/highchartsjQuery.component';
                   BrowserModule,
                   FormsModule,
                   HttpModule,
+                  JsonpModule,
                   ChartModule.forRoot(require('highcharts/highstock'))
                 ],
   declarations: [
                 AppComponent,
                 Highcharts,
-                HighchartsjQuery
+                HighchartsjQuery,
+                StockChartExample
                 ],
   bootstrap: [ AppComponent ]
 })
