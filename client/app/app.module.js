@@ -13,6 +13,7 @@ var http_1 = require("@angular/http");
 var angular2_highcharts_1 = require("angular2-highcharts");
 var app_component_1 = require("./app.component");
 var highcharts_component_1 = require("./components/highcharts.component");
+var highchartsjQuery_component_1 = require("./components/highchartsjQuery.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -28,7 +29,8 @@ AppModule = __decorate([
         ],
         declarations: [
             app_component_1.AppComponent,
-            highcharts_component_1.Highcharts
+            highcharts_component_1.Highcharts,
+            highchartsjQuery_component_1.HighchartsjQuery
         ],
         bootstrap: [app_component_1.AppComponent]
     })

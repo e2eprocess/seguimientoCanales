@@ -8,6 +8,8 @@ import { ChartModule } from 'angular2-highcharts';
 
 import { AppComponent }  from './app.component';
 import { Highcharts }  from './components/highcharts.component';
+import { HighchartsjQuery }  from './components/highchartsjQuery.component';
+
 
 @NgModule({
   imports:      [
@@ -18,7 +20,8 @@ import { Highcharts }  from './components/highcharts.component';
                 ],
   declarations: [
                 AppComponent,
-                Highcharts
+                Highcharts,
+                HighchartsjQuery
                 ],
   bootstrap: [ AppComponent ]
 })
