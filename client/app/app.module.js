@@ -15,6 +15,7 @@ var app_component_1 = require("./app.component");
 var highcharts_component_1 = require("./components/highcharts.component");
 var highchartsjQuery_component_1 = require("./components/highchartsjQuery.component");
 var stockChart_component_1 = require("./components/stockChart.component");
+var comparativa_component_1 = require("./components/comparativa.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -33,7 +34,8 @@ AppModule = __decorate([
             app_component_1.AppComponent,
             highcharts_component_1.Highcharts,
             highchartsjQuery_component_1.HighchartsjQuery,
-            stockChart_component_1.StockChartExample
+            stockChart_component_1.StockChartExample,
+            comparativa_component_1.Comparativa
         ],
         bootstrap: [app_component_1.AppComponent]
     })

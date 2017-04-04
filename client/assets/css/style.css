@@ -1,171 +1,45 @@
 body{
-  font-family: helvetica, Arial;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 11px;
+  margin: 0;
+  padding: 0;
+
 }
 
-.clearfix {
+.clearfix{
   float: none;
   clear: both;
   text-decoration: none;
-  list-style: none;;
+  list-style: none;
 }
+
 
 #content {
-  width: 80%;
+  width: 100%;
   height: 1000px;
-  margin: 0px auto;
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0px 0px 5px #ddd;
-  background: #eee;
+  }
+
+#submenu {
+  padding-top: 2.5em;
+  padding-right: 25px;
+  float: rigth;
+  text-align: right;
+  font-size: 12px;
 }
 
-header {
-  padding: 15px;
-  background: #229138;
+#submenu .activo{
+  font-weight: bold;
 }
 
-header .title-subtitle {
-  float: left;
-  border-top: 1px solid white;
-  border-bottom: 1px solid white;
-  color: white;
-  margin-left: -65px;
-  padding: 20px;
-  padding-left: 65px;
+.titulo {
+  margin: 0;
+  text-align: center;
+  font-size: 25px;
+  font-family: fantasy;
+  color: #0A5597;
+  margin-top: -20px;
 }
 
-header h1,
-header p {
-  margin: 0px;
-  margin-left: 15px;
-}
-
-header h1 a{
-  text-decoration: none;
-  color: white;
-}
-header h1 a:hover{
-  text-decoration: underline;
-}
-
-header p{
-  color: #ddd;
-}
-
-header #logo{
-  width: 60px;
-  display: block;
-  float: left;
-  margin-top: 15px;
-}
-
-.btn-add-favorito {
-  display: block;
-  padding: 10px;
-  float: right;
-  margin-right: 30px;
-  margin-top: 5px;
-  background: #eee;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  box-shadow: 0px 0px 5px gray;
-  color: #666;
-  text-decoration: none;
-  transition: all 300ms;
-}
-
-.btn-add-favorito:hover {
-  background: white;
-  color: #444;
-}
-
-#favoritos-list{
-  padding: 0PX;
-  margin: 0px;
-}
-
-.favorito-item {
-  list-style: none;
-  width: 31%;
-  border: 1px solid #ddd;
-  float: left;
-  height: 120px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  color: gray;
-  background: white;
-  margin: 10px;
-
-}
-
-.favorito-item .content-data{
-  float: left;
-  margin-left: 20px; 
-}
-
-.favorito-item h4{
-  color: #444;
-  margin: 0px;
-  padding: 0px;
-  margin-top: 5px;
-
-}
-
-.favorito-item .url{
-  margin: 0px;
-  margin-top: 2px;
-  padding: 0px;
-  height: 45px;
-  overflow: hidden;
-}
-
-.btn{
-  font-size: 13px;
-  border: 1px solid #ccc;
-  border-color: #1976D2;
-  border-radius: 4px;
-  box-shadow: 0px 0px 5px #ddd;
-  padding: 5px;
-  text-decoration: none;
-  color: white;
-  background: #0074D9;
-  cursor: pointer;
-  margin-left: 5px;
-}
-
-.btn-default{
-  background: #EAA615;
-  border-color: #CC941c;
-  margin-left: 0PX;
-}
-
-.btn-editar{
-  background: #0A0;
-  border-color: #59a600;
-}
-
-.btn-eliminar{
-  background: #E23237;
-  border-color: #F54747;
-}
-
-.favorito-box {
-  margin-left: 25px;
-  background: white;
-  border: 1px solid #ddd;
-  width: 90%;
-  min-height: 150px;
-  margin-top: 20px;
-  padding: 20px;
-  
-}
-
-.loading {
-  margin: 0px auto;
-  margin-top: 25px;
-  height: 20px;
-}
 
 footer {
   width: 80%;

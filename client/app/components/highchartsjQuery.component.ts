@@ -30,10 +30,10 @@ export class HighchartsjQuery {
 	        }];
  
     ngAfterViewInit() {
-    	this.renderChart();
+    	this.render();
     }
  
-    renderChart(){
+    render(){
     	jQuery('#container').highcharts({
 	        chart: {
 	            type: 'area'

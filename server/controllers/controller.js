@@ -1,7 +1,8 @@
 'use strict'
 
 var pg = require('pg');
-var conString = process.env.DATABASE_URL || 'postgres://e2e:e2e@15.17.162.173:5432/E2Ereporting';
+global.config = require('../config');
+var conString = process.env.DATABASE_URL || global.config.db.postgres;
 pg.types.setTypeParser(1114, str => str);
 
 function grafico1(req,res){

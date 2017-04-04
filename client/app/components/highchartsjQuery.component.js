@@ -33,9 +33,9 @@ var HighchartsjQuery = (function () {
         ];
     }
     HighchartsjQuery.prototype.ngAfterViewInit = function () {
-        this.renderChart();
+        this.render();
     };
-    HighchartsjQuery.prototype.renderChart = function () {
+    HighchartsjQuery.prototype.render = function () {
         jQuery('#container').highcharts({
             chart: {
                 type: 'area'

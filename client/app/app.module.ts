@@ -10,6 +10,7 @@ import { AppComponent }  from './app.component';
 import { Highcharts }  from './components/highcharts.component';
 import { HighchartsjQuery }  from './components/highchartsjQuery.component';
 import { StockChartExample }  from './components/stockChart.component';
+import { Comparativa }  from './components/comparativa.component';
 
 
 
@@ -25,7 +26,8 @@ import { StockChartExample }  from './components/stockChart.component';
                 AppComponent,
                 Highcharts,
                 HighchartsjQuery,
-                StockChartExample
+                StockChartExample,
+                Comparativa
                 ],
   bootstrap: [ AppComponent ]
 })
