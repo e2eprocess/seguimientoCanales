@@ -9,23 +9,56 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Importar Component desde el núcleo de Angular
 var core_1 = require("@angular/core");
-// Decorador component, indicamos en que etiqueta se va a cargar la plantilla
+var router_1 = require("@angular/router");
+var comparativa_service_1 = require("../services/comparativa.service");
 var Comparativa = (function () {
-    function Comparativa() {
-        this.title = 'KYGU - Perfilado de usuarios';
+    function Comparativa(_comparativaService, _route, _router) {
+        this._comparativaService = _comparativaService;
+        this._route = _route;
+        this._router = _router;
     }
+    Comparativa.prototype.ngOnInit = function () {
+        this.comparativa();
+    };
+    Comparativa.prototype.comparativa = function () {
+        var _this = this;
+        this._route.params.forEach(function (params) {
+            var name = params['name'];
+            _this.name = name;
+            _this._comparativaService.getUuaa(name).subscribe(function (response) {
+                _this.uuaa = response.data;
+                console.log(_this.uuaa.iduuaa);
+                _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
+                    _this.monitor = response.data;
+                    console.log(_this.monitor);
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        console.log(_this.errorMessage);
+                        alert('Error en la petición');
+                    }
+                });
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    console.log(_this.errorMessage);
+                    alert('Error en la petición');
+                }
+            });
+        });
+    };
     return Comparativa;
 }());
 Comparativa = __decorate([
     core_1.Component({
         selector: 'comparativa',
-        templateUrl: 'app/views/comparativa.html'
-    })
-    // Clase del componente donde irán los datos y funcionalidades
-    ,
-    __metadata("design:paramtypes", [])
+        templateUrl: 'app/views/comparativa.html',
+        providers: [comparativa_service_1.ComparativaService]
+    }),
+    __metadata("design:paramtypes", [comparativa_service_1.ComparativaService,
+        router_1.ActivatedRoute,
+        router_1.Router])
 ], Comparativa);
 exports.Comparativa = Comparativa;
 //# sourceMappingURL=comparativa.component.js.map

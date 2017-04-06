@@ -4,13 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { ChartModule } from 'angular2-highcharts'; 
 
-
+import { routing, appRoutingProviders }  from './app.routing';
 
 import { AppComponent }  from './app.component';
 import { Highcharts }  from './components/highcharts.component';
 import { HighchartsjQuery }  from './components/highchartsjQuery.component';
 import { StockChartExample }  from './components/stockChart.component';
 import { Comparativa }  from './components/comparativa.component';
+import { GraficaTime }  from './components/comparativaGrafTime.component';
 
 
 
@@ -20,6 +21,7 @@ import { Comparativa }  from './components/comparativa.component';
                   FormsModule,
                   HttpModule,
                   JsonpModule,
+                  routing,
                   ChartModule.forRoot(require('highcharts/highstock'))
                 ],
   declarations: [
@@ -27,8 +29,10 @@ import { Comparativa }  from './components/comparativa.component';
                 Highcharts,
                 HighchartsjQuery,
                 StockChartExample,
-                Comparativa
+                Comparativa,
+                GraficaTime
                 ],
+  providers: [ appRoutingProviders ],
   bootstrap: [ AppComponent ]
 })
 

@@ -1,8 +1,9 @@
 <div id="submenu"> <span class="activo">Comparativa </span></div>
 
-<div class="titulo">
-	<h1>{{title}}</h1>
+<div class="titulo" *ngIf="uuaa">	
+	<h1>{{name}} - {{uuaa.description}}</h1>
 </div>
+	<grafico-time></grafico-time>
 	<highcharts></highcharts>
 	<my-chart></my-chart>
 	<stock-chart-example></stock-chart-example>

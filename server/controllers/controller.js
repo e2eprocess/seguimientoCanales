@@ -12,6 +12,8 @@ pgp.pg.types.setTypeParser(1114, str => str);
 
 function getUuaa (req, res, next) {
 	var name = req.params.name;
+	console.log('Servidor Obtención UUUAA');
+	console.log(name);
 	db.one('select iduuaa, description \
 			from \"E2E\".uuaa \
 			where name = $1', name)
@@ -20,6 +22,7 @@ function getUuaa (req, res, next) {
 				.json({
 					data: data
 				});
+				console.log("SERVIDOR:  " + data);
 			})
 			.catch(function (err) {
 				//return next(err);
@@ -59,8 +62,6 @@ function getDataMonitor (req, res, next) {
 		$hasta: hasta,
 
 	};
-
-	console.log(parametros);
 
 	db.any('select a.timedata, a.datavalue \
 			from \"E2E\".monitordata a, \"E2E\".kpi b \
