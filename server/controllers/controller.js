@@ -30,7 +30,6 @@ function getUuaa (req, res, next) {
 			})
 }
 
-
 function getMonitors (req, res, next) {
 	var iduuaa = req.params.iduuaa;
 	db.any('select idmonitor, name \
@@ -47,6 +46,7 @@ function getMonitors (req, res, next) {
 				res.status(500).send({message: 'Error al devolver el id del monitor'});
 			})
 }
+
 
 
 function getDataMonitor (req, res, next) {

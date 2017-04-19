@@ -25,6 +25,10 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getMonitors/' + iduuaa)
             .map(function (res) { return res.json(); });
     };
+    ComparativaService.prototype.getDataMonitor = function (idmonitor, nameKpi, desde, hasta) {
+        return this._http.get(this.url + 'getDataMonitor/' + idmonitor + '/' + nameKpi + '/' + 'fechas/' + desde + '/' + hasta)
+            .map(function (res) { return res.json(); });
+    };
     return ComparativaService;
 }());
 ComparativaService = __decorate([

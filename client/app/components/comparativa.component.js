@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var comparativaGrafTiempo_component_1 = require("./comparativaGrafTiempo.component");
 var comparativa_service_1 = require("../services/comparativa.service");
 var Comparativa = (function () {
     function Comparativa(_comparativaService, _route, _router) {
@@ -25,25 +26,27 @@ var Comparativa = (function () {
         var _this = this;
         this._route.params.forEach(function (params) {
             var name = params['name'];
-            _this.name = name;
+            //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
             _this._comparativaService.getUuaa(name).subscribe(function (response) {
                 _this.uuaa = response.data;
-                console.log(_this.uuaa.iduuaa);
+                //Obtención del/los monitor/es perteneciente/s a la UUAA deseada
                 _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
                     _this.monitor = response.data;
-                    console.log(_this.monitor);
+                    //Grafcio tiempo respuesta
+                    var graficoTime = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
+                    graficoTime.inicioGrafico(_this.monitor);
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {
                         console.log(_this.errorMessage);
-                        alert('Error en la petición');
+                        alert('Error en la petición obtención monitores asociados');
                     }
                 });
             }, function (error) {
                 _this.errorMessage = error;
                 if (_this.errorMessage != null) {
                     console.log(_this.errorMessage);
-                    alert('Error en la petición');
+                    alert('Error en la petición obtención iduuaa de la UUAA solicitada');
                 }
             });
         });

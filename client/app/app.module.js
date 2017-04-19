@@ -13,11 +13,11 @@ var http_1 = require("@angular/http");
 var angular2_highcharts_1 = require("angular2-highcharts");
 var app_routing_1 = require("./app.routing");
 var app_component_1 = require("./app.component");
+var comparativa_component_1 = require("./components/comparativa.component");
+var comparativaGrafTiempo_component_1 = require("./components/comparativaGrafTiempo.component");
 var highcharts_component_1 = require("./components/highcharts.component");
 var highchartsjQuery_component_1 = require("./components/highchartsjQuery.component");
 var stockChart_component_1 = require("./components/stockChart.component");
-var comparativa_component_1 = require("./components/comparativa.component");
-var comparativaGrafTime_component_1 = require("./components/comparativaGrafTime.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -39,7 +39,7 @@ AppModule = __decorate([
             highchartsjQuery_component_1.HighchartsjQuery,
             stockChart_component_1.StockChartExample,
             comparativa_component_1.Comparativa,
-            comparativaGrafTime_component_1.GraficaTime
+            comparativaGrafTiempo_component_1.GraficaTiempo
         ],
         providers: [app_routing_1.appRoutingProviders],
         bootstrap: [app_component_1.AppComponent]
