@@ -26,6 +26,7 @@ var Comparativa = (function () {
         var _this = this;
         this._route.params.forEach(function (params) {
             var name = params['name'];
+            _this.name = name;
             //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
             _this._comparativaService.getUuaa(name).subscribe(function (response) {
                 _this.uuaa = response.data;

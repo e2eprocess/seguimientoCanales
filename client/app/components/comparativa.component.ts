@@ -17,11 +17,10 @@ import { Monitor } from '../models/monitor';
 })
 
 export class Comparativa implements OnInit {
+  public name: string;
   public uuaa: Uuaa;
   public monitor: Monitor;
   public errorMessage;
-  
-
 
   constructor(
   	private _comparativaService: ComparativaService,
@@ -37,6 +36,7 @@ export class Comparativa implements OnInit {
   	this._route.params.forEach((params: Params) => {
   		
       let name = params['name'];
+      this.name = name;
 
       //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
   		this._comparativaService.getUuaa(name).subscribe(

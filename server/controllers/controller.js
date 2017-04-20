@@ -63,7 +63,8 @@ function getDataMonitor (req, res, next) {
 
 	};
 
-	db.any('select a.timedata, a.datavalue \
+	db.any('select (extract(epoch from a.timedata))::numeric as x, \
+			a.datavalue as y\
 			from \"E2E\".monitordata a, \"E2E\".kpi b \
 			where a.idmonitor = ${$idmonitor} \
 			and b.name = ${$namekpi} \
