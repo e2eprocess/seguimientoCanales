@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { DatepickerComponent } from 'angular2-material-datepicker'
 
 import  { GraficaTiempo } from './comparativaGrafTiempo.component'
 

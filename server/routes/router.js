@@ -8,5 +8,6 @@ var controller = require('../controllers/controller');
 api.get('/getUUAA/:name', controller.getUuaa);
 api.get('/getMonitors/:iduuaa', controller.getMonitors);
 api.get('/getDataMonitor/:idmonitor/:namekpi/fechas/:desde/:hasta', controller.getDataMonitor);
+api.get('/getDataMonitorComparativa/:idmonitor/:namekpi/fechas/:desde/:hasta', controller.getDataMonitorComparativa);
 
 module.exports = api;

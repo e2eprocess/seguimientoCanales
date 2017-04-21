@@ -13,7 +13,7 @@ declare var jQuery:any;
 
 @Component({
     selector: 'grafico-time',
-    template: `<div style="width:60%" id="tiempoRespuesta"></div>`,
+    templateUrl: 'app/views/tiempoRespuestaComparativa.html',
     providers: [ComparativaService]
 })
 
@@ -24,14 +24,6 @@ export class GraficaTiempo {
   public monitorData: MonitorData;
   public errorMessage;
 
-  private datos = [
-      {
-              name: 'USA',
-              data: [[1486252800000,1773.94],[1486253100000,2242.49],[1486253400000,220.84]]
-          }];
-  
-
-  
   constructor(
   	private _comparativaService: ComparativaService,
   	){
@@ -60,18 +52,15 @@ export class GraficaTiempo {
     //declaración promesa
     return new Promise((resolve, reject) => {
 
-      console.log(moni.idmonitor);
 
       //
-      this._comparativaService.getDataMonitor(moni.idmonitor,'Time','2017-02-05 00:00:00','2017-02-05 01:00:00')
+      this._comparativaService.getDataMonitorComparativa(moni.idmonitor,'Time','2017-02-05 00:00:00','2017-02-05 23:59:00')
                       .subscribe(
                          response => {
                            this.monitorData = response.data;
                            this.series = new Series(moni.name,response.data);
                            this.data.push(this.series);
-
-                           console.log(this.data);
-                           
+                        
                            //terminado la consulta devuelve la promesa
                            resolve();
                          },
@@ -90,8 +79,7 @@ export class GraficaTiempo {
   }
 
   graficoTime(){
-   
-    
+      
     jQuery('#tiempoRespuesta').highcharts({
         chart: {
             zoomType: 'xy'
@@ -100,41 +88,54 @@ export class GraficaTiempo {
             text: 'Tiempo de respuesta (ms.)'
         },
         subtitle: {
-            text: 'Source: thebulletin.metapress.com'
+            text: 'comparativa'
+        },
+        credits:{
+          enabled: false
         },
         xAxis: {
-            type: 'datetime'
+            type: 'datetime',
+            dateTimeLabelFormats: {
+              hour: '%H:%M'
+            }
         },
         yAxis: {
             title: {
-                text: 'Nuclear weapon states'
+                text: 'Tiempo de respuesta (ms.)'
             },
             labels: {
-                formatter: function () {
-                    return this.value / 1000 + 'k';
-                }
-            }
+              format: '{value} ms.'
+            },
+            lineWidth: 1
         },
         tooltip: {
-            pointFormat: '{series.name} produced <b>{point.y:,.0f}</b>' +
-                   '<br/>warheads in {point.x}'
+          shared: true,
+          followPointer:true,
+          xDateFormat: '%H:%M'
+        },
+        legend: {
+          layaout: 'horizontal',
+          align: 'center',
+          verticalAlign: 'bottom',
+          borderWidth: 1,
+          itemStyle: {
+            fontsize: "10px"
+          }
         },
         plotOptions: {
-            area: {
-                pointStart: 1940,
-                marker: {
-                    enabled: false,
-                    symbol: 'circle',
-                    radius: 2,
-                    states: {
-                        hover: {
-                            enabled: true
-                        }
-                    }
-                }
+           series: {
+            pointStart: 0,
+            pointInterval: 300 * 1000
+          },
+          line: {
+            marker: {
+              enabled: false,
+              symbol: 'circle',
+              radius: 1,
             }
+          }    
         },
-        series: this.datos
+        series: this.data
       });
   }
 

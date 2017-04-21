@@ -17,12 +17,6 @@ var GraficaTiempo = (function () {
     function GraficaTiempo(_comparativaService) {
         this._comparativaService = _comparativaService;
         this.data = [];
-        this.datos = [
-            {
-                name: 'USA',
-                data: [[1486252800000, 1773.94], [1486253100000, 2242.49], [1486253400000, 220.84]]
-            }
-        ];
     }
     GraficaTiempo.prototype.inicioGrafico = function (monitor) {
         var _this = this;
@@ -42,14 +36,12 @@ var GraficaTiempo = (function () {
         var _this = this;
         //declaración promesa
         return new Promise(function (resolve, reject) {
-            console.log(moni.idmonitor);
             //
-            _this._comparativaService.getDataMonitor(moni.idmonitor, 'Time', '2017-02-05 00:00:00', '2017-02-05 01:00:00')
+            _this._comparativaService.getDataMonitorComparativa(moni.idmonitor, 'Time', '2017-02-05 00:00:00', '2017-02-05 23:59:00')
                 .subscribe(function (response) {
                 _this.monitorData = response.data;
                 _this.series = new series_1.Series(moni.name, response.data);
                 _this.data.push(_this.series);
-                console.log(_this.data);
                 //terminado la consulta devuelve la promesa
                 resolve();
             }, function (error) {
@@ -71,41 +63,54 @@ var GraficaTiempo = (function () {
                 text: 'Tiempo de respuesta (ms.)'
             },
             subtitle: {
-                text: 'Source: thebulletin.metapress.com'
+                text: 'comparativa'
+            },
+            credits: {
+                enabled: false
             },
             xAxis: {
-                type: 'datetime'
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    hour: '%H:%M'
+                }
             },
             yAxis: {
                 title: {
-                    text: 'Nuclear weapon states'
+                    text: 'Tiempo de respuesta (ms.)'
                 },
                 labels: {
-                    formatter: function () {
-                        return this.value / 1000 + 'k';
-                    }
-                }
+                    format: '{value} ms.'
+                },
+                lineWidth: 1
             },
             tooltip: {
-                pointFormat: '{series.name} produced <b>{point.y:,.0f}</b>' +
-                    '<br/>warheads in {point.x}'
+                shared: true,
+                followPointer: true,
+                xDateFormat: '%H:%M'
+            },
+            legend: {
+                layaout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom',
+                borderWidth: 1,
+                itemStyle: {
+                    fontsize: "10px"
+                }
             },
             plotOptions: {
-                area: {
-                    pointStart: 1940,
+                series: {
+                    pointStart: 0,
+                    pointInterval: 300 * 1000
+                },
+                line: {
                     marker: {
                         enabled: false,
                         symbol: 'circle',
-                        radius: 2,
-                        states: {
-                            hover: {
-                                enabled: true
-                            }
-                        }
+                        radius: 1,
                     }
                 }
             },
-            series: this.datos
+            series: this.data
         });
     };
     return GraficaTiempo;
@@ -113,7 +118,7 @@ var GraficaTiempo = (function () {
 GraficaTiempo = __decorate([
     core_1.Component({
         selector: 'grafico-time',
-        template: "<div style=\"width:60%\" id=\"tiempoRespuesta\"></div>",
+        templateUrl: 'app/views/tiempoRespuestaComparativa.html',
         providers: [comparativa_service_1.ComparativaService]
     }),
     __metadata("design:paramtypes", [comparativa_service_1.ComparativaService])
