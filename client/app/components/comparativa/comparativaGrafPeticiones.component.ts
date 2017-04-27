@@ -4,20 +4,20 @@ import 'rxjs/add/operator/map';
 
 import {Observable} from 'rxjs/Observable';
 
-import { ComparativaService } from '../services/comparativa.service';
-import { Monitor } from '../models/monitor';
-import { MonitorData } from '../models/monitorData';
-import { Series } from '../models/series';
+import { ComparativaService } from '../../services/comparativa.service';
+import { Monitor } from '../../models/monitor';
+import { MonitorData } from '../../models/monitorData';
+import { Series } from '../../models/series';
 
 declare var jQuery:any;
 
 @Component({
-    selector: 'grafico-time',
-    templateUrl: 'app/views/tiempoRespuestaComparativa.html',
+    selector: 'grafico-peticiones',
+    templateUrl: 'app/views/comparativa/peticiones.html',
     providers: [ComparativaService]
 })
 
-export class GraficaTiempo {
+export class GraficaPeticiones {
 
   public series: Series;
   public data : Array<Series> = [];
@@ -42,7 +42,7 @@ export class GraficaTiempo {
 
     //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
-      this.graficoTime();
+      this.graficoPeticiones();
     });    
 
   }
@@ -54,7 +54,7 @@ export class GraficaTiempo {
 
 
       //
-      this._comparativaService.getDataMonitorComparativa(moni.idmonitor,'Time','2017-02-05 00:00:00','2017-02-05 23:59:00')
+      this._comparativaService.getDataMonitorComparativa(moni.idmonitor,'Throughput','2017-04-25 00:00:00','2017-04-25 23:59:00')
                       .subscribe(
                          response => {
                            this.monitorData = response.data;
@@ -78,14 +78,14 @@ export class GraficaTiempo {
     });
   }
 
-  graficoTime(){
+  graficoPeticiones(){
       
-    jQuery('#tiempoRespuesta').highcharts({
+    jQuery('#peticiones').highcharts({
         chart: {
             zoomType: 'xy'
         },
         title: {
-            text: 'Tiempo de respuesta (ms.)'
+            text: 'Peticiones'
         },
         subtitle: {
             text: 'comparativa'
@@ -101,10 +101,10 @@ export class GraficaTiempo {
         },
         yAxis: {
             title: {
-                text: 'Tiempo de respuesta (ms.)'
+                text: 'Peticiones'
             },
             labels: {
-              format: '{value} ms.'
+              format: '{value}'
             },
             lineWidth: 1
         },

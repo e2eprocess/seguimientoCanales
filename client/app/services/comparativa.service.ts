@@ -23,13 +23,9 @@ export class ComparativaService {
 							.map(res => res.json());
 	}
 
-	getDataMonitor(idmonitor: string, nameKpi:string, desde: string, hasta: string){
-		return this._http.get(this.url+'getDataMonitor/'+idmonitor+'/'+nameKpi+'/'+'fechas/'+desde+'/'+hasta)
-							.map(res => res.json());
-	}
-
 	getDataMonitorComparativa(idmonitor: string, nameKpi:string, desde: string, hasta: string){
 		return this._http.get(this.url+'getDataMonitorComparativa/'+idmonitor+'/'+nameKpi+'/'+'fechas/'+desde+'/'+hasta)
 							.map(res => res.json());
 	}
+
 }

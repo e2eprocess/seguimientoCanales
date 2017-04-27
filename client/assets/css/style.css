@@ -40,6 +40,13 @@ body{
   margin-top: -20px;
 }
 
+.recuadro {
+  width: 48%;
+  height: 400px;
+  margin: 1;
+  float: left;
+}
+
 
 footer {
   width: 80%;

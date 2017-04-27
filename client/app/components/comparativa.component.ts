@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import  { GraficaTiempo } from './comparativaGrafTiempo.component'
+import  { GraficaTiempo } from './comparativa/comparativaGrafTiempo.component';
+import  { GraficaPeticiones } from './comparativa/comparativaGrafPeticiones.component';
 
 import { ComparativaService } from '../services/comparativa.service';
 import { Uuaa } from '../models/uuaa';
@@ -48,8 +49,10 @@ export class Comparativa implements OnInit {
               this.monitor = response.data;
 
               //Grafcio tiempo respuesta
-              var graficoTime = new GraficaTiempo(this._comparativaService);    
-              graficoTime.inicioGrafico(this.monitor);
+              var graficoTiempo = new GraficaTiempo(this._comparativaService);    
+              graficoTiempo.inicioGrafico(this.monitor);
+              var graficoPeticiones = new GraficaPeticiones(this._comparativaService);    
+              graficoPeticiones.inicioGrafico(this.monitor);
             },
             error => {
               this.errorMessage = <any>error;

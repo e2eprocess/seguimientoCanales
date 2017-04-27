@@ -5,7 +5,7 @@ import { Comparativa } from './components/comparativa.component'
 
 const appRoutes: Routes = [
 	{path:'', component: Comparativa},
-	{path:'comparativa/:name', component: Comparativa},
+	{path:'comparativa/:canal/:name', component: Comparativa},
 	{path:'**', component: Comparativa}
 ];
 
