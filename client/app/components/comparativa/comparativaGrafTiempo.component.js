@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
-var comparativa_service_1 = require("../services/comparativa.service");
-var series_1 = require("../models/series");
+var comparativa_service_1 = require("../../services/comparativa.service");
+var series_1 = require("../../models/series");
 var GraficaTiempo = (function () {
     function GraficaTiempo(_comparativaService) {
         this._comparativaService = _comparativaService;
@@ -29,7 +29,7 @@ var GraficaTiempo = (function () {
         }
         //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
         Promise.all(promesas).then(function () {
-            _this.graficoTime();
+            _this.graficoTiempo();
         });
     };
     GraficaTiempo.prototype.obtencionSerie = function (moni) {
@@ -54,7 +54,7 @@ var GraficaTiempo = (function () {
             });
         });
     };
-    GraficaTiempo.prototype.graficoTime = function () {
+    GraficaTiempo.prototype.graficoTiempo = function () {
         jQuery('#tiempoRespuesta').highcharts({
             chart: {
                 zoomType: 'xy'
@@ -117,8 +117,8 @@ var GraficaTiempo = (function () {
 }());
 GraficaTiempo = __decorate([
     core_1.Component({
-        selector: 'grafico-time',
-        templateUrl: 'app/views/tiempoRespuestaComparativa.html',
+        selector: 'grafico-tiempo',
+        templateUrl: 'app/views/comparativa/tiempoRespuesta.html',
         providers: [comparativa_service_1.ComparativaService]
     }),
     __metadata("design:paramtypes", [comparativa_service_1.ComparativaService])

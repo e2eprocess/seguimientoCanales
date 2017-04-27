@@ -4,16 +4,16 @@ import 'rxjs/add/operator/map';
 
 import {Observable} from 'rxjs/Observable';
 
-import { ComparativaService } from '../services/comparativa.service';
-import { Monitor } from '../models/monitor';
-import { MonitorData } from '../models/monitorData';
-import { Series } from '../models/series';
+import { ComparativaService } from '../../services/comparativa.service';
+import { Monitor } from '../../models/monitor';
+import { MonitorData } from '../../models/monitorData';
+import { Series } from '../../models/series';
 
 declare var jQuery:any;
 
 @Component({
-    selector: 'grafico-time',
-    templateUrl: 'app/views/tiempoRespuestaComparativa.html',
+    selector: 'grafico-tiempo',
+    templateUrl: 'app/views/comparativa/tiempoRespuesta.html',
     providers: [ComparativaService]
 })
 
@@ -42,7 +42,7 @@ export class GraficaTiempo {
 
     //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
-      this.graficoTime();
+      this.graficoTiempo();
     });    
 
   }
@@ -78,7 +78,7 @@ export class GraficaTiempo {
     });
   }
 
-  graficoTime(){
+  graficoTiempo(){
       
     jQuery('#tiempoRespuesta').highcharts({
         chart: {

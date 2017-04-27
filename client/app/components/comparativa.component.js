@@ -11,7 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var comparativaGrafTiempo_component_1 = require("./comparativaGrafTiempo.component");
+var comparativaGrafTiempo_component_1 = require("./comparativa/comparativaGrafTiempo.component");
+var comparativaGrafPeticiones_component_1 = require("./comparativa/comparativaGrafPeticiones.component");
 var comparativa_service_1 = require("../services/comparativa.service");
 var Comparativa = (function () {
     function Comparativa(_comparativaService, _route, _router) {
@@ -34,8 +35,10 @@ var Comparativa = (function () {
                 _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
                     _this.monitor = response.data;
                     //Grafcio tiempo respuesta
-                    var graficoTime = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
-                    graficoTime.inicioGrafico(_this.monitor);
+                    var graficoTiempo = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
+                    graficoTiempo.inicioGrafico(_this.monitor);
+                    var graficoPeticiones = new comparativaGrafPeticiones_component_1.GraficaPeticiones(_this._comparativaService);
+                    graficoPeticiones.inicioGrafico(_this.monitor);
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {

@@ -5,13 +5,11 @@ import { HttpModule, JsonpModule } from '@angular/http';
 import { ChartModule } from 'angular2-highcharts'; 
 import { routing, appRoutingProviders }  from './app.routing';
 
+
 import { AppComponent }  from './app.component';
 import { Comparativa }  from './components/comparativa.component';
-import { GraficaTiempo }  from './components/comparativaGrafTiempo.component';
-
-import { Highcharts }  from './components/highcharts.component';
-import { HighchartsjQuery }  from './components/highchartsjQuery.component';
-import { StockChartExample }  from './components/stockChart.component';
+import { GraficaTiempo }  from './components/comparativa/comparativaGrafTiempo.component';
+import { GraficaPeticiones }  from './components/comparativa/comparativaGrafPeticiones.component';
 
 
 
@@ -22,15 +20,13 @@ import { StockChartExample }  from './components/stockChart.component';
                   HttpModule,
                   JsonpModule,
                   routing,
-                  ChartModule.forRoot(require('highcharts/highstock'))
-                ],
+                  ChartModule.forRoot(require('highcharts/highstock')),
+                  ],
   declarations: [
                 AppComponent,
-                Highcharts,
-                HighchartsjQuery,
-                StockChartExample,
                 Comparativa,
-                GraficaTiempo
+                GraficaTiempo,
+                GraficaPeticiones
                 ],
   providers: [ appRoutingProviders ],
   bootstrap: [ AppComponent ]

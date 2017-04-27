@@ -14,10 +14,8 @@ var angular2_highcharts_1 = require("angular2-highcharts");
 var app_routing_1 = require("./app.routing");
 var app_component_1 = require("./app.component");
 var comparativa_component_1 = require("./components/comparativa.component");
-var comparativaGrafTiempo_component_1 = require("./components/comparativaGrafTiempo.component");
-var highcharts_component_1 = require("./components/highcharts.component");
-var highchartsjQuery_component_1 = require("./components/highchartsjQuery.component");
-var stockChart_component_1 = require("./components/stockChart.component");
+var comparativaGrafTiempo_component_1 = require("./components/comparativa/comparativaGrafTiempo.component");
+var comparativaGrafPeticiones_component_1 = require("./components/comparativa/comparativaGrafPeticiones.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -31,15 +29,13 @@ AppModule = __decorate([
             http_1.HttpModule,
             http_1.JsonpModule,
             app_routing_1.routing,
-            angular2_highcharts_1.ChartModule.forRoot(require('highcharts/highstock'))
+            angular2_highcharts_1.ChartModule.forRoot(require('highcharts/highstock')),
         ],
         declarations: [
             app_component_1.AppComponent,
-            highcharts_component_1.Highcharts,
-            highchartsjQuery_component_1.HighchartsjQuery,
-            stockChart_component_1.StockChartExample,
             comparativa_component_1.Comparativa,
-            comparativaGrafTiempo_component_1.GraficaTiempo
+            comparativaGrafTiempo_component_1.GraficaTiempo,
+            comparativaGrafPeticiones_component_1.GraficaPeticiones
         ],
         providers: [app_routing_1.appRoutingProviders],
         bootstrap: [app_component_1.AppComponent]
