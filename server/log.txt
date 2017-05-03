@@ -1,0 +1,1 @@
+error: la posición 2 de GROUP BY no está en la lista de resultados

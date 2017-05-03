@@ -13,7 +13,7 @@ function getIdHost (req, res, next) {
 			from \"E2E\".clon \
 			where idchannel = ${$idchannel} \
 			and name::text like ${$name}\
-			group by 1\
+			group by 1,2\
 			order by 1', parametros)
 		.then(function(data) {
 			res.status(200)
@@ -22,10 +22,10 @@ function getIdHost (req, res, next) {
 				});
 			})
 			.catch(function (err) {
+				console.log(err);
 				res.status(500).send({message: 'Error al devolver el idhost'});
-			})
+			});
 }
-
 
 
 module.exports = {
