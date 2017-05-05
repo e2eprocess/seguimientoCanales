@@ -4,7 +4,7 @@ var router_1 = require("@angular/router");
 var comparativa_component_1 = require("./components/comparativa.component");
 var appRoutes = [
     { path: '', component: comparativa_component_1.Comparativa },
-    { path: 'comparativa/:canal/:name', component: comparativa_component_1.Comparativa },
+    { path: 'comparativa/:channel/:name', component: comparativa_component_1.Comparativa },
     { path: '**', component: comparativa_component_1.Comparativa }
 ];
 exports.appRoutingProviders = [];

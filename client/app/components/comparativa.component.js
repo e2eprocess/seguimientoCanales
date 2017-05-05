@@ -13,6 +13,7 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var comparativaGrafTiempo_component_1 = require("./comparativa/comparativaGrafTiempo.component");
 var comparativaGrafPeticiones_component_1 = require("./comparativa/comparativaGrafPeticiones.component");
+var comparativaGrafCpu_component_1 = require("./comparativa/comparativaGrafCpu.component");
 var comparativa_service_1 = require("../services/comparativa.service");
 var Comparativa = (function () {
     function Comparativa(_comparativaService, _route, _router) {
@@ -28,6 +29,7 @@ var Comparativa = (function () {
         this._route.params.forEach(function (params) {
             var name = params['name'];
             _this.name = name;
+            var channel = params['channel'];
             //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
             _this._comparativaService.getUuaa(name).subscribe(function (response) {
                 _this.uuaa = response.data;
@@ -42,15 +44,31 @@ var Comparativa = (function () {
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {
-                        console.log(_this.errorMessage);
                         alert('Error en la petición obtención monitores asociados');
                     }
                 });
             }, function (error) {
                 _this.errorMessage = error;
                 if (_this.errorMessage != null) {
-                    console.log(_this.errorMessage);
                     alert('Error en la petición obtención iduuaa de la UUAA solicitada');
+                }
+            });
+            _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
+                _this.channel = response.data;
+                _this._comparativaService.getIdHost(_this.channel.idchannel, name).subscribe(function (response) {
+                    _this.hosts = response.data;
+                    var graficoCpu = new comparativaGrafCpu_component_1.GraficaCpu(_this._comparativaService);
+                    graficoCpu.inicioGrafico(_this.hosts, _this.channel, name);
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la petición obtención los idHosts asociados al Canal');
+                    }
+                });
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la petición obtención idChannel');
                 }
             });
         });

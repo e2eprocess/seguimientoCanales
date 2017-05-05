@@ -6,30 +6,30 @@
 	  		<ul>
 	  			<li><a>KQOF-Frontal</a>
 	  				<UL>
-	  					<li><a>Comparativa</a></li>
+	  					<li><a [routerLink]="['/comparativa/net/KQOF']">Comparativa</a></li>
 	  					<li><a>Informe</a></li>
 	  				</UL>
 	  			</li>
 	  			<li><a>ENPS-Servicion multicanal</a>
 	  				<UL>
-	  					<li><a>Comparativa</a></li>
+	  					<li><a [routerLink]="['/comparativa/net/ENPS_NET']">Comparativa</a></li>
 	  					<li><a>Informe</a></li>
 	  				</UL>
 	  			</li>
 	  			<li><a>ESMB-Servicios básicos</a>
 	  				<UL>
-	  					<li><a>Comparativa</a></li>
+	  					<li><a [routerLink]="['/comparativa/net/ESMB_NET']">Comparativa</a></li>
 	  					<li><a>Informe</a></li>
 	  				</UL>
 	  			</li>
-	  			<li><a>Visión Máquinas</a></li>
+	  			<li><a [routerLink]="['/comparativa/net/v_MQ']">Visión Máquinas</a></li>
 	  		</ul>
 	  	</li>
 	  	<li><a>Net Cash</a>
 	  		<ul>
 	  			<li><a>KYOP-Portal</a>
 	  				<UL>
-	  					<li><a>Comparativa</a></li>
+	  					<li><a [routerLink]="['/comparativa/netcash/KYOP']">Comparativa</a></li>
 	  					<li><a>Informe</a></li>
 	  				</UL>
 	  			</li>
@@ -99,6 +99,7 @@
 
   <!-- MOSTRAMOS OTRO COMPONENTE -->
 <section>
+
 	<router-outlet></router-outlet>
 	<div class="clearfix"></div>
 </section>

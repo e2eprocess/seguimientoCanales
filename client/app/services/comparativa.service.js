@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/map");
+//import {Uuaa} from '../models/uuaa'
 var ComparativaService = (function () {
     function ComparativaService(_http) {
         this._http = _http;
@@ -28,6 +29,18 @@ var ComparativaService = (function () {
     ComparativaService.prototype.getDataMonitorComparativa = function (idmonitor, nameKpi, desde, hasta) {
         return this._http.get(this.url + 'getDataMonitorComparativa/' + idmonitor + '/' + nameKpi + '/' + 'fechas/' + desde + '/' + hasta)
             .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getIdChannel = function (channel) {
+        return this._http.get(this.url + 'getIdChannel/' + channel)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getIdHost = function (idchannel, name) {
+        return this._http.get(this.url + 'getIdHost/' + idchannel + '/' + name)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getDataHostComparativa = function (idhost, desde, hasta, channel, uuaa, kpi) {
+        return this._http.get(this.url + 'getDataHostComparativa/' + idhost + '/fechas/' + desde +
+            '/' + hasta + '/' + channel + '/' + uuaa + '/' + kpi).map(function (res) { return res.json(); });
     };
     return ComparativaService;
 }());

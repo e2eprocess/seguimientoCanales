@@ -3,10 +3,13 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import  { GraficaTiempo } from './comparativa/comparativaGrafTiempo.component';
 import  { GraficaPeticiones } from './comparativa/comparativaGrafPeticiones.component';
+import  { GraficaCpu } from './comparativa/comparativaGrafCpu.component';
 
 import { ComparativaService } from '../services/comparativa.service';
 import { Uuaa } from '../models/uuaa';
 import { Monitor } from '../models/monitor';
+import { Channel } from '../models/channel';
+import { Host } from '../models/host';
 
  
 
@@ -20,6 +23,8 @@ export class Comparativa implements OnInit {
   public name: string;
   public uuaa: Uuaa;
   public monitor: Monitor;
+  public channel: Channel;
+  public hosts: Host;
   public errorMessage;
 
   constructor(
@@ -37,6 +42,7 @@ export class Comparativa implements OnInit {
   		
       let name = params['name'];
       this.name = name;
+      let channel = params['channel']; 
 
       //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
   		this._comparativaService.getUuaa(name).subscribe(
@@ -56,9 +62,7 @@ export class Comparativa implements OnInit {
             },
             error => {
               this.errorMessage = <any>error;
-
               if(this.errorMessage != null){
-                console.log(this.errorMessage);
               alert('Error en la petición obtención monitores asociados');
               }
             }
@@ -66,13 +70,45 @@ export class Comparativa implements OnInit {
   			},
   			error => {
   				this.errorMessage = <any>error;
-
         		if(this.errorMessage != null){
-          			console.log(this.errorMessage);
           		alert('Error en la petición obtención iduuaa de la UUAA solicitada');
   			    }
   			}
   		);
+
+      this._comparativaService.getIdChannel(channel).subscribe(
+        response => {
+          this.channel = response.data;
+
+          this._comparativaService.getIdHost(this.channel.idchannel, name).subscribe(
+              response => {
+                this.hosts = response.data;
+
+                var graficoCpu = new GraficaCpu(this._comparativaService);
+                graficoCpu.inicioGrafico(this.hosts,this.channel,name);
+              },
+              error => {
+                this.errorMessage = <any>error;
+                if(this.errorMessage != null){
+                  alert('Error en la petición obtención los idHosts asociados al Canal');
+                }
+              }
+            );
+
+
+
+        },
+        error => {
+         this.errorMessage = <any>error;
+              if(this.errorMessage != null){
+                alert('Error en la petición obtención idChannel');
+         }
+        }
+       );
+
+
+
+
   	});
   }
 }

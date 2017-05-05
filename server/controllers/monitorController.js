@@ -42,7 +42,7 @@ function getDataMonitorComparativa (req, res, next) {
 
 			//Lectura datos y transformación de json a Array
 			var array = data.map((elem) => {
-				return [ parseInt(elem.x), parseInt(elem.y)]
+				return [ parseInt(elem.x), parseFloat(elem.y)]
 			})
 
 			//Devuelve el array si es una ejecuión correcta

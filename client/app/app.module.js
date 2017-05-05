@@ -16,6 +16,7 @@ var app_component_1 = require("./app.component");
 var comparativa_component_1 = require("./components/comparativa.component");
 var comparativaGrafTiempo_component_1 = require("./components/comparativa/comparativaGrafTiempo.component");
 var comparativaGrafPeticiones_component_1 = require("./components/comparativa/comparativaGrafPeticiones.component");
+var comparativaGrafCpu_component_1 = require("./components/comparativa/comparativaGrafCpu.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -35,7 +36,8 @@ AppModule = __decorate([
             app_component_1.AppComponent,
             comparativa_component_1.Comparativa,
             comparativaGrafTiempo_component_1.GraficaTiempo,
-            comparativaGrafPeticiones_component_1.GraficaPeticiones
+            comparativaGrafPeticiones_component_1.GraficaPeticiones,
+            comparativaGrafCpu_component_1.GraficaCpu
         ],
         providers: [app_routing_1.appRoutingProviders],
         bootstrap: [app_component_1.AppComponent]

@@ -10,6 +10,8 @@ import { AppComponent }  from './app.component';
 import { Comparativa }  from './components/comparativa.component';
 import { GraficaTiempo }  from './components/comparativa/comparativaGrafTiempo.component';
 import { GraficaPeticiones }  from './components/comparativa/comparativaGrafPeticiones.component';
+import { GraficaCpu }  from './components/comparativa/comparativaGrafCpu.component';
+
 
 
 
@@ -26,7 +28,8 @@ import { GraficaPeticiones }  from './components/comparativa/comparativaGrafPeti
                 AppComponent,
                 Comparativa,
                 GraficaTiempo,
-                GraficaPeticiones
+                GraficaPeticiones,
+                GraficaCpu
                 ],
   providers: [ appRoutingProviders ],
   bootstrap: [ AppComponent ]
