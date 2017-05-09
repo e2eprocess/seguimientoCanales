@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "SeguimientoCanalesE2E",
-=======
-  "name": "cliente-seguimientoCanales",
->>>>>>> 1a31551b6cd0bda13e91a85f5d02f7d5fb20a0cb
   "version": "1.0.0",
   "scripts": {
     "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" ",

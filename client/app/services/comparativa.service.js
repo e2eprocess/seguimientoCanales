@@ -18,8 +18,8 @@ var ComparativaService = (function () {
         this._http = _http;
         this.url = 'http://localhost:3845/api/';
     }
-    ComparativaService.prototype.getUuaa = function (name) {
-        return this._http.get(this.url + 'getUuaa/' + name)
+    ComparativaService.prototype.getIdUuaa = function (idchannel, name) {
+        return this._http.get(this.url + 'getIdUuaa/' + idchannel + '/' + name)
             .map(function (res) { return res.json(); });
     };
     ComparativaService.prototype.getMonitors = function (iduuaa) {

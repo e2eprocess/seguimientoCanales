@@ -54,7 +54,7 @@ export class GraficaTiempo {
 
 
       //
-      this._comparativaService.getDataMonitorComparativa(moni.idmonitor,'Time','2017-04-25 00:00:00','2017-04-25 23:59:00')
+      this._comparativaService.getDataMonitorComparativa(moni.idmonitor,'Time','2017-02-05 00:00:00','2017-02-05 23:59:00')
                       .subscribe(
                          response => {
                            this.monitorData = response.data;

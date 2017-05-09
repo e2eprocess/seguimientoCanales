@@ -30,31 +30,31 @@ var Comparativa = (function () {
             var name = params['name'];
             _this.name = name;
             var channel = params['channel'];
-            //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
-            _this._comparativaService.getUuaa(name).subscribe(function (response) {
-                _this.uuaa = response.data;
-                //Obtención del/los monitor/es perteneciente/s a la UUAA deseada
-                _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
-                    _this.monitor = response.data;
-                    //Grafcio tiempo respuesta
-                    var graficoTiempo = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
-                    graficoTiempo.inicioGrafico(_this.monitor);
-                    var graficoPeticiones = new comparativaGrafPeticiones_component_1.GraficaPeticiones(_this._comparativaService);
-                    graficoPeticiones.inicioGrafico(_this.monitor);
+            _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
+                _this.channel = response.data;
+                //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
+                _this._comparativaService.getIdUuaa(_this.channel.idchannel, name).subscribe(function (response) {
+                    _this.uuaa = response.data;
+                    //Obtención del/los monitor/es perteneciente/s a la UUAA deseada
+                    _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
+                        _this.monitor = response.data;
+                        //Grafcio tiempo respuesta
+                        var graficoTiempo = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
+                        graficoTiempo.inicioGrafico(_this.monitor);
+                        var graficoPeticiones = new comparativaGrafPeticiones_component_1.GraficaPeticiones(_this._comparativaService);
+                        graficoPeticiones.inicioGrafico(_this.monitor);
+                    }, function (error) {
+                        _this.errorMessage = error;
+                        if (_this.errorMessage != null) {
+                            alert('Error en la petición obtención monitores asociados');
+                        }
+                    });
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {
-                        alert('Error en la petición obtención monitores asociados');
+                        alert('Error en la petición obtención iduuaa de la UUAA solicitada');
                     }
                 });
-            }, function (error) {
-                _this.errorMessage = error;
-                if (_this.errorMessage != null) {
-                    alert('Error en la petición obtención iduuaa de la UUAA solicitada');
-                }
-            });
-            _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
-                _this.channel = response.data;
                 _this._comparativaService.getIdHost(_this.channel.idchannel, name).subscribe(function (response) {
                     _this.hosts = response.data;
                     var graficoCpu = new comparativaGrafCpu_component_1.GraficaCpu(_this._comparativaService);

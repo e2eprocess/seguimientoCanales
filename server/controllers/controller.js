@@ -1,10 +1,16 @@
 var db = require('./controllerPg').db;
 
-function getUuaa (req, res, next) {
-	var name = req.params.name;
+function getIdUuaa (req, res, next) {
+
+	var parametros = {
+		$idchannel: req.params.idchannel,
+		$name: req.params.name
+	};
+
 	db.one('select iduuaa, description \
 			from \"E2E\".uuaa \
-			where name = $1', name)
+			where name = ${$name} \
+			and idchannel =${$idchannel}', parametros)
 		.then(function(data) {
 			res.status(200)
 				.json({
@@ -36,6 +42,6 @@ function getIdChannel (req, res, next) {
 
 
 module.exports = {
-  getUuaa,
+  getIdUuaa,
   getIdChannel
 }

@@ -37,7 +37,7 @@ var GraficaTiempo = (function () {
         //declaración promesa
         return new Promise(function (resolve, reject) {
             //
-            _this._comparativaService.getDataMonitorComparativa(moni.idmonitor, 'Time', '2017-04-25 00:00:00', '2017-04-25 23:59:00')
+            _this._comparativaService.getDataMonitorComparativa(moni.idmonitor, 'Time', '2017-02-05 00:00:00', '2017-02-05 23:59:00')
                 .subscribe(function (response) {
                 _this.monitorData = response.data;
                 _this.series = new series_1.Series(moni.name, response.data);

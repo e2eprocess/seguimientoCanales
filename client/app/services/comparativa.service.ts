@@ -13,8 +13,8 @@ export class ComparativaService {
 		this.url = 'http://localhost:3845/api/';
 	}
 
-	getUuaa(name: string){
-		return this._http.get(this.url+'getUuaa/'+name)
+	getIdUuaa(idchannel: string, name: string){
+		return this._http.get(this.url+'getIdUuaa/'+idchannel+'/'+name)
 							.map(res => res.json());
 	}
 
