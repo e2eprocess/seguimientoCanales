@@ -3,7 +3,8 @@
 global.config = require('./config');
 var app = require('./app');
 var port = process.env.PORT || global.config.host.port;
+var logger = require('./gestionLog').logger;
 
 app.listen(port, function() {
-  console.log('API Rest favoritos funcionando en http://localhost:'+port);
+  logger.info('API Rest favoritos funcionando en http://localhost:'+port);
 });

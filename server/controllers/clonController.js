@@ -1,4 +1,5 @@
 var db = require('./controllerPg').db;
+var logger = require('../gestionLog').logger;
 
 function getIdClon (req, res, next) {
 
@@ -18,7 +19,7 @@ function getIdClon (req, res, next) {
 				});
 			})
 			.catch(function (err) {
-				console.log(err);
+				logger.error(err);
 				res.status(500).send({message: 'Error al devolver el idclon'});
 			});
 }
@@ -55,9 +56,8 @@ function getClonDataComparativa (req, res, next) {
 				});
 			})
 			.catch(function (err) {
-				console.log(err);
-				res.status(500).send({Status: 'Error al obtener ClonData',
-										message: err.message});
+				logger.error(err);
+				res.status(500).send({message: 'Error al obtener ClonData'});
 			})
 }
 

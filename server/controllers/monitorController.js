@@ -1,4 +1,5 @@
 var db = require('./controllerPg').db;
+var logger = require('../gestionLog').logger;
 
 function getMonitors (req, res, next) {
 	var iduuaa = req.params.iduuaa;
@@ -12,6 +13,7 @@ function getMonitors (req, res, next) {
 				});
 			})
 			.catch(function (err) {
+				logger.error(err);
 				res.status(500).send({message: 'Error al devolver el id del monitor'});
 			})
 }
@@ -54,8 +56,8 @@ function getDataMonitorComparativa (req, res, next) {
 
 
 			.catch(function (err) {
-				res.status(500).send({Status: 'Error al obtener MonitorData',
-										message: err.message});
+				logger.error(err);
+				res.status(500).send({Status: 'Error al obtener MonitorData'});
 			})
 }
 

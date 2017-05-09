@@ -1,4 +1,5 @@
 var db = require('./controllerPg').db;
+var logger = require('../gestionLog').logger;
 
 function getIdUuaa (req, res, next) {
 
@@ -18,6 +19,7 @@ function getIdUuaa (req, res, next) {
 				});
 			})
 			.catch(function (err) {
+				logger.error(err);
 				res.status(500).send({message: 'Error al devolver la UUAA'});
 			})
 }
@@ -34,6 +36,7 @@ function getIdChannel (req, res, next) {
 				});
 			})
 			.catch(function (err) {
+				logger.error(err);
 				res.status(500).send({message: 'Error al devolver la UUAA'});
 			})
 }

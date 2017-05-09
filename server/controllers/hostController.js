@@ -1,4 +1,5 @@
 var db = require('./controllerPg').db;
+var logger = require('../gestionLog').logger;
 
 function getIdHost (req, res, next) {
 
@@ -22,6 +23,7 @@ function getIdHost (req, res, next) {
 				});
 			})
 			.catch(function (err) {
+				logger.error(err);
 				res.status(500).send({message: 'Error al devolver el idhost'});
 			});
 }
@@ -68,7 +70,7 @@ function getDataHostComparativa (req, res, next) {
 
 
 			.catch(function (err) {
-				console.log(err);
+				logger.error(err);
 				res.status(500).send({Status: 'Error al obtener HostData',
 										message: err.message});
 			})
