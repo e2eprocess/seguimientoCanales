@@ -42,10 +42,11 @@ export class Comparativa implements OnInit {
 
   comparativa(){
     this._route.params.forEach((params: Params) => {
-      
+
       let name = params['name'];
       this.name = name;
-      let channel = params['channel']; 
+      let channel = params['channel'];
+
 
       this._comparativaService.getIdChannel(channel).subscribe(
         response => {
@@ -56,7 +57,6 @@ export class Comparativa implements OnInit {
             response => {
               this.uuaa = response.data;
 
-              //Obtención del/los monitor/es perteneciente/s a la UUAA deseada
               this._comparativaService.getMonitors(this.uuaa.iduuaa).subscribe(
                 response => {
                   this.monitores = response.data;
@@ -67,58 +67,58 @@ export class Comparativa implements OnInit {
                   var graficoPeticiones = new GraficaPeticiones(this._comparativaService);    
                   graficoPeticiones.inicioGrafico(this.monitores);
                 },
-                error => {
+                error =>{
                   this.errorMessage = <any>error;
                   if(this.errorMessage != null){
-                  alert('Error en la petición obtención monitores asociados');
+                    alert('Error en la obtención de los MONITORES asociados');
                   }
                 }
               );
             },
             error => {
               this.errorMessage = <any>error;
-                if(this.errorMessage != null){
-                  alert('Error en la petición obtención iduuaa de la UUAA solicitada');
-                }
+              if(this.errorMessage != null){
+                alert('Error en la  obtención del IDUUAA de la UUAA solicitada');
+              }
+          });
+
+          this._comparativaService.getIdHost(this.channel.idchannel, name).subscribe(
+          response => {
+            this.hosts = response.data;
+
+              var graficoCpu = new GraficaCpu(this._comparativaService);
+              graficoCpu.inicioGrafico(this.hosts,this.channel,name);
+            },
+            error => {
+              this.errorMessage = <any>error;
+              if(this.errorMessage != null){
+                alert('Error en la obtención de los IDHOST asociados al Canal');
+              }
             }
           );
 
-
-          this._comparativaService.getIdHost(this.channel.idchannel, name).subscribe(
-              response => {
-                this.hosts = response.data;
-
-                var graficoCpu = new GraficaCpu(this._comparativaService);
-                graficoCpu.inicioGrafico(this.hosts,this.channel,name);
-              },
-              error => {
-                this.errorMessage = <any>error;
-                if(this.errorMessage != null){
-                  alert('Error en la petición obtención los idHosts asociados al Canal');
-                }
-              }
-            );
-
           this._comparativaService.getIdClon(this.channel.idchannel, name).subscribe(
-              response => {
-                this.clon = response.data;
+            response => {
+              this.clon = response.data;
 
-                var graficoMemoria = new GraficaMemoria(this._comparativaService);
-                graficoMemoria.inicioGrafico(this.clon);
-              },
-              error => {
-                this.errorMessage = <any>error;
-                if(this.errorMessage != null){
-                  alert('Error en la petición obtención los idHosts asociados al Canal');
-                }
+              var graficoMemoria = new GraficaMemoria(this._comparativaService);
+              graficoMemoria.inicioGrafico(this.clon);
+            },
+            error =>{
+              this.errorMessage = <any>error;
+              if(this.errorMessage != null){
+                alert('Error en la petición obtención los idHosts asociados al Canal');
               }
+            }
+          );
         },
         error => {
-         this.errorMessage = <any>error;
-              if(this.errorMessage != null){
-                alert('Error en la petición obtención idChannel');
-         }
-        }
-       );
+          this.errorMessage = <any>error;
+          if(this.errorMessage != null){
+            alert('Error en la obtención del IDCHANNEL');
+          }
+        }  
+      );
     });
   }
+}

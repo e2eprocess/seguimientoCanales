@@ -46,7 +46,7 @@ export class GraficaPeticiones {
         this.graficoPeticiones();  
       });
       
-    });    
+    }); 
 
   }
 

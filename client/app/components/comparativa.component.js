@@ -36,7 +36,6 @@ var Comparativa = (function () {
                 //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
                 _this._comparativaService.getIdUuaa(_this.channel.idchannel, name).subscribe(function (response) {
                     _this.uuaa = response.data;
-                    //Obtención del/los monitor/es perteneciente/s a la UUAA deseada
                     _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
                         _this.monitores = response.data;
                         //Grafcio tiempo respuesta
@@ -47,13 +46,13 @@ var Comparativa = (function () {
                     }, function (error) {
                         _this.errorMessage = error;
                         if (_this.errorMessage != null) {
-                            alert('Error en la petición obtención monitores asociados');
+                            alert('Error en la obtención de los MONITORES asociados');
                         }
                     });
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {
-                        alert('Error en la petición obtención iduuaa de la UUAA solicitada');
+                        alert('Error en la  obtención del IDUUAA de la UUAA solicitada');
                     }
                 });
                 _this._comparativaService.getIdHost(_this.channel.idchannel, name).subscribe(function (response) {
@@ -63,7 +62,7 @@ var Comparativa = (function () {
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {
-                        alert('Error en la petición obtención los idHosts asociados al Canal');
+                        alert('Error en la obtención de los IDHOST asociados al Canal');
                     }
                 });
                 _this._comparativaService.getIdClon(_this.channel.idchannel, name).subscribe(function (response) {
@@ -79,7 +78,7 @@ var Comparativa = (function () {
             }, function (error) {
                 _this.errorMessage = error;
                 if (_this.errorMessage != null) {
-                    alert('Error en la petición obtención idChannel');
+                    alert('Error en la obtención del IDCHANNEL');
                 }
             });
         });

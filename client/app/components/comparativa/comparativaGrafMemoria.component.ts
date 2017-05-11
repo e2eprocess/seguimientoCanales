@@ -6,7 +6,6 @@ import {Observable} from 'rxjs/Observable';
 
 import { ComparativaService } from '../../services/comparativa.service';
 import { Monitor } from '../../models/monitor';
-import { MonitorData } from '../../models/monitorData';
 import { Series } from '../../models/series';
 
 declare var jQuery:any;
@@ -21,7 +20,6 @@ export class GraficaMemoria {
 
   public series: Series;
   public data : Array<Series> = [];
-  public monitorData: MonitorData;
   public errorMessage;
 
   constructor(
