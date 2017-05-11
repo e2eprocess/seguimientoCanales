@@ -11,6 +11,7 @@ import { Comparativa }  from './components/comparativa.component';
 import { GraficaTiempo }  from './components/comparativa/comparativaGrafTiempo.component';
 import { GraficaPeticiones }  from './components/comparativa/comparativaGrafPeticiones.component';
 import { GraficaCpu }  from './components/comparativa/comparativaGrafCpu.component';
+import {GraficaMemoria } from './components/comparativa/comparativaGrafMemoria.component';
 
 
 
@@ -29,7 +30,8 @@ import { GraficaCpu }  from './components/comparativa/comparativaGrafCpu.compone
                 Comparativa,
                 GraficaTiempo,
                 GraficaPeticiones,
-                GraficaCpu
+                GraficaCpu,
+                GraficaMemoria
                 ],
   providers: [ appRoutingProviders ],
   bootstrap: [ AppComponent ]

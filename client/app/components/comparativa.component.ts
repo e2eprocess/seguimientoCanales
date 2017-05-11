@@ -4,12 +4,14 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import  { GraficaTiempo } from './comparativa/comparativaGrafTiempo.component';
 import  { GraficaPeticiones } from './comparativa/comparativaGrafPeticiones.component';
 import  { GraficaCpu } from './comparativa/comparativaGrafCpu.component';
+import  { GraficaMemoria } from './comparativa/comparativaGrafMemoria.component';
 
 import { ComparativaService } from '../services/comparativa.service';
 import { Uuaa } from '../models/uuaa';
 import { Monitor } from '../models/monitor';
 import { Channel } from '../models/channel';
 import { Host } from '../models/host';
+import { Clon } from '../models/clon';
 
  
 
@@ -22,9 +24,10 @@ import { Host } from '../models/host';
 export class Comparativa implements OnInit {
   public name: string;
   public uuaa: Uuaa;
-  public monitor: Monitor;
+  public monitores: Monitor;
   public channel: Channel;
   public hosts: Host;
+  public clon: Host;
   public errorMessage;
 
   constructor(
@@ -56,13 +59,13 @@ export class Comparativa implements OnInit {
               //Obtención del/los monitor/es perteneciente/s a la UUAA deseada
               this._comparativaService.getMonitors(this.uuaa.iduuaa).subscribe(
                 response => {
-                  this.monitor = response.data;
+                  this.monitores = response.data;
 
                   //Grafcio tiempo respuesta
                   var graficoTiempo = new GraficaTiempo(this._comparativaService);    
-                  graficoTiempo.inicioGrafico(this.monitor);
+                  graficoTiempo.inicioGrafico(this.monitores);
                   var graficoPeticiones = new GraficaPeticiones(this._comparativaService);    
-                  graficoPeticiones.inicioGrafico(this.monitor);
+                  graficoPeticiones.inicioGrafico(this.monitores);
                 },
                 error => {
                   this.errorMessage = <any>error;
@@ -95,6 +98,20 @@ export class Comparativa implements OnInit {
                 }
               }
             );
+
+          this._comparativaService.getIdClon(this.channel.idchannel, name).subscribe(
+              response => {
+                this.clon = response.data;
+
+                var graficoMemoria = new GraficaMemoria(this._comparativaService);
+                graficoMemoria.inicioGrafico(this.clon);
+              },
+              error => {
+                this.errorMessage = <any>error;
+                if(this.errorMessage != null){
+                  alert('Error en la petición obtención los idHosts asociados al Canal');
+                }
+              }
         },
         error => {
          this.errorMessage = <any>error;

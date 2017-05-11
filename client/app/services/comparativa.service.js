@@ -42,6 +42,18 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getDataHostComparativa/' + idhost + '/fechas/' + desde +
             '/' + hasta + '/' + channel + '/' + uuaa + '/' + kpi).map(function (res) { return res.json(); });
     };
+    ComparativaService.prototype.getIdClon = function (idchannel, name) {
+        return this._http.get(this.url + 'getIdClon/' + idchannel + '/' + name)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getclonDataComparativa = function (idclon, desde, hasta, kpi) {
+        return this._http.get(this.url + 'getclonDataComparativa/' + idclon + '/fechas/' + desde +
+            '/' + hasta + '/' + kpi).map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getWaterMark = function (idmonitors) {
+        return this._http.get(this.url + 'getWaterMark/' + idmonitors)
+            .map(function (res) { return res.json(); });
+    };
     return ComparativaService;
 }());
 ComparativaService = __decorate([

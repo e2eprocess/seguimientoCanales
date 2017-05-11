@@ -12,36 +12,82 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
 var comparativa_service_1 = require("../../services/comparativa.service");
-var series_1 = require("../../models/series");
 var GraficaPeticiones = (function () {
     function GraficaPeticiones(_comparativaService) {
         this._comparativaService = _comparativaService;
         this.data = [];
     }
-    GraficaPeticiones.prototype.inicioGrafico = function (monitor) {
+    GraficaPeticiones.prototype.inicioGrafico = function (monitores) {
         var _this = this;
         //delcaracion Array contenedor promesas a esperar
         var promesas = [];
         //por cada monitor se obtienen los datos
-        for (var _i = 0, monitor_1 = monitor; _i < monitor_1.length; _i++) {
-            var moni = monitor_1[_i];
-            promesas.push(this.obtencionSerie(moni));
-        }
+        monitores.forEach(function (monitor) {
+            promesas.push(_this.obtencionSerie(monitor));
+        });
         //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
         Promise.all(promesas).then(function () {
-            _this.graficoPeticiones();
+            _this.obtenerWaterMark(monitores).then(function () {
+                console.log(_this.data);
+                _this.graficoPeticiones();
+            });
         });
     };
-    GraficaPeticiones.prototype.obtencionSerie = function (moni) {
+    GraficaPeticiones.prototype.obtencionSerie = function (monitor) {
         var _this = this;
         //declaración promesa
         return new Promise(function (resolve, reject) {
             //
-            _this._comparativaService.getDataMonitorComparativa(moni.idmonitor, 'Throughput', '2017-02-05 00:00:00', '2017-02-05 23:59:00')
+            _this._comparativaService.getDataMonitorComparativa(monitor.idmonitor, 'Throughput', '2017-02-05 00:00:00', '2017-02-05 23:59:00')
                 .subscribe(function (response) {
-                _this.monitorData = response.data;
-                _this.series = new series_1.Series(moni.name, response.data);
-                _this.data.push(_this.series);
+                var datos = [];
+                response.data.forEach(function (dato) {
+                    datos.push(dato[1]);
+                });
+                console.log(datos);
+                var series = {
+                    name: monitor.name,
+                    type: 'area',
+                    data: datos
+                };
+                _this.data.push(series);
+                //terminado la consulta devuelve la promesa
+                resolve();
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    console.log(_this.errorMessage);
+                }
+                //Rechazada la promesa
+                reject();
+            });
+        });
+    };
+    GraficaPeticiones.prototype.obtenerWaterMark = function (monitores) {
+        var _this = this;
+        //declaración promesa
+        return new Promise(function (resolve, reject) {
+            var arr = [];
+            monitores.forEach(function (monitor) {
+                arr.push(monitor.idmonitor);
+            });
+            var idmonitores = arr.join(",");
+            _this._comparativaService.getWaterMark(idmonitores)
+                .subscribe(function (response) {
+                _this.value = parseInt(response.data.max_peticiones);
+                var waterMark = [];
+                var fecha = _this.data[0].data[0][0];
+                waterMark.push(_this.value);
+                var seriesWatermark = {
+                    name: 'Max_peticiones' + response.data.fecha,
+                    type: 'scatter',
+                    color: 'red',
+                    marker: {
+                        enabled: false
+                    },
+                    data: [fecha, waterMark]
+                };
+                _this.data.push(seriesWatermark);
                 //terminado la consulta devuelve la promesa
                 resolve();
             }, function (error) {
@@ -81,7 +127,13 @@ var GraficaPeticiones = (function () {
                 labels: {
                     format: '{value}'
                 },
-                lineWidth: 1
+                lineWidth: 1,
+                plotLines: [{
+                        value: this.value,
+                        color: 'red',
+                        width: 3,
+                        zIndex: 5
+                    }]
             },
             tooltip: {
                 shared: true,
@@ -89,17 +141,17 @@ var GraficaPeticiones = (function () {
                 xDateFormat: '%H:%M'
             },
             legend: {
-                layaout: 'horizontal',
+                layout: 'horizontal',
                 align: 'center',
                 verticalAlign: 'bottom',
                 borderWidth: 1,
                 itemStyle: {
-                    fontsize: "10px"
+                    fontSize: "10px"
                 }
             },
             plotOptions: {
                 series: {
-                    pointStart: 0,
+                    pointStart: 1487150400000,
                     pointInterval: 300 * 1000
                 },
                 line: {
@@ -110,7 +162,7 @@ var GraficaPeticiones = (function () {
                     }
                 }
             },
-            series: this.data
+            series: this.data,
         });
     };
     return GraficaPeticiones;

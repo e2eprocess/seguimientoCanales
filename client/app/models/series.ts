@@ -4,6 +4,7 @@ export class Series{
 		public data: [any]=[""],
 		public type: string = "area",
 		public dashStyle: string = "",
-		public color: string =""
+		public color: string ="",
+		
 		){}
 }

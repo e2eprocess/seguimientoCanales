@@ -13,6 +13,7 @@ api.get('/getIdChannel/:channel', controller.getIdChannel);
 
 api.get('/getMonitors/:iduuaa', monitorController.getMonitors);
 api.get('/getDataMonitorComparativa/:idmonitor/:namekpi/fechas/:desde/:hasta', monitorController.getDataMonitorComparativa);
+api.get('/getWaterMark/:monitors', monitorController.getWaterMark);
 
 api.get('/getIdHost/:idchannel/:name', hostController.getIdHost);
 api.get('/getDataHostComparativa/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', hostController.getDataHostComparativa);

@@ -61,7 +61,38 @@ function getDataMonitorComparativa (req, res, next) {
 			})
 }
 
+function getWaterMark(req, res, next){
+	
+	var arr = req.params.monitors;
+	arr = arr.split(',');
+
+	var params = [];
+	arr.forEach((elemto, index)=>{
+		params.push('$' + (index+1));
+	})
+
+	db.one('SELECT ((extract(epoch from a.datemark))::numeric)*1000 as fecha, \
+          a.valuemark as max_peticiones \
+          FROM \"E2E\".watermark a \
+          WHERE a.idmonitor IN (' + params.join(',') + ') \
+          ORDER BY 2 DESC \
+          LIMIT 1', arr)
+		.then(function(data) {
+				res.status(200)
+					.json({
+						data: data
+					});
+				})
+				.catch(function (err) {
+					logger.error(err);
+					console.log(err);
+					res.status(500).send({message: 'Error al devolver el watermark'});
+				})
+}
+
+
 module.exports = {
   getMonitors,
-  getDataMonitorComparativa
+  getDataMonitorComparativa,
+  getWaterMark
 }

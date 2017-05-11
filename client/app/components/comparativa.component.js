@@ -14,6 +14,7 @@ var router_1 = require("@angular/router");
 var comparativaGrafTiempo_component_1 = require("./comparativa/comparativaGrafTiempo.component");
 var comparativaGrafPeticiones_component_1 = require("./comparativa/comparativaGrafPeticiones.component");
 var comparativaGrafCpu_component_1 = require("./comparativa/comparativaGrafCpu.component");
+var comparativaGrafMemoria_component_1 = require("./comparativa/comparativaGrafMemoria.component");
 var comparativa_service_1 = require("../services/comparativa.service");
 var Comparativa = (function () {
     function Comparativa(_comparativaService, _route, _router) {
@@ -37,12 +38,12 @@ var Comparativa = (function () {
                     _this.uuaa = response.data;
                     //Obtención del/los monitor/es perteneciente/s a la UUAA deseada
                     _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
-                        _this.monitor = response.data;
+                        _this.monitores = response.data;
                         //Grafcio tiempo respuesta
                         var graficoTiempo = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
-                        graficoTiempo.inicioGrafico(_this.monitor);
+                        graficoTiempo.inicioGrafico(_this.monitores);
                         var graficoPeticiones = new comparativaGrafPeticiones_component_1.GraficaPeticiones(_this._comparativaService);
-                        graficoPeticiones.inicioGrafico(_this.monitor);
+                        graficoPeticiones.inicioGrafico(_this.monitores);
                     }, function (error) {
                         _this.errorMessage = error;
                         if (_this.errorMessage != null) {
@@ -59,6 +60,16 @@ var Comparativa = (function () {
                     _this.hosts = response.data;
                     var graficoCpu = new comparativaGrafCpu_component_1.GraficaCpu(_this._comparativaService);
                     graficoCpu.inicioGrafico(_this.hosts, _this.channel, name);
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la petición obtención los idHosts asociados al Canal');
+                    }
+                });
+                _this._comparativaService.getIdClon(_this.channel.idchannel, name).subscribe(function (response) {
+                    _this.clon = response.data;
+                    var graficoMemoria = new comparativaGrafMemoria_component_1.GraficaMemoria(_this._comparativaService);
+                    graficoMemoria.inicioGrafico(_this.clon);
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {

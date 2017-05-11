@@ -23,13 +23,11 @@ var GraficaCpu = (function () {
         //delcaracion Array contenedor promesas a esperar
         var promesas = [];
         //por cada monitor se obtienen los datos
-        for (var _i = 0, hosts_1 = hosts; _i < hosts_1.length; _i++) {
-            var host = hosts_1[_i];
-            promesas.push(this.obtencionSerie(host, channel, uuaa));
-        }
+        hosts.forEach(function (host) {
+            promesas.push(_this.obtencionSerie(host, channel, uuaa));
+        });
         //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
         Promise.all(promesas).then(function () {
-            console.log(_this.data);
             _this.graficoCpu();
         });
     };
@@ -40,7 +38,6 @@ var GraficaCpu = (function () {
             //
             _this._comparativaService.getDataHostComparativa(host.idhost, '2017-02-05 00:00:00', '2017-02-05 23:59:00', channel.idchannel, uuaa, 'CPU')
                 .subscribe(function (response) {
-                _this.monitorData = response.data;
                 _this.series = new series_1.Series();
                 _this.series.name = host.name + '_' + uuaa;
                 _this.series.data = response.data;
@@ -58,7 +55,7 @@ var GraficaCpu = (function () {
         });
     };
     GraficaCpu.prototype.graficoCpu = function () {
-        jQuery('#tiempoCpu').highcharts({
+        jQuery('#cpu').highcharts({
             chart: {
                 zoomType: 'xy',
                 height: 250
@@ -80,7 +77,7 @@ var GraficaCpu = (function () {
             },
             yAxis: {
                 title: {
-                    text: 'CPU %'
+                    text: 'CPU'
                 },
                 labels: {
                     format: '{value} %'
@@ -94,12 +91,12 @@ var GraficaCpu = (function () {
                 xDateFormat: '%H:%M'
             },
             legend: {
-                layaout: 'horizontal',
+                layout: 'horizontal',
                 align: 'center',
                 verticalAlign: 'bottom',
                 borderWidth: 1,
                 itemStyle: {
-                    fontsize: "10px"
+                    fontSize: "10px"
                 }
             },
             plotOptions: {
@@ -123,7 +120,7 @@ var GraficaCpu = (function () {
 GraficaCpu = __decorate([
     core_1.Component({
         selector: 'grafico-cpu',
-        templateUrl: 'app/views/comparativa/tiempoCpu.html',
+        templateUrl: 'app/views/comparativa/cpu.html',
         providers: [comparativa_service_1.ComparativaService]
     }),
     __metadata("design:paramtypes", [comparativa_service_1.ComparativaService])

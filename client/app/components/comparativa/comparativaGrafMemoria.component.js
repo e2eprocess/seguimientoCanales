@@ -13,32 +13,35 @@ var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
 var comparativa_service_1 = require("../../services/comparativa.service");
 var series_1 = require("../../models/series");
-var GraficaTiempo = (function () {
-    function GraficaTiempo(_comparativaService) {
+var GraficaMemoria = (function () {
+    function GraficaMemoria(_comparativaService) {
         this._comparativaService = _comparativaService;
         this.data = [];
     }
-    GraficaTiempo.prototype.inicioGrafico = function (monitores) {
+    GraficaMemoria.prototype.inicioGrafico = function (clones) {
         var _this = this;
         //delcaracion Array contenedor promesas a esperar
         var promesas = [];
         //por cada monitor se obtienen los datos
-        monitores.forEach(function (monitor) {
-            promesas.push(_this.obtencionSerie(monitor));
+        clones.forEach(function (clon) {
+            promesas.push(_this.obtencionSerie(clon));
         });
-        //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
+        //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
         Promise.all(promesas).then(function () {
-            _this.graficoTiempo();
+            console.log(_this.data);
+            _this.graficoCpu();
         });
     };
-    GraficaTiempo.prototype.obtencionSerie = function (monitor) {
+    GraficaMemoria.prototype.obtencionSerie = function (clon) {
         var _this = this;
         //declaración promesa
         return new Promise(function (resolve, reject) {
             //
-            _this._comparativaService.getDataMonitorComparativa(monitor.idmonitor, 'Time', '2017-02-05 00:00:00', '2017-02-05 23:59:00')
+            _this._comparativaService.getclonDataComparativa(clon.idclon, '2017-02-05 00:00:00', '2017-02-05 23:59:00', 'Memory')
                 .subscribe(function (response) {
-                _this.series = new series_1.Series(monitor.name, response.data);
+                _this.series = new series_1.Series();
+                _this.series.name = clon.description.toLowerCase();
+                _this.series.data = response.data;
                 _this.data.push(_this.series);
                 //terminado la consulta devuelve la promesa
                 resolve();
@@ -52,13 +55,13 @@ var GraficaTiempo = (function () {
             });
         });
     };
-    GraficaTiempo.prototype.graficoTiempo = function () {
-        jQuery('#tiempoRespuesta').highcharts({
+    GraficaMemoria.prototype.graficoCpu = function () {
+        jQuery('#memoria').highcharts({
             chart: {
                 zoomType: 'xy'
             },
             title: {
-                text: 'Tiempo medio de respuesta (ms.)'
+                text: 'Consumo Memoria %'
             },
             subtitle: {
                 text: 'comparativa'
@@ -74,11 +77,12 @@ var GraficaTiempo = (function () {
             },
             yAxis: {
                 title: {
-                    text: 'milisegundos'
+                    text: 'Memoria'
                 },
                 labels: {
-                    format: '{value} ms.'
+                    format: '{value} %'
                 },
+                max: 100,
                 lineWidth: 1
             },
             tooltip: {
@@ -111,15 +115,15 @@ var GraficaTiempo = (function () {
             series: this.data
         });
     };
-    return GraficaTiempo;
+    return GraficaMemoria;
 }());
-GraficaTiempo = __decorate([
+GraficaMemoria = __decorate([
     core_1.Component({
-        selector: 'grafico-tiempo',
-        templateUrl: 'app/views/comparativa/tiempoRespuesta.html',
+        selector: 'grafico-memoria',
+        templateUrl: 'app/views/comparativa/memoria.html',
         providers: [comparativa_service_1.ComparativaService]
     }),
     __metadata("design:paramtypes", [comparativa_service_1.ComparativaService])
-], GraficaTiempo);
-exports.GraficaTiempo = GraficaTiempo;
-//# sourceMappingURL=comparativaGrafTiempo.component.js.map
+], GraficaMemoria);
+exports.GraficaMemoria = GraficaMemoria;
+//# sourceMappingURL=comparativaGrafMemoria.component.js.map

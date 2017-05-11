@@ -6,20 +6,22 @@ import {Observable} from 'rxjs/Observable';
 
 import { ComparativaService } from '../../services/comparativa.service';
 import { Monitor } from '../../models/monitor';
+import { MonitorData } from '../../models/monitorData';
 import { Series } from '../../models/series';
 
 declare var jQuery:any;
 
 @Component({
-    selector: 'grafico-cpu',
-    templateUrl: 'app/views/comparativa/cpu.html',
+    selector: 'grafico-memoria',
+    templateUrl: 'app/views/comparativa/memoria.html',
     providers: [ComparativaService]
 })
 
-export class GraficaCpu {
+export class GraficaMemoria {
 
   public series: Series;
   public data : Array<Series> = [];
+  public monitorData: MonitorData;
   public errorMessage;
 
   constructor(
@@ -28,24 +30,25 @@ export class GraficaCpu {
   
   }
 
-  inicioGrafico(hosts,channel,uuaa) {
+  inicioGrafico(clones) {
 
     //delcaracion Array contenedor promesas a esperar
     var promesas = [];
 
     //por cada monitor se obtienen los datos
-    hosts.forEach((host)=>{
-      promesas.push(this.obtencionSerie(host,channel,uuaa))
-    });
-
+    clones.forEach((clon)=>{
+      promesas.push(this.obtencionSerie(clon));
+    })
+    
     //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
+      console.log(this.data);
       this.graficoCpu();
     });    
 
   }
 
-  obtencionSerie(host,channel,uuaa){
+  obtencionSerie(clon){
 
 
     //declaración promesa
@@ -53,12 +56,12 @@ export class GraficaCpu {
 
 
       //
-      this._comparativaService.getDataHostComparativa(host.idhost,'2017-02-05 00:00:00','2017-02-05 23:59:00',
-                                                      channel.idchannel,uuaa,'CPU')
+      this._comparativaService.getclonDataComparativa(clon.idclon,'2017-02-05 00:00:00','2017-02-05 23:59:00',
+                                                      'Memory')
                       .subscribe(
                          response => {
                            this.series = new Series();
-                           this.series.name = host.name+'_'+uuaa;
+                           this.series.name = clon.description.toLowerCase();
                            this.series.data = response.data;
                            this.data.push(this.series);
                         
@@ -81,13 +84,12 @@ export class GraficaCpu {
 
   graficoCpu(){
       
-    jQuery('#cpu').highcharts({
+    jQuery('#memoria').highcharts({
         chart: {
-            zoomType: 'xy',
-            height: 250
+            zoomType: 'xy'
         },
         title: {
-            text: 'Consumo CPU %'
+            text: 'Consumo Memoria %'
         },
         subtitle: {
             text: 'comparativa'
@@ -103,7 +105,7 @@ export class GraficaCpu {
         },
         yAxis: {
             title: {
-                text: 'CPU'
+                text: 'Memoria'
             },
             labels: {
               format: '{value} %'
@@ -117,13 +119,14 @@ export class GraficaCpu {
           xDateFormat: '%H:%M'
         },
         legend: {
-          layout: 'horizontal',
-          align: 'center',
-          verticalAlign: 'bottom',
-          borderWidth: 1,
-          itemStyle:{
-              fontSize: "10px"
-            }
+            layout: 'horizontal',
+            align: 'center',
+            verticalAlign: 'bottom',
+            borderWidth: 1,
+            itemStyle:{
+                fontSize: "10px"
+              }
+
         },
         plotOptions: {
            series: {

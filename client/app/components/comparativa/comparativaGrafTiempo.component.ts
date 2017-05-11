@@ -6,7 +6,6 @@ import {Observable} from 'rxjs/Observable';
 
 import { ComparativaService } from '../../services/comparativa.service';
 import { Monitor } from '../../models/monitor';
-import { MonitorData } from '../../models/monitorData';
 import { Series } from '../../models/series';
 
 declare var jQuery:any;
@@ -21,7 +20,6 @@ export class GraficaTiempo {
 
   public series: Series;
   public data : Array<Series> = [];
-  public monitorData: MonitorData;
   public errorMessage;
 
   constructor(
@@ -30,15 +28,15 @@ export class GraficaTiempo {
   
   }
 
-  inicioGrafico(monitor) {
+  inicioGrafico(monitores) {
 
     //delcaracion Array contenedor promesas a esperar
     var promesas = [];
 
     //por cada monitor se obtienen los datos
-    for(let moni of monitor) {
-      promesas.push(this.obtencionSerie(moni));
-    }
+    monitores.forEach((monitor)=>{
+      promesas.push(this.obtencionSerie(monitor));
+    });
 
     //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
@@ -47,18 +45,17 @@ export class GraficaTiempo {
 
   }
 
-  obtencionSerie(moni){
+  obtencionSerie(monitor){
 
     //declaración promesa
     return new Promise((resolve, reject) => {
 
 
       //
-      this._comparativaService.getDataMonitorComparativa(moni.idmonitor,'Time','2017-02-05 00:00:00','2017-02-05 23:59:00')
+      this._comparativaService.getDataMonitorComparativa(monitor.idmonitor,'Time','2017-02-05 00:00:00','2017-02-05 23:59:00')
                       .subscribe(
                          response => {
-                           this.monitorData = response.data;
-                           this.series = new Series(moni.name,response.data);
+                           this.series = new Series(monitor.name,response.data);
                            this.data.push(this.series);
                         
                            //terminado la consulta devuelve la promesa
@@ -85,7 +82,7 @@ export class GraficaTiempo {
             zoomType: 'xy'
         },
         title: {
-            text: 'Tiempo de respuesta (ms.)'
+            text: 'Tiempo medio de respuesta (ms.)'
         },
         subtitle: {
             text: 'comparativa'
@@ -101,7 +98,7 @@ export class GraficaTiempo {
         },
         yAxis: {
             title: {
-                text: 'Tiempo de respuesta (ms.)'
+                text: 'milisegundos'
             },
             labels: {
               format: '{value} ms.'
@@ -114,13 +111,13 @@ export class GraficaTiempo {
           xDateFormat: '%H:%M'
         },
         legend: {
-          layaout: 'horizontal',
+          layout: 'horizontal',
           align: 'center',
           verticalAlign: 'bottom',
           borderWidth: 1,
-          itemStyle: {
-            fontsize: "10px"
-          }
+          itemStyle:{
+              fontSize: "10px"
+            }
         },
         plotOptions: {
            series: {
