@@ -26,8 +26,8 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getMonitors/' + iduuaa)
             .map(function (res) { return res.json(); });
     };
-    ComparativaService.prototype.getDataMonitorComparativa = function (idmonitor, nameKpi, desde, hasta) {
-        return this._http.get(this.url + 'getDataMonitorComparativa/' + idmonitor + '/' + nameKpi + '/' + 'fechas/' + desde + '/' + hasta)
+    ComparativaService.prototype.getDatavalueMonitor = function (idmonitor, nameKpi, desde, hasta) {
+        return this._http.get(this.url + 'getDatavalueMonitor/' + idmonitor + '/' + nameKpi + '/' + 'fechas/' + desde + '/' + hasta)
             .map(function (res) { return res.json(); });
     };
     ComparativaService.prototype.getIdChannel = function (channel) {
@@ -38,16 +38,16 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getIdHost/' + idchannel + '/' + name)
             .map(function (res) { return res.json(); });
     };
-    ComparativaService.prototype.getDataHostComparativa = function (idhost, desde, hasta, channel, uuaa, kpi) {
-        return this._http.get(this.url + 'getDataHostComparativa/' + idhost + '/fechas/' + desde +
+    ComparativaService.prototype.getDatavalueHost = function (idhost, desde, hasta, channel, uuaa, kpi) {
+        return this._http.get(this.url + 'getDatavalueHost/' + idhost + '/fechas/' + desde +
             '/' + hasta + '/' + channel + '/' + uuaa + '/' + kpi).map(function (res) { return res.json(); });
     };
     ComparativaService.prototype.getIdClon = function (idchannel, name) {
         return this._http.get(this.url + 'getIdClon/' + idchannel + '/' + name)
             .map(function (res) { return res.json(); });
     };
-    ComparativaService.prototype.getclonDataComparativa = function (idclon, desde, hasta, kpi) {
-        return this._http.get(this.url + 'getclonDataComparativa/' + idclon + '/fechas/' + desde +
+    ComparativaService.prototype.getDatavalueClon = function (idclon, desde, hasta, kpi) {
+        return this._http.get(this.url + 'getDatavalueClon/' + idclon + '/fechas/' + desde +
             '/' + hasta + '/' + kpi).map(function (res) { return res.json(); });
     };
     ComparativaService.prototype.getWaterMark = function (idmonitors) {

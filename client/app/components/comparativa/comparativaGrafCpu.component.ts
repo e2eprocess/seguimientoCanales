@@ -53,7 +53,7 @@ export class GraficaCpu {
 
 
       //
-      this._comparativaService.getDataHostComparativa(host.idhost,'2017-02-05 00:00:00','2017-02-05 23:59:00',
+      this._comparativaService.getDatavalueHost(host.idhost,'2017-02-05 00:00:00','2017-02-05 23:59:00',
                                                       channel.idchannel,uuaa,'CPU')
                       .subscribe(
                          response => {

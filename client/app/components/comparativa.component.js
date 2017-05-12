@@ -37,12 +37,12 @@ var Comparativa = (function () {
                 _this._comparativaService.getIdUuaa(_this.channel.idchannel, name).subscribe(function (response) {
                     _this.uuaa = response.data;
                     _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
-                        _this.monitores = response.data;
+                        _this.monitors = response.data;
                         //Grafcio tiempo respuesta
                         var graficoTiempo = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
-                        graficoTiempo.inicioGrafico(_this.monitores);
+                        graficoTiempo.inicioGrafico(_this.monitors);
                         var graficoPeticiones = new comparativaGrafPeticiones_component_1.GraficaPeticiones(_this._comparativaService);
-                        graficoPeticiones.inicioGrafico(_this.monitores);
+                        graficoPeticiones.inicioGrafico(_this.monitors);
                     }, function (error) {
                         _this.errorMessage = error;
                         if (_this.errorMessage != null) {

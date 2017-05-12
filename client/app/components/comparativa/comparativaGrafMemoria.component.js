@@ -37,7 +37,7 @@ var GraficaMemoria = (function () {
         //declaración promesa
         return new Promise(function (resolve, reject) {
             //
-            _this._comparativaService.getclonDataComparativa(clon.idclon, '2017-02-05 00:00:00', '2017-02-05 23:59:00', 'Memory')
+            _this._comparativaService.getDatavalueClon(clon.idclon, '2017-02-05 00:00:00', '2017-02-05 23:59:00', 'Memory')
                 .subscribe(function (response) {
                 _this.series = new series_1.Series();
                 _this.series.name = clon.description.toLowerCase();

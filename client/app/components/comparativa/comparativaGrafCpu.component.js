@@ -36,7 +36,7 @@ var GraficaCpu = (function () {
         //declaración promesa
         return new Promise(function (resolve, reject) {
             //
-            _this._comparativaService.getDataHostComparativa(host.idhost, '2017-02-05 00:00:00', '2017-02-05 23:59:00', channel.idchannel, uuaa, 'CPU')
+            _this._comparativaService.getDatavalueHost(host.idhost, '2017-02-05 00:00:00', '2017-02-05 23:59:00', channel.idchannel, uuaa, 'CPU')
                 .subscribe(function (response) {
                 _this.series = new series_1.Series();
                 _this.series.name = host.name + '_' + uuaa;

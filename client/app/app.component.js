@@ -14,8 +14,8 @@ var core_1 = require("@angular/core");
 // Decorador component, indicamos en que etiqueta se va a cargar la plantilla
 var AppComponent = (function () {
     function AppComponent() {
-        this.title = 'APP FAVORITOS';
-        this.description = 'Aplicacion web SPA con Angular 2 para gestionar favoritos de manera online';
+        this.title = 'Seguimiento Canales';
+        this.description = 'Aplicacion web de seguimiento de los canales pertenecientes a la infraestructura del BBVA';
     }
     return AppComponent;
 }());

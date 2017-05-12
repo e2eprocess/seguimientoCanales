@@ -1,8 +1,12 @@
-var arr = "2,3";
-arr = arr.split(',');
-var params = [];
-for(var i = 1; i <= arr.length; i++) {
-  params.push('$' + i);
+var prueba = (()=>{
+	var kk = 'kk'
+	return kk
+});
+
+
+
+var pp = function kk(){
+	return 1
 }
 
-console.log(params);
+console.log(prueba());

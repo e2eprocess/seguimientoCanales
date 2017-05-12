@@ -13,7 +13,7 @@ export class AppComponent {
   public description: string;
 
   constructor(){
-    this.title = 'APP FAVORITOS';
-    this.description = 'Aplicacion web SPA con Angular 2 para gestionar favoritos de manera online';
+    this.title = 'Seguimiento Canales';
+    this.description = 'Aplicacion web de seguimiento de los canales pertenecientes a la infraestructura del BBVA';
   }
 }

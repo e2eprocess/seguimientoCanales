@@ -54,7 +54,7 @@ export class GraficaMemoria {
 
 
       //
-      this._comparativaService.getclonDataComparativa(clon.idclon,'2017-02-05 00:00:00','2017-02-05 23:59:00',
+      this._comparativaService.getDatavalueClon(clon.idclon,'2017-02-05 00:00:00','2017-02-05 23:59:00',
                                                       'Memory')
                       .subscribe(
                          response => {

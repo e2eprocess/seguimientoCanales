@@ -36,8 +36,8 @@ export class ComparativaService {
 							.map(res => res.json());
 	}
 
-	getDataMonitorComparativa(idmonitor, nameKpi, desde, hasta){
-		return this._http.get(this.url+'getDataMonitorComparativa/'+idmonitor+'/'+nameKpi+'/'+'fechas/'+desde+'/'+hasta)
+	getDatavalueMonitor(idmonitor, nameKpi, desde, hasta){
+		return this._http.get(this.url+'getDatavalueMonitor/'+idmonitor+'/'+nameKpi+'/'+'fechas/'+desde+'/'+hasta)
 							.map(res => res.json());
 	}
 
@@ -51,8 +51,8 @@ export class ComparativaService {
 							.map(res => res.json());
 	}
 
-	getDataHostComparativa(idhost, desde, hasta, channel, uuaa, kpi){
-		return this._http.get(this.url+'getDataHostComparativa/'+idhost+'/fechas/'+desde+
+	getDatavalueHost(idhost, desde, hasta, channel, uuaa, kpi){
+		return this._http.get(this.url+'getDatavalueHost/'+idhost+'/fechas/'+desde+
 								'/'+hasta+'/'+channel+'/'+uuaa+'/'+kpi).map(res => res.json());
 	}
 
@@ -61,8 +61,8 @@ export class ComparativaService {
 							.map(res => res.json());	
 	}
 
-	getclonDataComparativa(idclon, desde, hasta, kpi){
-		return this._http.get(this.url+'getclonDataComparativa/'+idclon+'/fechas/'+desde+
+	getDatavalueClon(idclon, desde, hasta, kpi){
+		return this._http.get(this.url+'getDatavalueClon/'+idclon+'/fechas/'+desde+
 								'/'+hasta+'/'+kpi).map(res => res.json());
 	}
 

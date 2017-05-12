@@ -18,7 +18,7 @@ function getMonitors (req, res, next) {
 			})
 }
 
-function getDataMonitorComparativa (req, res, next) {
+function getDateAndDataValueMonitor (req, res, next) {
 	var idmonitor = req.params.idmonitor;
 	var namekpi = req.params.namekpi;
 	var desde = req.params.desde;
@@ -61,6 +61,52 @@ function getDataMonitorComparativa (req, res, next) {
 			})
 }
 
+
+function getDataValueMonitor (req, res, next) {
+	var idmonitor = req.params.idmonitor;
+	var namekpi = req.params.namekpi;
+	var desde = req.params.desde;
+	var hasta = req.params.hasta;
+
+	var parametros = {
+		$idmonitor: idmonitor,
+		$namekpi: namekpi,
+		$desde: desde,
+		$hasta: hasta,
+
+	};
+
+	db.any('select y \
+				from(select ((extract(epoch from a.timedata))::numeric)*1000 as x, \
+					a.datavalue as y\
+					from \"E2E\".monitordata a, \"E2E\".kpi b \
+					where a.idmonitor = ${$idmonitor} \
+					and b.name = ${$namekpi} \
+					and a.idkpi = b.idkpi \
+					and a.timedata between ${$desde} and ${$hasta} \
+					order by 1)as T1', parametros)
+		.then(function(data) {
+
+			//Lectura datos y transformación de json a Array
+			var array = data.map((elem) => {
+				return parseFloat(elem.y)
+			})
+
+			//Devuelve el array si es una ejecuión correcta
+			res.status(200)
+				.send({
+					data: array
+				});
+			})
+
+
+			.catch(function (err) {
+				logger.error(err);
+				res.status(500).send({Status: 'Error al obtener MonitorData'});
+			})
+}
+
+
 function getWaterMark(req, res, next){
 	
 	var arr = req.params.monitors;
@@ -93,6 +139,7 @@ function getWaterMark(req, res, next){
 
 module.exports = {
   getMonitors,
-  getDataMonitorComparativa,
+  getDateAndDataValueMonitor,
+  getDataValueMonitor,
   getWaterMark
 }

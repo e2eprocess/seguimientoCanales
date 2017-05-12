@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import {FormsModule} from '@angular/forms'
+import {BrowserModule} from '@angular/platform-browser'
 
 import  { GraficaTiempo } from './comparativa/comparativaGrafTiempo.component';
 import  { GraficaPeticiones } from './comparativa/comparativaGrafPeticiones.component';
@@ -24,11 +26,13 @@ import { Clon } from '../models/clon';
 export class Comparativa implements OnInit {
   public name: string;
   public uuaa: Uuaa;
-  public monitores: Monitor;
+  public monitors: Monitor;
   public channel: Channel;
   public hosts: Host;
   public clon: Host;
   public errorMessage;
+  public date: Date;
+  public fromDate: any;
 
   constructor(
   	private _comparativaService: ComparativaService,
@@ -42,7 +46,6 @@ export class Comparativa implements OnInit {
 
   comparativa(){
     this._route.params.forEach((params: Params) => {
-
       let name = params['name'];
       this.name = name;
       let channel = params['channel'];
@@ -59,13 +62,13 @@ export class Comparativa implements OnInit {
 
               this._comparativaService.getMonitors(this.uuaa.iduuaa).subscribe(
                 response => {
-                  this.monitores = response.data;
+                  this.monitors = response.data;
 
                   //Grafcio tiempo respuesta
                   var graficoTiempo = new GraficaTiempo(this._comparativaService);    
-                  graficoTiempo.inicioGrafico(this.monitores);
+                  graficoTiempo.inicioGrafico(this.monitors);
                   var graficoPeticiones = new GraficaPeticiones(this._comparativaService);    
-                  graficoPeticiones.inicioGrafico(this.monitores);
+                  graficoPeticiones.inicioGrafico(this.monitors);
                 },
                 error =>{
                   this.errorMessage = <any>error;

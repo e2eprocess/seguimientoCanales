@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/map");
 var comparativa_service_1 = require("../../services/comparativa.service");
+var propertiesSeries_1 = require("../../models/propertiesSeries");
 var GraficaPeticiones = (function () {
     function GraficaPeticiones(_comparativaService) {
         this._comparativaService = _comparativaService;
@@ -22,33 +23,42 @@ var GraficaPeticiones = (function () {
         //delcaracion Array contenedor promesas a esperar
         var promesas = [];
         //por cada monitor se obtienen los datos
-        monitores.forEach(function (monitor) {
-            promesas.push(_this.obtencionSerie(monitor));
+        monitores.forEach(function (monitor, index) {
+            promesas.push(_this.obtencionSerie(monitor, index, 'from', '2017-02-05 00:00:00', '2017-02-05 23:59:00'));
         });
         //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
         Promise.all(promesas).then(function () {
-            _this.obtenerWaterMark(monitores).then(function () {
-                console.log(_this.data);
-                _this.graficoPeticiones();
+            monitores.forEach(function (monitor, index) {
+                promesas.push(_this.obtencionSerie(monitor, index, 'to', '2017-02-12 00:00:00', '2017-02-12 23:59:00'));
+            });
+            Promise.all(promesas).then(function () {
+                _this.obtenerWaterMark(monitores).then(function () {
+                    _this.graficoPeticiones();
+                });
             });
         });
     };
-    GraficaPeticiones.prototype.obtencionSerie = function (monitor) {
+    GraficaPeticiones.prototype.obtencionSerie = function (monitor, i, busqueda, desde, hasta) {
         var _this = this;
         //declaración promesa
         return new Promise(function (resolve, reject) {
             //
-            _this._comparativaService.getDataMonitorComparativa(monitor.idmonitor, 'Throughput', '2017-02-05 00:00:00', '2017-02-05 23:59:00')
+            _this._comparativaService.getDatavalueMonitor(monitor.idmonitor, 'Throughput', desde, hasta)
                 .subscribe(function (response) {
-                var datos = [];
-                response.data.forEach(function (dato) {
-                    datos.push(dato[1]);
-                });
-                console.log(datos);
+                var properties = new propertiesSeries_1.PropertiesSeries();
+                if (busqueda.includes('from')) {
+                    var type = 'spline', dashStyle = 'shortdot', name = monitor.name + ' (F)';
+                }
+                else {
+                    var type = 'line', dashStyle = '', name = monitor.name + ' (T)';
+                }
+                ;
                 var series = {
-                    name: monitor.name,
-                    type: 'area',
-                    data: datos
+                    name: name,
+                    type: type,
+                    dashStyle: dashStyle,
+                    color: properties.colorMonitor[i],
+                    data: response.data
                 };
                 _this.data.push(series);
                 //terminado la consulta devuelve la promesa
@@ -82,9 +92,6 @@ var GraficaPeticiones = (function () {
                     name: 'Max_peticiones' + response.data.fecha,
                     type: 'scatter',
                     color: 'red',
-                    marker: {
-                        enabled: false
-                    },
                     data: [fecha, waterMark]
                 };
                 _this.data.push(seriesWatermark);
@@ -132,7 +139,12 @@ var GraficaPeticiones = (function () {
                         value: this.value,
                         color: 'red',
                         width: 3,
-                        zIndex: 5
+                        zIndex: 5,
+                        label: {
+                            text: 'Max. num. Peticiones <b>' + this.value + '</b>',
+                            align: 'right',
+                            x: -10
+                        }
                     }]
             },
             tooltip: {
@@ -159,6 +171,16 @@ var GraficaPeticiones = (function () {
                         enabled: false,
                         symbol: 'circle',
                         radius: 1,
+                    }
+                },
+                spline: {
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 1,
+                        states: {
+                            hover: { enabled: true }
+                        }
                     }
                 }
             },

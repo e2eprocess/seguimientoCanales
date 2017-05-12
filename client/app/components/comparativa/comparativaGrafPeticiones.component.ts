@@ -7,6 +7,8 @@ import {Observable} from 'rxjs/Observable';
 import { ComparativaService } from '../../services/comparativa.service';
 import { Monitor } from '../../models/monitor';
 import { Series } from '../../models/series';
+import { PropertiesSeries } from '../../models/propertiesSeries';
+
 
 declare var jQuery:any;
 
@@ -21,6 +23,7 @@ export class GraficaPeticiones {
   public series: Series;
   public data : Array<any> = [];
   public value: number;
+  public properties: PropertiesSeries;
   public errorMessage;
 
   constructor(
@@ -35,44 +38,55 @@ export class GraficaPeticiones {
     var promesas = [];
 
     //por cada monitor se obtienen los datos
-    monitores.forEach((monitor)=>{
-      promesas.push(this.obtencionSerie(monitor));
+    monitores.forEach((monitor, index)=>{
+      promesas.push(this.obtencionSerie(monitor, index, 'from', '2017-02-05 00:00:00', '2017-02-05 23:59:00'));
     });
 
     //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
-      this.obtenerWaterMark(monitores).then(()=>{
-        console.log(this.data);
-        this.graficoPeticiones();  
+      monitores.forEach((monitor, index)=>{
+        promesas.push(this.obtencionSerie(monitor, index, 'to', '2017-02-12 00:00:00', '2017-02-12 23:59:00'));
       });
+      Promise.all(promesas).then(() => {
+        this.obtenerWaterMark(monitores).then(()=>{
+          this.graficoPeticiones();  
+        });
+      })
+      
       
     }); 
 
   }
 
-  obtencionSerie(monitor){
+  obtencionSerie(monitor, i, busqueda, desde, hasta){
 
     //declaración promesa
     return new Promise((resolve, reject) => {
 
 
       //
-      this._comparativaService.getDataMonitorComparativa(monitor.idmonitor,'Throughput','2017-02-05 00:00:00','2017-02-05 23:59:00')
+      this._comparativaService.getDatavalueMonitor(monitor.idmonitor,'Throughput',desde,hasta)
                       .subscribe(
                          response => {
-
-                           var datos = [];
-
-                           response.data.forEach((dato)=>{
-                             datos.push(dato[1])
-                           });
-
-                           console.log(datos);
                            
+                           var properties = new PropertiesSeries();
+
+                           if(busqueda.includes('from')) {
+                             var type = 'spline',
+                                 dashStyle = 'shortdot',
+                                 name = monitor.name + ' (F)'
+                           }else{
+                             var type = 'line' ,
+                                 dashStyle = '',
+                                 name = monitor.name + ' (T)'
+                           };
+                         
                            var series = {
-                             name: monitor.name,
-                             type: 'area',
-                             data: datos
+                             name: name,
+                             type: type,
+                             dashStyle: dashStyle,
+                             color: properties.colorMonitor[i],
+                             data: response.data
                            };
                            this.data.push(series);
                         
@@ -120,9 +134,6 @@ export class GraficaPeticiones {
                                  name: 'Max_peticiones' + response.data.fecha,
                                  type: 'scatter',
                                  color: 'red',
-                                 marker: {
-                                   enabled: false
-                                 },
                                  data: [fecha, waterMark]
                                };
 
@@ -178,7 +189,12 @@ export class GraficaPeticiones {
               value: this.value,
               color: 'red',
               width: 3,
-              zIndex: 5
+              zIndex: 5,
+              label: {
+                text: 'Max. num. Peticiones <b>' + this.value +'</b>',
+                align: 'right',
+                x: -10
+              }
             }]
         },
         tooltip: {
@@ -205,6 +221,16 @@ export class GraficaPeticiones {
               enabled: false,
               symbol: 'circle',
               radius: 1,
+            }
+          },
+          spline: {
+            marker: {
+              enabled: false,
+              symbol: 'circle',
+              radius: 1,
+              states : {
+                hover: {enabled: true}
+              }
             }
           }    
         },
