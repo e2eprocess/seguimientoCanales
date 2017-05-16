@@ -131,7 +131,6 @@ function getWaterMark(req, res, next){
 				})
 				.catch(function (err) {
 					logger.error(err);
-					console.log(err);
 					res.status(500).send({message: 'Error al devolver el watermark'});
 				})
 }

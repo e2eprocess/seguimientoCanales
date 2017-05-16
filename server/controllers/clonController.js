@@ -82,7 +82,6 @@ function getDatavalueClon (req, res, next) {
 				ORDER BY 1 asc) as t1', parametros)
 		.then(function(data) {
 
-			console.log(data);
 			//Lectura datos y transformación de json a Array
 			var array = data.map((elem) => {
 				return parseFloat(elem.y)
