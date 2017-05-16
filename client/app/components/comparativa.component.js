@@ -21,11 +21,44 @@ var Comparativa = (function () {
         this._comparativaService = _comparativaService;
         this._route = _route;
         this._router = _router;
+        this.myDatePickerOptions = {
+            dateFormat: 'dd.mm.yyyy',
+            height: '34px',
+            width: '210px',
+            markCurrentDay: true,
+            toLocaleDateString: 'es',
+            showClearDateBtn: false,
+            inline: false,
+            disableUntil: { year: 2016, month: 9, day: 2 }
+        };
+        this.locale = 'es';
     }
     Comparativa.prototype.ngOnInit = function () {
-        this.comparativa();
+        var dateTo = new Date();
+        var dateFrom = dateTo;
+        dateFrom.setDate(dateTo.getDate() - 7);
+        this.from = { date: {
+                year: dateFrom.getFullYear(),
+                month: dateFrom.getMonth() + 1,
+                day: dateFrom.getDate()
+            } };
+        this.to = { date: {
+                year: dateTo.getFullYear(),
+                month: dateTo.getMonth() + 1,
+                day: dateTo.getDate()
+            } };
+        this.comparativa(this.from, this.to);
     };
-    Comparativa.prototype.comparativa = function () {
+    Comparativa.prototype.onDateChanged = function (event) {
+        var dia = event.date.day;
+        var copy = this.getCopyOfOptions();
+        this.myDatePickerOptions = copy;
+        this.comparativa(dia, copy);
+    };
+    Comparativa.prototype.getCopyOfOptions = function () {
+        return JSON.parse(JSON.stringify(this.myDatePickerOptions));
+    };
+    Comparativa.prototype.comparativa = function (from, to) {
         var _this = this;
         this._route.params.forEach(function (params) {
             var name = params['name'];

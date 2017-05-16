@@ -3,6 +3,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import {FormsModule} from '@angular/forms'
 import {BrowserModule} from '@angular/platform-browser'
 
+import {MyDatePickerModule, IMyDateModel} from 'mydatepicker';
+
 import  { GraficaTiempo } from './comparativa/comparativaGrafTiempo.component';
 import  { GraficaPeticiones } from './comparativa/comparativaGrafPeticiones.component';
 import  { GraficaCpu } from './comparativa/comparativaGrafCpu.component';
@@ -15,7 +17,6 @@ import { Channel } from '../models/channel';
 import { Host } from '../models/host';
 import { Clon } from '../models/clon';
 
- 
 
 @Component({
     selector: 'comparativa',
@@ -31,8 +32,23 @@ export class Comparativa implements OnInit {
   public hosts: Host;
   public clon: Host;
   public errorMessage;
-  public date: Date;
   public fromDate: any;
+
+  public myDatePickerOptions: MyDatePickerModule = {
+        dateFormat: 'dd.mm.yyyy',
+        height: '34px',
+        width: '210px',
+        markCurrentDay: true,
+        toLocaleDateString: 'es',
+        showClearDateBtn: false,
+
+        inline: false,
+        disableUntil: { year: 2016, month: 9, day: 2 }
+    };
+
+  private locale:string = 'es';
+  private from: Object;
+  private to: Object;
 
   constructor(
   	private _comparativaService: ComparativaService,
@@ -41,10 +57,52 @@ export class Comparativa implements OnInit {
   	){}
 
   ngOnInit(){
-  	this.comparativa();
+    
+    var dateTo = new Date();
+    var dateFrom = dateTo;
+    dateFrom.setDate(dateTo.getDate() - 7);
+    
+    
+    this.from = {date:{
+      year: dateFrom.getFullYear(),
+      month: dateFrom.getMonth()+1,
+      day: dateFrom.getDate()
+    }};
+
+    this.to = {date:{
+      year: dateTo.getFullYear(),
+      month: dateTo.getMonth()+1,
+      day: dateTo.getDate()
+    }};
+
+    this.comparativa(this.from, this.to);
+    
+    
+
   }
 
-  comparativa(){
+  onDateChanged(event: IMyDateModel) {
+        var dia = event.date.day;
+
+        
+      
+
+        let copy = this.getCopyOfOptions();
+        
+        this.myDatePickerOptions = copy;
+
+        this.comparativa(dia, copy);
+
+    }
+
+  getCopyOfOptions(): MyDatePickerModule {
+        return JSON.parse(JSON.stringify(this.myDatePickerOptions));
+  }
+
+  comparativa(from, to){
+
+
+    
     this._route.params.forEach((params: Params) => {
       let name = params['name'];
       this.name = name;

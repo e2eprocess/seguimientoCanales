@@ -40,7 +40,6 @@ export class GraficaMemoria {
     
     //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
-      console.log(this.data);
       this.graficoCpu();
     });    
 

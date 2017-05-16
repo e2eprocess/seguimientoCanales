@@ -12,6 +12,7 @@ var forms_1 = require("@angular/forms");
 var http_1 = require("@angular/http");
 var angular2_highcharts_1 = require("angular2-highcharts");
 var app_routing_1 = require("./app.routing");
+var mydatepicker_1 = require("mydatepicker");
 var app_component_1 = require("./app.component");
 var comparativa_component_1 = require("./components/comparativa.component");
 var comparativaGrafTiempo_component_1 = require("./components/comparativa/comparativaGrafTiempo.component");
@@ -32,6 +33,7 @@ AppModule = __decorate([
             http_1.JsonpModule,
             app_routing_1.routing,
             angular2_highcharts_1.ChartModule.forRoot(require('highcharts/highstock')),
+            mydatepicker_1.MyDatePickerModule
         ],
         declarations: [
             app_component_1.AppComponent,
@@ -40,6 +42,9 @@ AppModule = __decorate([
             comparativaGrafPeticiones_component_1.GraficaPeticiones,
             comparativaGrafCpu_component_1.GraficaCpu,
             comparativaGrafMemoria_component_1.GraficaMemoria
+        ],
+        exports: [
+            mydatepicker_1.MyDatePickerModule
         ],
         providers: [app_routing_1.appRoutingProviders],
         bootstrap: [app_component_1.AppComponent]

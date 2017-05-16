@@ -3,6 +3,29 @@
 <div class="titulo" *ngIf="uuaa">	
 	<h1>{{name}} - {{uuaa.description}}</h1>
 </div>
+
+
+
+<div>	
+<form #myForm="ngForm" novalidate>
+    from<my-date-picker name="mydate" [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)"
+                    [(ngModel)]="from" required [locale]="locale"></my-date-picker>
+</form>
+
+<form #myForm="ngForm" novalidate>
+    to<my-date-picker name="mydate" [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)"
+                    [(ngModel)]="to" required [locale]="locale"></my-date-picker>
+</form>
+</div>
+
+
+
+
+
+
+
+
+
 <fieldset class="recuadro"> 
 	<grafico-tiempo></grafico-tiempo>
 </fieldset>

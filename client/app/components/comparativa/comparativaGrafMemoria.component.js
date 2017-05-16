@@ -28,7 +28,6 @@ var GraficaMemoria = (function () {
         });
         //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
         Promise.all(promesas).then(function () {
-            console.log(_this.data);
             _this.graficoCpu();
         });
     };

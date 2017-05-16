@@ -24,10 +24,9 @@
       // other libraries
       'rxjs':                       'npm:rxjs',
       'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
-      'angular2-highcharts': 'node_modules/angular2-highcharts',
-      'highcharts': 'node_modules/highcharts',
-      'ng2-datepicker': 'node_modules/ng2-datepicker',
-      'angular2-material-datepicker': 'angular2-material-datepicker'
+      'angular2-highcharts': 'npm:angular2-highcharts',
+      'highcharts': 'npm:highcharts',
+      'mydatepicker': 'npm:mydatepicker/bundles/mydatepicker.umd.min.js'
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
@@ -47,14 +46,6 @@
         defaultExtension: 'js'
       },
       'angular2-highcharts': {
-        main: './index.js',
-        defaultExtension: 'js'
-      },
-      'ng2-datepicker': {
-        main: './ng2-datepicker.js',
-        defaultExtension: 'js'
-      },
-      'angular2-material-datepicker': {
         main: './index.js',
         defaultExtension: 'js'
       }
