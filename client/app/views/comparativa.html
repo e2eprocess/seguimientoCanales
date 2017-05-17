@@ -4,27 +4,14 @@
 	<h1>{{name}} - {{uuaa.description}}</h1>
 </div>
 
-
-
-<div>	
-<form #myForm="ngForm" novalidate>
-    from<my-date-picker name="mydate" [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)"
-                    [(ngModel)]="from" required [locale]="locale"></my-date-picker>
-</form>
-
-<form #myForm="ngForm" novalidate>
-    to<my-date-picker name="mydate" [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)"
-                    [(ngModel)]="to" required [locale]="locale"></my-date-picker>
-</form>
+<div> 
+	<form id="comparador" #myForm="ngForm" novalidate> Comparar el día - 
+	    <my-date-picker name="mydateF" [options]="myDatePickerOptions" (dateChanged)="onDateChangedFrom($event)"
+	                    [(ngModel)]="from" required [locale]="locale"></my-date-picker>
+	 	- (F) con -<my-date-picker name="mydateT" [options]="myDatePickerOptions" (dateChanged)="onDateChangedTo($event)"
+	                    [(ngModel)]="to" required [locale]="locale"></my-date-picker> - (T)
+	</form> 
 </div>
-
-
-
-
-
-
-
-
 
 <fieldset class="recuadro"> 
 	<grafico-tiempo></grafico-tiempo>

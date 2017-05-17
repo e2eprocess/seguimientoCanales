@@ -28,14 +28,14 @@ export class GraficaCpu {
   
   }
 
-  inicioGrafico(hosts,channel,uuaa) {
+  inicioGrafico(hosts,channel,uuaa, fechas) {
 
     //delcaracion Array contenedor promesas a esperar
     var promesas = [];
 
     //por cada monitor se obtienen los datos
     hosts.forEach((host)=>{
-      promesas.push(this.obtencionSerie(host,channel,uuaa))
+      promesas.push(this.obtencionSerie(host,channel,uuaa,fechas))
     });
 
     //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
@@ -45,11 +45,13 @@ export class GraficaCpu {
 
   }
 
-  obtencionSerie(host,channel,uuaa){
+  obtencionSerie(host,channel,uuaa,fechas){
 
 
     //declaración promesa
     return new Promise((resolve, reject) => {
+
+      console.log(fechas);
 
 
       //

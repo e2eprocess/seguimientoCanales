@@ -16,6 +16,7 @@ var comparativaGrafPeticiones_component_1 = require("./comparativa/comparativaGr
 var comparativaGrafCpu_component_1 = require("./comparativa/comparativaGrafCpu.component");
 var comparativaGrafMemoria_component_1 = require("./comparativa/comparativaGrafMemoria.component");
 var comparativa_service_1 = require("../services/comparativa.service");
+var fechas_1 = require("../models/fechas");
 var Comparativa = (function () {
     function Comparativa(_comparativaService, _route, _router) {
         this._comparativaService = _comparativaService;
@@ -24,7 +25,7 @@ var Comparativa = (function () {
         this.myDatePickerOptions = {
             dateFormat: 'dd.mm.yyyy',
             height: '34px',
-            width: '210px',
+            width: '125px',
             markCurrentDay: true,
             toLocaleDateString: 'es',
             showClearDateBtn: false,
@@ -35,12 +36,11 @@ var Comparativa = (function () {
     }
     Comparativa.prototype.ngOnInit = function () {
         var dateTo = new Date();
-        var dateFrom = dateTo;
-        dateFrom.setDate(dateTo.getDate() - 7);
+        var dateFrom = new Date();
         this.from = { date: {
                 year: dateFrom.getFullYear(),
                 month: dateFrom.getMonth() + 1,
-                day: dateFrom.getDate()
+                day: new Date(dateFrom.setDate(dateFrom.getDate() - 7)).getDate()
             } };
         this.to = { date: {
                 year: dateTo.getFullYear(),
@@ -49,17 +49,43 @@ var Comparativa = (function () {
             } };
         this.comparativa(this.from, this.to);
     };
-    Comparativa.prototype.onDateChanged = function (event) {
-        var dia = event.date.day;
+    Comparativa.prototype.onDateChangedFrom = function (event) {
+        this.from = { date: {
+                year: event.date.year,
+                month: event.date.month,
+                day: event.date.day
+            } };
+        var copy = this.getCopyOfOptions();
+        var fecha = event.date.day + '-' + event.date.month + '-' + event.date.year;
+        this.myDatePickerOptions = copy;
+        this.comparativa(this.from, this.to);
+    };
+    Comparativa.prototype.onDateChangedTo = function (event) {
+        this.to = { date: {
+                year: event.date.year,
+                month: event.date.month,
+                day: event.date.day
+            } };
         var copy = this.getCopyOfOptions();
         this.myDatePickerOptions = copy;
-        this.comparativa(dia, copy);
+        this.comparativa(this.from, this.to);
     };
     Comparativa.prototype.getCopyOfOptions = function () {
         return JSON.parse(JSON.stringify(this.myDatePickerOptions));
     };
     Comparativa.prototype.comparativa = function (from, to) {
         var _this = this;
+        this.fechas = new fechas_1.Fechas('', '', '', '');
+        if (new Date().toDateString() === new Date(to.date.year + '-' + to.date.month + '-' + to.date.day).toDateString()) {
+            this.fechas.toHasta = to.date.year + '-' + to.date.month + '-' + to.date.day + ' ' + new Date().getHours() + ':' +
+                new Date().getMinutes() + ':' + new Date().getSeconds();
+        }
+        else {
+            this.fechas.toHasta = to.date.year + '-' + to.date.month + '-' + to.date.day + ' 23:59:00';
+        }
+        this.fechas.toDesde = to.date.year + '-' + to.date.month + '-' + to.date.day + ' 00:00:00';
+        this.fechas.fromDesde = from.date.year + '-' + from.date.month + '-' + from.date.day + ' 00:00:00';
+        this.fechas.fromHasta = from.date.year + '-' + from.date.month + '-' + from.date.day + ' 23:59:00';
         this._route.params.forEach(function (params) {
             var name = params['name'];
             _this.name = name;
@@ -73,9 +99,9 @@ var Comparativa = (function () {
                         _this.monitors = response.data;
                         //Grafcio tiempo respuesta
                         var graficoTiempo = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
-                        graficoTiempo.inicioGrafico(_this.monitors);
+                        graficoTiempo.inicioGrafico(_this.monitors, _this.fechas);
                         var graficoPeticiones = new comparativaGrafPeticiones_component_1.GraficaPeticiones(_this._comparativaService);
-                        graficoPeticiones.inicioGrafico(_this.monitors);
+                        graficoPeticiones.inicioGrafico(_this.monitors, _this.fechas);
                     }, function (error) {
                         _this.errorMessage = error;
                         if (_this.errorMessage != null) {
@@ -91,7 +117,7 @@ var Comparativa = (function () {
                 _this._comparativaService.getIdHost(_this.channel.idchannel, name).subscribe(function (response) {
                     _this.hosts = response.data;
                     var graficoCpu = new comparativaGrafCpu_component_1.GraficaCpu(_this._comparativaService);
-                    graficoCpu.inicioGrafico(_this.hosts, _this.channel, name);
+                    graficoCpu.inicioGrafico(_this.hosts, _this.channel, name, _this.fechas);
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {
@@ -101,7 +127,7 @@ var Comparativa = (function () {
                 _this._comparativaService.getIdClon(_this.channel.idchannel, name).subscribe(function (response) {
                     _this.clon = response.data;
                     var graficoMemoria = new comparativaGrafMemoria_component_1.GraficaMemoria(_this._comparativaService);
-                    graficoMemoria.inicioGrafico(_this.clon);
+                    graficoMemoria.inicioGrafico(_this.clon, _this.fechas);
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {

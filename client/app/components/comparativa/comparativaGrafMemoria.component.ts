@@ -28,7 +28,7 @@ export class GraficaMemoria {
   
   }
 
-  inicioGrafico(clones) {
+  inicioGrafico(clones, fechas) {
 
     //delcaracion Array contenedor promesas a esperar
     var promesas = [];

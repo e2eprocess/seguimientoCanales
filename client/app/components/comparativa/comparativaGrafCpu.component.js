@@ -18,23 +18,24 @@ var GraficaCpu = (function () {
         this._comparativaService = _comparativaService;
         this.data = [];
     }
-    GraficaCpu.prototype.inicioGrafico = function (hosts, channel, uuaa) {
+    GraficaCpu.prototype.inicioGrafico = function (hosts, channel, uuaa, fechas) {
         var _this = this;
         //delcaracion Array contenedor promesas a esperar
         var promesas = [];
         //por cada monitor se obtienen los datos
         hosts.forEach(function (host) {
-            promesas.push(_this.obtencionSerie(host, channel, uuaa));
+            promesas.push(_this.obtencionSerie(host, channel, uuaa, fechas));
         });
         //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
         Promise.all(promesas).then(function () {
             _this.graficoCpu();
         });
     };
-    GraficaCpu.prototype.obtencionSerie = function (host, channel, uuaa) {
+    GraficaCpu.prototype.obtencionSerie = function (host, channel, uuaa, fechas) {
         var _this = this;
         //declaración promesa
         return new Promise(function (resolve, reject) {
+            console.log(fechas);
             //
             _this._comparativaService.getDatavalueHost(host.idhost, '2017-02-05 00:00:00', '2017-02-05 23:59:00', channel.idchannel, uuaa, 'CPU')
                 .subscribe(function (response) {

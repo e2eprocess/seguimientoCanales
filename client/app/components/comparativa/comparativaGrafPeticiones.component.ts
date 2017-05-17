@@ -32,20 +32,20 @@ export class GraficaPeticiones {
   
   }
 
-  inicioGrafico(monitores) {
+  inicioGrafico(monitores, fechas) {
 
     //delcaracion Array contenedor promesas a esperar
     var promesas = [];
 
     //por cada monitor se obtienen los datos
     monitores.forEach((monitor, index)=>{
-      promesas.push(this.obtencionSerie(monitor, index, 'from', '2017-02-05 00:00:00', '2017-02-05 23:59:00'));
+      promesas.push(this.obtencionSerie(monitor, index, 'from', fechas.fromDesde, fechas.fromHasta));
     });
 
     //Una vez terminadas todas las promesas (obtención datos monitor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
       monitores.forEach((monitor, index)=>{
-        promesas.push(this.obtencionSerie(monitor, index, 'to', '2017-02-12 00:00:00', '2017-02-12 23:59:00'));
+        promesas.push(this.obtencionSerie(monitor, index, 'to', fechas.toDesde, fechas.toHasta));
       });
       Promise.all(promesas).then(() => {
         this.obtenerWaterMark(monitores).then(()=>{

@@ -16,7 +16,7 @@ require("rxjs/add/operator/map");
 var ComparativaService = (function () {
     function ComparativaService(_http) {
         this._http = _http;
-        this.url = 'http://localhost:3845/api/';
+        this.url = 'http://15.17.167.155:3845/api/';
     }
     ComparativaService.prototype.getIdUuaa = function (idchannel, name) {
         return this._http.get(this.url + 'getIdUuaa/' + idchannel + '/' + name)

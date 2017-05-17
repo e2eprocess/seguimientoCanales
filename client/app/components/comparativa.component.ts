@@ -16,6 +16,7 @@ import { Monitor } from '../models/monitor';
 import { Channel } from '../models/channel';
 import { Host } from '../models/host';
 import { Clon } from '../models/clon';
+import { Fechas } from '../models/fechas';
 
 
 @Component({
@@ -37,7 +38,7 @@ export class Comparativa implements OnInit {
   public myDatePickerOptions: MyDatePickerModule = {
         dateFormat: 'dd.mm.yyyy',
         height: '34px',
-        width: '210px',
+        width: '125px',
         markCurrentDay: true,
         toLocaleDateString: 'es',
         showClearDateBtn: false,
@@ -46,10 +47,12 @@ export class Comparativa implements OnInit {
         disableUntil: { year: 2016, month: 9, day: 2 }
     };
 
+  public fechas: Fechas;
+
   private locale:string = 'es';
   private from: Object;
   private to: Object;
-
+  
   constructor(
   	private _comparativaService: ComparativaService,
   	private _route: ActivatedRoute,
@@ -59,14 +62,12 @@ export class Comparativa implements OnInit {
   ngOnInit(){
     
     var dateTo = new Date();
-    var dateFrom = dateTo;
-    dateFrom.setDate(dateTo.getDate() - 7);
-    
-    
+    var dateFrom = new Date();
+
     this.from = {date:{
       year: dateFrom.getFullYear(),
       month: dateFrom.getMonth()+1,
-      day: dateFrom.getDate()
+      day: new Date(dateFrom.setDate(dateFrom.getDate() - 7)).getDate()
     }};
 
     this.to = {date:{
@@ -75,23 +76,42 @@ export class Comparativa implements OnInit {
       day: dateTo.getDate()
     }};
 
+
     this.comparativa(this.from, this.to);
-    
-    
 
   }
 
-  onDateChanged(event: IMyDateModel) {
-        var dia = event.date.day;
+  onDateChangedFrom(event: IMyDateModel) {
 
+    this.from = {date: {
+        year: event.date.year,
+        month: event.date.month,
+        day: event.date.day
+
+    }};
         
-      
-
         let copy = this.getCopyOfOptions();
+
+        var fecha = event.date.day +'-'+event.date.month+'-'+event.date.year;
+    
+        this.myDatePickerOptions = copy;
+        this.comparativa(this.from, this.to);
+
+    }
+
+  onDateChangedTo(event: IMyDateModel) {
+    this.to = {date: {
+        year: event.date.year,
+        month: event.date.month,
+        day: event.date.day
+
+    }};
+        
+        let copy = this.getCopyOfOptions();
+
         
         this.myDatePickerOptions = copy;
-
-        this.comparativa(dia, copy);
+        this.comparativa(this.from, this.to);
 
     }
 
@@ -101,8 +121,19 @@ export class Comparativa implements OnInit {
 
   comparativa(from, to){
 
+    this.fechas = new Fechas('','','','');
 
-    
+    if(new Date().toDateString() === new Date(to.date.year+'-'+to.date.month+'-'+to.date.day).toDateString() ){
+      this.fechas.toHasta = to.date.year+'-'+to.date.month+'-'+to.date.day+' '+new Date().getHours()+':'+
+                  new Date().getMinutes()+':'+new Date().getSeconds();
+    }else{
+      this.fechas.toHasta = to.date.year+'-'+to.date.month+'-'+to.date.day+' 23:59:00';
+    }
+
+    this.fechas.toDesde = to.date.year+'-'+to.date.month+'-'+to.date.day+' 00:00:00';
+    this.fechas.fromDesde = from.date.year+'-'+from.date.month+'-'+from.date.day+' 00:00:00';
+    this.fechas.fromHasta = from.date.year+'-'+from.date.month+'-'+from.date.day+' 23:59:00';  
+
     this._route.params.forEach((params: Params) => {
       let name = params['name'];
       this.name = name;
@@ -124,9 +155,9 @@ export class Comparativa implements OnInit {
 
                   //Grafcio tiempo respuesta
                   var graficoTiempo = new GraficaTiempo(this._comparativaService);    
-                  graficoTiempo.inicioGrafico(this.monitors);
+                  graficoTiempo.inicioGrafico(this.monitors,this.fechas);
                   var graficoPeticiones = new GraficaPeticiones(this._comparativaService);    
-                  graficoPeticiones.inicioGrafico(this.monitors);
+                  graficoPeticiones.inicioGrafico(this.monitors,this.fechas);
                 },
                 error =>{
                   this.errorMessage = <any>error;
@@ -148,7 +179,7 @@ export class Comparativa implements OnInit {
             this.hosts = response.data;
 
               var graficoCpu = new GraficaCpu(this._comparativaService);
-              graficoCpu.inicioGrafico(this.hosts,this.channel,name);
+              graficoCpu.inicioGrafico(this.hosts,this.channel,name,this.fechas);
             },
             error => {
               this.errorMessage = <any>error;
@@ -163,7 +194,7 @@ export class Comparativa implements OnInit {
               this.clon = response.data;
 
               var graficoMemoria = new GraficaMemoria(this._comparativaService);
-              graficoMemoria.inicioGrafico(this.clon);
+              graficoMemoria.inicioGrafico(this.clon,this.fechas);
             },
             error =>{
               this.errorMessage = <any>error;

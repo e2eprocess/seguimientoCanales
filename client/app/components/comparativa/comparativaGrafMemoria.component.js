@@ -18,7 +18,7 @@ var GraficaMemoria = (function () {
         this._comparativaService = _comparativaService;
         this.data = [];
     }
-    GraficaMemoria.prototype.inicioGrafico = function (clones) {
+    GraficaMemoria.prototype.inicioGrafico = function (clones, fechas) {
         var _this = this;
         //delcaracion Array contenedor promesas a esperar
         var promesas = [];

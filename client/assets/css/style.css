@@ -40,6 +40,14 @@ body{
   margin-top: -20px;
 }
 
+#comparador {
+  display: flex;
+  padding-bottom: 10px;
+  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  }
+
 .recuadro {
   width: 48%;
   height: 400px;
