@@ -126,15 +126,13 @@ export class GraficaPeticiones {
                                this.value = parseInt(response.data.max_peticiones);
                                var waterMark = [];
 
-                               var fecha = this.data[0].data[0][0];
-
                                waterMark.push(this.value);
 
                                var seriesWatermark = {
-                                 name: 'Max_peticiones' + response.data.fecha,
+                                 name: 'Max_peticiones ' + response.data.fecha,
                                  type: 'scatter',
                                  color: 'red',
-                                 data: [fecha, waterMark]
+                                 data: [waterMark]
                                };
 
                                this.data.push(seriesWatermark);

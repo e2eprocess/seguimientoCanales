@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+  import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/map';
 
@@ -48,7 +48,7 @@ export class GraficaTiempo {
         promesas.push(this.obtencionSerie(monitor, index, 'to', fechas.toDesde, fechas.toHasta));
       });
       Promise.all(promesas).then(() => {
-        this.graficoTiempo();
+        this.graficoTiempo(fechas);
       });            
     });    
 
@@ -104,8 +104,8 @@ export class GraficaTiempo {
     });
   }
 
-  graficoTiempo(){
-      
+  graficoTiempo(fechas){
+  
     jQuery('#tiempoRespuesta').highcharts({
         chart: {
             zoomType: 'xy'
@@ -114,7 +114,7 @@ export class GraficaTiempo {
             text: 'Tiempo medio de respuesta (ms.)'
         },
         subtitle: {
-            text: 'comparativa'
+            text: 'Comparativa entre <b>'+(fechas.fromDesde.split(' '))[0]+'</b> y <b>'+(fechas.toDesde.split(' '))[0]+'</b>'
         },
         credits:{
           enabled: false

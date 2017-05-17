@@ -32,7 +32,7 @@ var GraficaTiempo = (function () {
                 promesas.push(_this.obtencionSerie(monitor, index, 'to', fechas.toDesde, fechas.toHasta));
             });
             Promise.all(promesas).then(function () {
-                _this.graficoTiempo();
+                _this.graficoTiempo(fechas);
             });
         });
     };
@@ -71,7 +71,7 @@ var GraficaTiempo = (function () {
             });
         });
     };
-    GraficaTiempo.prototype.graficoTiempo = function () {
+    GraficaTiempo.prototype.graficoTiempo = function (fechas) {
         jQuery('#tiempoRespuesta').highcharts({
             chart: {
                 zoomType: 'xy'
@@ -80,7 +80,7 @@ var GraficaTiempo = (function () {
                 text: 'Tiempo medio de respuesta (ms.)'
             },
             subtitle: {
-                text: 'comparativa'
+                text: 'Comparativa entre <b>' + (fechas.fromDesde.split(' '))[0] + '</b> y <b>' + (fechas.toDesde.split(' '))[0] + '</b>'
             },
             credits: {
                 enabled: false

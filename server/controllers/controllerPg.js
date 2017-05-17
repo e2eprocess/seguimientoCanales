@@ -8,7 +8,7 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = global.config.db.postgres;
+var connectionString = global.config.db.pgLocalHost;
 //var connectionString = global.config.db.pgLocal;
 var db = pgp(connectionString);
 pgp.pg.types.setTypeParser(1114, str => str);

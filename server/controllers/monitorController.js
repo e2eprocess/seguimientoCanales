@@ -117,7 +117,8 @@ function getWaterMark(req, res, next){
 		params.push('$' + (index+1));
 	})
 
-	db.one('SELECT ((extract(epoch from a.datemark))::numeric)*1000 as fecha, \
+	//db.one('SELECT ((extract(epoch from a.datemark))::numeric)*1000 as fecha, \
+	db.one('SELECT a.datemark as fecha, \
           a.valuemark as max_peticiones \
           FROM \"E2E\".watermark a \
           WHERE a.idmonitor IN (' + params.join(',') + ') \

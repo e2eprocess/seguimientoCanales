@@ -86,13 +86,12 @@ var GraficaPeticiones = (function () {
                 .subscribe(function (response) {
                 _this.value = parseInt(response.data.max_peticiones);
                 var waterMark = [];
-                var fecha = _this.data[0].data[0][0];
                 waterMark.push(_this.value);
                 var seriesWatermark = {
-                    name: 'Max_peticiones' + response.data.fecha,
+                    name: 'Max_peticiones ' + response.data.fecha,
                     type: 'scatter',
                     color: 'red',
-                    data: [fecha, waterMark]
+                    data: [waterMark]
                 };
                 _this.data.push(seriesWatermark);
                 //terminado la consulta devuelve la promesa
