@@ -10,12 +10,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var router_1 = require("@angular/router");
 var http_1 = require("@angular/http");
-var StockChartExample = (function () {
-    function StockChartExample(jsonp) {
+var comparativa_service_1 = require("../services/comparativa.service");
+var Highstock = (function () {
+    function Highstock(_route, _router, jsonp) {
+        this._route = _route;
+        this._router = _router;
+        this.jsonp = jsonp;
+    }
+    Highstock.prototype.ngOnInit = function () {
+        this.highstock();
+    };
+    Highstock.prototype.highstock = function () {
         var _this = this;
-        jsonp.request('https://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=JSONP_CALLBACK').subscribe(function (res) {
-            _this.options3 = {
+        this._route.params.forEach(function (params) {
+            var channel = params['channel'];
+            _this.channel = channel;
+            _this.grafico();
+        });
+    };
+    Highstock.prototype.grafico = function () {
+        var _this = this;
+        this.jsonp.request('https://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=JSONP_CALLBACK').subscribe(function (res) {
+            _this.options = {
                 chart: { type: "StockChart" },
                 title: { text: 'AAPL Stock Price' },
                 series: [{
@@ -28,15 +46,18 @@ var StockChartExample = (function () {
                     }]
             };
         });
-    }
-    return StockChartExample;
+    };
+    return Highstock;
 }());
-StockChartExample = __decorate([
+Highstock = __decorate([
     core_1.Component({
-        selector: 'stock-chart-example',
-        template: "<chart type=\"StockChart\" [options]=\"options3\"></chart>"
+        selector: 'highstock',
+        templateUrl: 'app/views/highstock.html',
+        providers: [comparativa_service_1.ComparativaService]
     }),
-    __metadata("design:paramtypes", [http_1.Jsonp])
-], StockChartExample);
-exports.StockChartExample = StockChartExample;
-//# sourceMappingURL=stockChart.component.js.map
+    __metadata("design:paramtypes", [router_1.ActivatedRoute,
+        router_1.Router,
+        http_1.Jsonp])
+], Highstock);
+exports.Highstock = Highstock;
+//# sourceMappingURL=highstock.component.js.map

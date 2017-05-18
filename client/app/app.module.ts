@@ -13,9 +13,8 @@ import { Comparativa }  from './components/comparativa.component';
 import { GraficaTiempo }  from './components/comparativa/comparativaGrafTiempo.component';
 import { GraficaPeticiones }  from './components/comparativa/comparativaGrafPeticiones.component';
 import { GraficaCpu }  from './components/comparativa/comparativaGrafCpu.component';
-import {GraficaMemoria } from './components/comparativa/comparativaGrafMemoria.component';
-
-
+import { GraficaMemoria } from './components/comparativa/comparativaGrafMemoria.component';
+import { Highstock }  from './components/highstock.component';
 
 
 @NgModule({
@@ -34,7 +33,8 @@ import {GraficaMemoria } from './components/comparativa/comparativaGrafMemoria.c
                 GraficaTiempo,
                 GraficaPeticiones,
                 GraficaCpu,
-                GraficaMemoria
+                GraficaMemoria,
+                Highstock
                 ],
   exports: [
                 MyDatePickerModule

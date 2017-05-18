@@ -19,6 +19,7 @@ var comparativaGrafTiempo_component_1 = require("./components/comparativa/compar
 var comparativaGrafPeticiones_component_1 = require("./components/comparativa/comparativaGrafPeticiones.component");
 var comparativaGrafCpu_component_1 = require("./components/comparativa/comparativaGrafCpu.component");
 var comparativaGrafMemoria_component_1 = require("./components/comparativa/comparativaGrafMemoria.component");
+var highstock_component_1 = require("./components/highstock.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -41,7 +42,8 @@ AppModule = __decorate([
             comparativaGrafTiempo_component_1.GraficaTiempo,
             comparativaGrafPeticiones_component_1.GraficaPeticiones,
             comparativaGrafCpu_component_1.GraficaCpu,
-            comparativaGrafMemoria_component_1.GraficaMemoria
+            comparativaGrafMemoria_component_1.GraficaMemoria,
+            highstock_component_1.Highstock
         ],
         exports: [
             mydatepicker_1.MyDatePickerModule

@@ -2,7 +2,7 @@
 	<nav>
 	  <ul id="menu">
 	  	<li><a>Seguimiento</a></li>
-	  	<li><a>Net Particulares</a>
+	  	<li><a [routerLink]="['/highstock/net']">Net Particulares</a>
 	  		<ul>
 	  			<li><a>KQOF-Frontal</a>
 	  				<UL>
@@ -25,7 +25,7 @@
 	  			<li><a [routerLink]="['/comparativa/net/v_MQ']">Visión Máquinas</a></li>
 	  		</ul>
 	  	</li>
-	  	<li><a>Net Cash</a>
+	  	<li><a [routerLink]="['/highstock/netcash']">Net Cash</a>
 	  		<ul>
 	  			<li><a>KYOP-Portal</a>
 	  				<UL>
@@ -54,11 +54,11 @@
 	  			<li><a [routerLink]="['/comparativa/netcash/V_MQ']">Visión Máquinas</a></li>
 	  		</ul>
 	  	</li>
-	  	<li><a>Móvil</a>
+	  	<li><a [routerLink]="['/highstock/mobile']">Móvil</a>
 	  		<ul>
 	  			<li><a>ENPP-Frontal</a>
 	  				<UL>
-	  					<li><a  [routerLink]="['/comparativa/mobile/ENPP']">Comparativa</a></li>
+	  					<li><a [routerLink]="['/comparativa/mobile/ENPP']">Comparativa</a></li>
 	  					<li><a>Informe</a></li>
 	  				</UL>
 	  			</li>
