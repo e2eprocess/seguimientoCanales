@@ -83,6 +83,8 @@ export class GraficaTiempo {
                              type: type,
                              dashStyle: dashStyle,
                              color: properties.colorMonitor[i],
+                             index: i,
+                             legendIndex: i,
                              data: response.data
                            };
                            this.data.push(series);
@@ -105,6 +107,8 @@ export class GraficaTiempo {
   }
 
   graficoTiempo(fechas){
+    //Hora +2 GMT (7200000 milisegundos).
+    var fecha = ((new Date(fechas.toDesde)).getTime())+7200000;
   
     jQuery('#tiempoRespuesta').highcharts({
         chart: {
@@ -114,7 +118,7 @@ export class GraficaTiempo {
             text: 'Tiempo medio de respuesta (ms.)'
         },
         subtitle: {
-            text: 'Comparativa entre <b>'+(fechas.fromDesde.split(' '))[0]+'</b> y <b>'+(fechas.toDesde.split(' '))[0]+'</b>'
+            text: 'Comparativa entre <b>'+fechas.from+'</b> y <b>'+fechas.to+'</b>'
         },
         credits:{
           enabled: false
@@ -151,7 +155,7 @@ export class GraficaTiempo {
         },
         plotOptions: {
            series: {
-            pointStart: 0,
+            pointStart: fecha,
             pointInterval: 300 * 1000
           },
           line: {

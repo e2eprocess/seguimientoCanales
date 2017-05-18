@@ -49,7 +49,7 @@ export class GraficaPeticiones {
       });
       Promise.all(promesas).then(() => {
         this.obtenerWaterMark(monitores).then(()=>{
-          this.graficoPeticiones();  
+          this.graficoPeticiones(fechas);  
         });
       })
       
@@ -86,6 +86,8 @@ export class GraficaPeticiones {
                              type: type,
                              dashStyle: dashStyle,
                              color: properties.colorMonitor[i],
+                             index: i,
+                             legendIndex: i,
                              data: response.data
                            };
                            this.data.push(series);
@@ -129,9 +131,10 @@ export class GraficaPeticiones {
                                waterMark.push(this.value);
 
                                var seriesWatermark = {
-                                 name: 'Max_peticiones ' + response.data.fecha,
+                                 name: 'Máx. peticiones ' + response.data.fecha,
                                  type: 'scatter',
                                  color: 'red',
+                                 legendIndex:99,
                                  data: [waterMark]
                                };
 
@@ -154,7 +157,10 @@ export class GraficaPeticiones {
     });
   }
 
-  graficoPeticiones(){
+  graficoPeticiones(fechas){
+
+    //Hora +2 GMT (7200000 milisegundos).
+    var fecha = ((new Date(fechas.toDesde)).getTime())+7200000;
       
     jQuery('#peticiones').highcharts({
         chart: {
@@ -164,7 +170,7 @@ export class GraficaPeticiones {
             text: 'Peticiones'
         },
         subtitle: {
-            text: 'comparativa'
+            text: 'Comparativa entre <b>'+fechas.from+'</b> y <b>'+fechas.to+'</b>'
         },
         credits:{
           enabled: false
@@ -189,7 +195,7 @@ export class GraficaPeticiones {
               width: 3,
               zIndex: 5,
               label: {
-                text: 'Max. num. Peticiones <b>' + this.value +'</b>',
+                text: 'Máx. núm. Peticiones <b>' + this.value +'</b>',
                 align: 'right',
                 x: -10
               }
@@ -198,7 +204,8 @@ export class GraficaPeticiones {
         tooltip: {
           shared: true,
           followPointer:true,
-          xDateFormat: '%H:%M'
+          xDateFormat: '%H:%M',
+          borderColor: 'grey'
         },
         legend: {
           layout: 'horizontal',
@@ -211,7 +218,7 @@ export class GraficaPeticiones {
         },
         plotOptions: {
            series: {
-            pointStart: 1487150400000,
+            pointStart: fecha,
             pointInterval: 300 * 1000
           },
           line: {
@@ -230,7 +237,13 @@ export class GraficaPeticiones {
                 hover: {enabled: true}
               }
             }
-          }    
+          },
+          scatter: {
+            marker: {
+              symbol: 'square',
+              radius: 1
+            }
+          }   
         },
         
         series: this.data,

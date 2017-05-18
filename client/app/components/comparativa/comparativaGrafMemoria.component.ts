@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 
 import { ComparativaService } from '../../services/comparativa.service';
 import { Monitor } from '../../models/monitor';
-import { Series } from '../../models/series';
+import { PropertiesSeries } from '../../models/propertiesSeries';
 
 declare var jQuery:any;
 
@@ -18,8 +18,8 @@ declare var jQuery:any;
 
 export class GraficaMemoria {
 
-  public series: Series;
-  public data : Array<Series> = [];
+  public properties: PropertiesSeries;
+  public data : Array<any> = [];
   public errorMessage;
 
   constructor(
@@ -34,18 +34,23 @@ export class GraficaMemoria {
     var promesas = [];
 
     //por cada monitor se obtienen los datos
-    clones.forEach((clon)=>{
-      promesas.push(this.obtencionSerie(clon));
+    clones.forEach((clon, index)=>{
+      promesas.push(this.obtencionSerie(clon,fechas.fromDesde,fechas.fromHasta,'from',index));
     })
     
     //Una vez terminadas todas las promesas (obtención datos idHosttor) ejecución de la gráfica.
     Promise.all(promesas).then(() => {
-      this.graficoCpu();
+      clones.forEach((clon, index)=>{
+        promesas.push(this.obtencionSerie(clon,fechas.toDesde,fechas.toHasta,'to',index));
+      });
+      Promise.all(promesas).then(() => {
+        this.graficoCpu(fechas);
+      });
     });    
 
   }
 
-  obtencionSerie(clon){
+  obtencionSerie(clon,desde,hasta,busqueda,i){
 
 
     //declaración promesa
@@ -53,14 +58,33 @@ export class GraficaMemoria {
 
 
       //
-      this._comparativaService.getDatavalueClon(clon.idclon,'2017-02-05 00:00:00','2017-02-05 23:59:00',
-                                                      'Memory')
+      this._comparativaService.getDatavalueClon(clon.idclon,desde,hasta,'Memory')
                       .subscribe(
                          response => {
-                           this.series = new Series();
-                           this.series.name = clon.description.toLowerCase();
-                           this.series.data = response.data;
-                           this.data.push(this.series);
+
+                           var properties = new PropertiesSeries();
+                           var color = i%properties.colorHost.length;
+
+                           if(busqueda.includes('from')) {
+                             var type = 'column',
+                                 name = clon.description.toLowerCase() + ' (F)',
+                                 index = 0
+                           }else{
+                             var type = 'line' ,
+                                 name = clon.description.toLowerCase() + ' (T)',
+                                 index = 1
+                           };
+
+                           var series = {
+                             name: name,
+                             type: type,
+                             color: properties.colorHost[color],
+                             index: index,
+                             legendIndex: i,
+                             data: response.data
+                           };
+
+                           this.data.push(series);
                         
                            //terminado la consulta devuelve la promesa
                            resolve();
@@ -79,7 +103,10 @@ export class GraficaMemoria {
     });
   }
 
-  graficoCpu(){
+  graficoCpu(fechas){
+
+    //Hora +2 GMT (7200000 milisegundos).
+    var fecha = ((new Date(fechas.toDesde)).getTime())+7200000;
       
     jQuery('#memoria').highcharts({
         chart: {
@@ -89,7 +116,7 @@ export class GraficaMemoria {
             text: 'Consumo Memoria %'
         },
         subtitle: {
-            text: 'comparativa'
+            text: 'Comparativa entre <b>'+fechas.from+'</b> y <b>'+fechas.to+'</b>'
         },
         credits:{
           enabled: false
@@ -127,7 +154,7 @@ export class GraficaMemoria {
         },
         plotOptions: {
            series: {
-            pointStart: 0,
+            pointStart: fecha,
             pointInterval: 300 * 1000
           },
           line: {

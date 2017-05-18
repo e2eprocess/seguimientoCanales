@@ -121,11 +121,13 @@ export class Comparativa implements OnInit {
 
   comparativa(from, to){
 
-    this.fechas = new Fechas('','','','');
+    this.fechas = new Fechas('','','','','','');
+
+    var horaMenos20 = new Date().getTime()-1200000;
 
     if(new Date().toDateString() === new Date(to.date.year+'-'+to.date.month+'-'+to.date.day).toDateString() ){
-      this.fechas.toHasta = to.date.year+'-'+to.date.month+'-'+to.date.day+' '+new Date().getHours()+':'+
-                  new Date().getMinutes()+':'+new Date().getSeconds();
+      this.fechas.toHasta = to.date.year+'-'+to.date.month+'-'+to.date.day+' '+new Date(horaMenos20).getHours()+':'+
+                  new Date(horaMenos20).getMinutes()+':'+new Date(horaMenos20).getSeconds();
     }else{
       this.fechas.toHasta = to.date.year+'-'+to.date.month+'-'+to.date.day+' 23:59:00';
     }
@@ -133,6 +135,9 @@ export class Comparativa implements OnInit {
     this.fechas.toDesde = to.date.year+'-'+to.date.month+'-'+to.date.day+' 00:00:00';
     this.fechas.fromDesde = from.date.year+'-'+from.date.month+'-'+from.date.day+' 00:00:00';
     this.fechas.fromHasta = from.date.year+'-'+from.date.month+'-'+from.date.day+' 23:59:00';  
+    this.fechas.to = to.date.day+'-'+to.date.month+'-'+to.date.year;
+    this.fechas.from = from.date.day+'-'+from.date.month+'-'+from.date.year;
+
 
     this._route.params.forEach((params: Params) => {
       let name = params['name'];

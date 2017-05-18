@@ -56,6 +56,8 @@ var GraficaTiempo = (function () {
                     type: type,
                     dashStyle: dashStyle,
                     color: properties.colorMonitor[i],
+                    index: i,
+                    legendIndex: i,
                     data: response.data
                 };
                 _this.data.push(series);
@@ -72,6 +74,8 @@ var GraficaTiempo = (function () {
         });
     };
     GraficaTiempo.prototype.graficoTiempo = function (fechas) {
+        //Hora +2 GMT (7200000 milisegundos).
+        var fecha = ((new Date(fechas.toDesde)).getTime()) + 7200000;
         jQuery('#tiempoRespuesta').highcharts({
             chart: {
                 zoomType: 'xy'
@@ -80,7 +84,7 @@ var GraficaTiempo = (function () {
                 text: 'Tiempo medio de respuesta (ms.)'
             },
             subtitle: {
-                text: 'Comparativa entre <b>' + (fechas.fromDesde.split(' '))[0] + '</b> y <b>' + (fechas.toDesde.split(' '))[0] + '</b>'
+                text: 'Comparativa entre <b>' + fechas.from + '</b> y <b>' + fechas.to + '</b>'
             },
             credits: {
                 enabled: false
@@ -117,7 +121,7 @@ var GraficaTiempo = (function () {
             },
             plotOptions: {
                 series: {
-                    pointStart: 0,
+                    pointStart: fecha,
                     pointInterval: 300 * 1000
                 },
                 line: {

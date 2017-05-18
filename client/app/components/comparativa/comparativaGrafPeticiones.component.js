@@ -33,7 +33,7 @@ var GraficaPeticiones = (function () {
             });
             Promise.all(promesas).then(function () {
                 _this.obtenerWaterMark(monitores).then(function () {
-                    _this.graficoPeticiones();
+                    _this.graficoPeticiones(fechas);
                 });
             });
         });
@@ -58,6 +58,8 @@ var GraficaPeticiones = (function () {
                     type: type,
                     dashStyle: dashStyle,
                     color: properties.colorMonitor[i],
+                    index: i,
+                    legendIndex: i,
                     data: response.data
                 };
                 _this.data.push(series);
@@ -88,9 +90,10 @@ var GraficaPeticiones = (function () {
                 var waterMark = [];
                 waterMark.push(_this.value);
                 var seriesWatermark = {
-                    name: 'Max_peticiones ' + response.data.fecha,
+                    name: 'Máx. peticiones ' + response.data.fecha,
                     type: 'scatter',
                     color: 'red',
+                    legendIndex: 99,
                     data: [waterMark]
                 };
                 _this.data.push(seriesWatermark);
@@ -106,7 +109,9 @@ var GraficaPeticiones = (function () {
             });
         });
     };
-    GraficaPeticiones.prototype.graficoPeticiones = function () {
+    GraficaPeticiones.prototype.graficoPeticiones = function (fechas) {
+        //Hora +2 GMT (7200000 milisegundos).
+        var fecha = ((new Date(fechas.toDesde)).getTime()) + 7200000;
         jQuery('#peticiones').highcharts({
             chart: {
                 zoomType: 'xy'
@@ -115,7 +120,7 @@ var GraficaPeticiones = (function () {
                 text: 'Peticiones'
             },
             subtitle: {
-                text: 'comparativa'
+                text: 'Comparativa entre <b>' + fechas.from + '</b> y <b>' + fechas.to + '</b>'
             },
             credits: {
                 enabled: false
@@ -140,7 +145,7 @@ var GraficaPeticiones = (function () {
                         width: 3,
                         zIndex: 5,
                         label: {
-                            text: 'Max. num. Peticiones <b>' + this.value + '</b>',
+                            text: 'Máx. núm. Peticiones <b>' + this.value + '</b>',
                             align: 'right',
                             x: -10
                         }
@@ -149,7 +154,8 @@ var GraficaPeticiones = (function () {
             tooltip: {
                 shared: true,
                 followPointer: true,
-                xDateFormat: '%H:%M'
+                xDateFormat: '%H:%M',
+                borderColor: 'grey'
             },
             legend: {
                 layout: 'horizontal',
@@ -162,7 +168,7 @@ var GraficaPeticiones = (function () {
             },
             plotOptions: {
                 series: {
-                    pointStart: 1487150400000,
+                    pointStart: fecha,
                     pointInterval: 300 * 1000
                 },
                 line: {
@@ -180,6 +186,12 @@ var GraficaPeticiones = (function () {
                         states: {
                             hover: { enabled: true }
                         }
+                    }
+                },
+                scatter: {
+                    marker: {
+                        symbol: 'square',
+                        radius: 1
                     }
                 }
             },
