@@ -7,7 +7,7 @@ import { Highstock } from './components/highstock.component';
 const appRoutes: Routes = [
 	{path:'', component: Comparativa},
 	{path:'comparativa/:channel/:name', component: Comparativa},
-	{path:'highstock/:channel', component: Highstock},
+	{path:'highstock/:channel/:idMonitor', component: Highstock},
 	{path:'**', component: Comparativa}
 ];
 

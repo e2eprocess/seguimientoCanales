@@ -26,7 +26,7 @@ function getIdUuaa (req, res, next) {
 
 function getIdChannel (req, res, next) {
 	var channel = req.params.channel;
-	db.one('select idchannel \
+	db.one('select idchannel, description \
 			from \"E2E\".channel \
 			where name = $1', channel)
 		.then(function(data) {
@@ -37,7 +37,7 @@ function getIdChannel (req, res, next) {
 			})
 			.catch(function (err) {
 				logger.error(err);
-				res.status(500).send({message: 'Error al devolver la UUAA'});
+				res.status(500).send({message: 'Error al devolver el idChannel'});
 			})
 }
 

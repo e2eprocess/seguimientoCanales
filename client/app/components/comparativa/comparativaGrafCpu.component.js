@@ -41,7 +41,7 @@ var GraficaCpu = (function () {
         //declaración promesa
         return new Promise(function (resolve, reject) {
             //
-            _this._comparativaService.getDatavalueHost(host.idhost, desde, hasta, channel.idchannel, uuaa, 'CPU')
+            _this._comparativaService.getDatavalueClonByHost(host.idhost, desde, hasta, channel.idchannel, uuaa, 'CPU')
                 .subscribe(function (response) {
                 var properties = new propertiesSeries_1.PropertiesSeries();
                 var color = i % properties.colorHost.length;

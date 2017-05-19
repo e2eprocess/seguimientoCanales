@@ -73,6 +73,11 @@ body{
   margin-top:0.5em;
 }
 
+#highstock {
+  height: 700px; 
+  width: 100%
+}
+
 
 footer {
   width: 80%;

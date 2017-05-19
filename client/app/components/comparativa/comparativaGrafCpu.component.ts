@@ -57,7 +57,7 @@ export class GraficaCpu {
     return new Promise((resolve, reject) => {
 
      //
-      this._comparativaService.getDatavalueHost(host.idhost,desde,hasta,channel.idchannel,uuaa,'CPU')
+      this._comparativaService.getDatavalueClonByHost(host.idhost,desde,hasta,channel.idchannel,uuaa,'CPU')
                       .subscribe(
                          response => {
                            

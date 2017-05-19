@@ -6,7 +6,7 @@ var highstock_component_1 = require("./components/highstock.component");
 var appRoutes = [
     { path: '', component: comparativa_component_1.Comparativa },
     { path: 'comparativa/:channel/:name', component: comparativa_component_1.Comparativa },
-    { path: 'highstock/:channel', component: highstock_component_1.Highstock },
+    { path: 'highstock/:channel/:idMonitor', component: highstock_component_1.Highstock },
     { path: '**', component: comparativa_component_1.Comparativa }
 ];
 exports.appRoutingProviders = [];

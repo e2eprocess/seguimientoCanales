@@ -3,7 +3,6 @@ import {Http, Response, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 
 import {Observable} from 'rxjs/Observable';
-//import {Uuaa} from '../models/uuaa'
 
 @Injectable()
 export class ComparativaService {
@@ -52,8 +51,8 @@ export class ComparativaService {
 							.map(res => res.json());
 	}
 
-	getDatavalueHost(idhost, desde, hasta, channel, uuaa, kpi){
-		return this._http.get(this.url+'getDatavalueHost/'+idhost+'/fechas/'+desde+
+	getDatavalueClonByHost(idhost, desde, hasta, channel, uuaa, kpi){
+		return this._http.get(this.url+'getDatavalueClonByHost/'+idhost+'/fechas/'+desde+
 								'/'+hasta+'/'+channel+'/'+uuaa+'/'+kpi).map(res => res.json());
 	}
 

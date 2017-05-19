@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/map");
-//import {Uuaa} from '../models/uuaa'
 var ComparativaService = (function () {
     function ComparativaService(_http) {
         this._http = _http;
@@ -39,8 +38,8 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getIdHost/' + idchannel + '/' + name)
             .map(function (res) { return res.json(); });
     };
-    ComparativaService.prototype.getDatavalueHost = function (idhost, desde, hasta, channel, uuaa, kpi) {
-        return this._http.get(this.url + 'getDatavalueHost/' + idhost + '/fechas/' + desde +
+    ComparativaService.prototype.getDatavalueClonByHost = function (idhost, desde, hasta, channel, uuaa, kpi) {
+        return this._http.get(this.url + 'getDatavalueClonByHost/' + idhost + '/fechas/' + desde +
             '/' + hasta + '/' + channel + '/' + uuaa + '/' + kpi).map(function (res) { return res.json(); });
     };
     ComparativaService.prototype.getIdClon = function (idchannel, name) {

@@ -12,13 +12,15 @@ api.get('/getIdUuaa/:idchannel/:name', controller.getIdUuaa);
 api.get('/getIdChannel/:channel', controller.getIdChannel);
 
 api.get('/getMonitors/:iduuaa', monitorController.getMonitors);
-api.get('/getDataMonitorComparativa/:idmonitor/:namekpi/fechas/:desde/:hasta', monitorController.getDateAndDataValueMonitor);
+api.get('/getDateAndDataValueMonitor/:idmonitor/:namekpi/fechas/:desde/:hasta', monitorController.getDateAndDataValueMonitor);
 api.get('/getDataValueMonitor/:idmonitor/:namekpi/fechas/:desde/:hasta', monitorController.getDataValueMonitor);
 api.get('/getWaterMark/:monitors', monitorController.getWaterMark);
 
 api.get('/getIdHost/:idchannel/:name', hostController.getIdHost);
-api.get('/getDataHostComparativa/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', hostController.getDateAndDatavalueHost);
-api.get('/getDatavalueHost/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', hostController.getDatavalueHost);
+api.get('/getIdHostChannel/:idchannel', hostController.getIdHostChannel);
+api.get('/getDateAndDatavalueHost/:idhost/:kpi/fecha/:hasta', hostController.getDateAndDatavalueHost);
+api.get('/getDateAndDatavalueClonByHost/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', clonController.getDateAndDatavalueClonByHost);
+api.get('/getDatavalueClonByHost/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', clonController.getDatavalueClonByHost);
 
 
 api.get('/getIdClon/:idchannel/:name', clonController.getIdClon);

@@ -28,31 +28,49 @@ function getIdHost (req, res, next) {
 			});
 }
 
+function getIdHostChannel (req, res, next) {
+	var idchannel = req.params.idchannel
+	db.any('select a.idhost, b.name \
+			from \"E2E\".hostbychannel a, \"E2E\".host b \
+			where a.idchannel = $1 \
+			and b.description not like \'%ASO%\' \
+			and b.description not like \'%APX%\' \
+			and a.idhost = b.idhost \
+			order by 1', idchannel)
+		.then(function(data) {
+			res.status(200)
+				.json({
+					data: data
+				});
+			})
+			.catch(function (err) {
+				logger.error(err);
+				res.status(500).send({message: 'Error al devolver el idhost'});
+			});
+}
+
+
+/** @description Devuelve los valores de CPU o MEMORIA de un HOST hasta la fecha indicada.  
+ * @param {idhost} Indentificador único del host
+ * @param {kpi} Nombre del kpi (CPU o MEMORIA)
+ * @param {hasta} Fecha límite de la búsqueda
+ * @return {array} Array con las fechas y valor de kpi solicitados
+ */
 function getDateAndDatavalueHost (req, res, next) {
 
 	var parametros = {
 		$maquina: req.params.idhost,
-		$desde: req.params.desde,
-		$hasta: req.params.hasta,
-		$canal: req.params.channel,
-		$uuaa: req.params.uuaa+'%',
 		$kpi: req.params.kpi,
+		$hasta: req.params.hasta
 	}
 
-	db.any('select ((extract(epoch from a.timedata))::numeric)*1000 as x, \
-			sum(a.datavalue) as y \
-			FROM \"E2E\".clondata a, \"E2E\".clon B, \"E2E\".host c, \"E2E\".channel d, \"E2E\".kpi e \
-	          WHERE a.idclon = b.idclon \
-	          AND b.idhost = c.idhost \
-	          AND b.idchannel = d.idchannel \
-	          AND a.idkpi = e.idkpi \
-	          AND c.idhost = ${$maquina} \
-	          AND a.timedata between ${$desde} and ${$hasta} \
-	          AND d.idchannel = ${$canal} \
-	          AND b.name::text like ${$uuaa} \
-	          AND e.name = ${$kpi} \
-	          GROUP BY 1 \
-	          ORDER BY 1  \
+	db.any('select ((extract(epoch from A.timedata))::numeric)*1000 as x, \
+			A.datavalue as y \
+			FROM \"E2E\".hostdata A, \"E2E\".kpi B \
+			WHERE A.idhost = ${$maquina} \
+			AND B.name = ${$kpi} \
+	        AND A.idkpi = B.idkpi \
+			AND A.timedata < ${$hasta} \
 			', parametros)
 		.then(function(data) {
 
@@ -68,66 +86,15 @@ function getDateAndDatavalueHost (req, res, next) {
 				});
 			})
 
-
 			.catch(function (err) {
 				logger.error(err);
 				res.status(500).send({Status: 'Error al obtener HostData',
 										message: err.message});
 			})
 }
-
-function getDatavalueHost (req, res, next) {
-
-	var parametros = {
-		$maquina: req.params.idhost,
-		$desde: req.params.desde,
-		$hasta: req.params.hasta,
-		$canal: req.params.channel,
-		$uuaa: req.params.uuaa+'%',
-		$kpi: req.params.kpi,
-	}
-
-	db.any('SELECT y FROM \
-			(select ((extract(epoch from a.timedata))::numeric)*1000 as x, \
-				sum(a.datavalue) as y \
-				FROM \"E2E\".clondata a, \"E2E\".clon B, \"E2E\".host c, \"E2E\".channel d, \"E2E\".kpi e \
-		          WHERE a.idclon = b.idclon \
-		          AND b.idhost = c.idhost \
-		          AND b.idchannel = d.idchannel \
-		          AND a.idkpi = e.idkpi \
-		          AND c.idhost = ${$maquina} \
-		          AND a.timedata between ${$desde} and ${$hasta} \
-		          AND d.idchannel = ${$canal} \
-		          AND b.name::text like ${$uuaa} \
-		          AND e.name = ${$kpi} \
-		          GROUP BY 1 \
-		          ORDER BY 1)as T1  \
-				', parametros)
-		.then(function(data) {
-
-			//Lectura datos y transformación de json a Array
-			var array = data.map((elem) => {
-				return  parseFloat(elem.y)
-			})
-
-			//Devuelve el array si es una ejecuión correcta
-			res.status(200)
-				.send({
-					data: array
-				});
-			})
-
-
-			.catch(function (err) {
-				logger.error(err);
-				res.status(500).send({Status: 'Error al obtener HostData',
-										message: err.message});
-			})
-}
-
 
 module.exports = {
 	getIdHost,
-	getDateAndDatavalueHost,
-	getDatavalueHost
+	getIdHostChannel,
+	getDateAndDatavalueHost
 }
