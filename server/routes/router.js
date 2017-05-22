@@ -18,7 +18,7 @@ api.get('/getWaterMark/:monitors', monitorController.getWaterMark);
 
 api.get('/getIdHost/:idchannel/:name', hostController.getIdHost);
 api.get('/getIdHostChannel/:idchannel', hostController.getIdHostChannel);
-api.get('/getDateAndDatavalueHost/:idhost/:kpi/fecha/:hasta', hostController.getDateAndDatavalueHost);
+api.get('/getDateAndDatavalueHost/:idhost/:kpi/fechas/:desde/:hasta', hostController.getDateAndDatavalueHost);
 api.get('/getDateAndDatavalueClonByHost/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', clonController.getDateAndDatavalueClonByHost);
 api.get('/getDatavalueClonByHost/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', clonController.getDatavalueClonByHost);
 

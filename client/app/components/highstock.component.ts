@@ -9,6 +9,7 @@ import { HighstockService }from '../services/highstock.service';
 
 import { Channel } from '../models/channel';
 import { Host } from '../models/host';
+import { PropertiesSeries } from '../models/propertiesSeries';
 
 @Component({
     selector: 'highstock',
@@ -21,10 +22,10 @@ export class Highstock implements OnInit {
 	public options: Object;
 	public channelDescription: string;
 	public channel: Channel;
-	public host: Host;
 	private series : Array<any> = [];
-	private arrayHost : Array<any> = [];
+	private arrayHost : Array<Host> = [];
 	public serie: Object;
+    public properties: PropertiesSeries;
 	public errorMessage;
 	
 	constructor(
@@ -49,6 +50,7 @@ export class Highstock implements OnInit {
 						tooltip: {
 							valueDecimals: 2
 						},
+                        color: 'blue',
 						data: response.data
 					};
 					this.series.push(this.serie);
@@ -60,6 +62,7 @@ export class Highstock implements OnInit {
 						tooltip: {
 							valueDecimals: 0
 						},
+                        color: 'black',
 						data: response.data
 					};
 					this.series.push(this.serie);
@@ -76,18 +79,32 @@ export class Highstock implements OnInit {
 		});
 	}
 
-	obtenerHostData(idChannel){
+	obtenerHostData(host,desde,hasta,index){
 		return new Promise((resolve, reject)=> {
-			this._highstockService.getIdHostChannel(idChannel).subscribe(
-				response => {
-					this.host = response.data;
-					this.arrayHost.forEach((host,index)=> {
-						
-					});
-
-				},error => {
-
-				});
+            var properties = new PropertiesSeries();
+            var color = index%properties.colorHost.length;
+			this._highstockService.getDateAndDatavalueHost(host.idhost,'CPU',desde, hasta).subscribe(
+                response => {
+                    this.serie = {
+                        type: 'area',
+                        name: host.name,
+                        yAxis: 2,
+                        tooltip: {
+                            valueDecimals: 2
+                        },
+                        dataGrouping: {
+                            approximation: "high"
+                        },
+                        index: index+1,
+                        legendIndex: index+1,
+                        color: properties.colorHost[color],
+                        data: response.data
+                    };
+                    this.series.push(this.serie);
+                    resolve();
+                },error =>{
+                    reject();
+                });
 			});
 	}
 
@@ -95,8 +112,9 @@ export class Highstock implements OnInit {
 
 	highstock(){
 		this._route.params.forEach((params: Params) => {
+            this.series = [];
 			let channel = params['channel'];
-			let idMonitor = params['idMonitor']
+			let idMonitor = params['idMonitor'];
 
 			this._comparativaService.getIdChannel(channel).subscribe(
         	response => {
@@ -113,23 +131,25 @@ export class Highstock implements OnInit {
         					+':'+new Date(horaMenos20).getMinutes()
         					+':'+new Date(horaMenos20).getSeconds();
 
-        		this.series = [];
 				var promesas = [];
 
         		this.obtenerMonitorData(idMonitor,'Time',desde,hasta).then(()=>{
         			this.obtenerMonitorData(idMonitor,'Throughput',desde,hasta).then(()=>{
-        				this.obtenerHostData(this.channel.idchannel)
+                        this._highstockService.getIdHostChannel(this.channel.idchannel).subscribe(
+                            response => {
+                                this.arrayHost = response.data;
+                                this.arrayHost.forEach((host, index)=>{
+                                    promesas.push(this.obtenerHostData(host,desde,hasta,index));
+                                });
+                                Promise.all(promesas).then(() => {
+                                    this.grafico();
+                                 });            
+                            },error => {
 
-
-
-        				this.grafico();
+                            });
+                            
         			});
         		});
-        		
-
-        		/*Promise.all(promesas).then(() => {
-        			this.grafico();
-        		});*/
 
         	},error=>{
         		this.errorMessage = <any>error;
@@ -178,20 +198,14 @@ export class Highstock implements OnInit {
         		inputEditDateFormat: '%e-%m-%Y'
             },
             yAxis: [{
-            	labels: {
-            		align:'rigth'
-            	},
             	title: {
-            		text: 'tiempo respuesta (ms.)'
+            		text: 'Tiempo respuesta (ms.)'
             	},
             	height: '25%',
             	opposite: false,
             	lineWidth: 1
 
             },{
-            	labels: {
-            		align:'rigth'
-            	},
             	title: {
             		text: 'Peticiones'
             	},
@@ -200,8 +214,26 @@ export class Highstock implements OnInit {
             	offset: 0,
             	opposite: false,
             	lineWidth: 1
-
+            },{
+                title: {
+                    text: 'CPU %'
+                },
+                height: '25%',
+                top: '65%',
+                opposite: false,
+                lineWidth: 1,
+                offset: 0,
+                max: 100
             }],
+            plotOptions: {
+                series: {
+                    showInNavigator: true
+                }
+            },
+            tooltip: {
+                split: true
+            },
+
             series : this.series
         };
         

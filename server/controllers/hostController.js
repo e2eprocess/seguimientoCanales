@@ -67,6 +67,7 @@ function getDateAndDatavalueHost (req, res, next) {
 	var parametros = {
 		$maquina: req.params.idhost,
 		$kpi: req.params.kpi,
+		$desde: req.params.desde,
 		$hasta: req.params.hasta
 	}
 	db.any('select ((extract(epoch from A.timedata))::numeric)*1000 as x, \
@@ -75,8 +76,8 @@ function getDateAndDatavalueHost (req, res, next) {
 			WHERE A.idhost = ${$maquina} \
 			AND B.name = ${$kpi} \
 	        AND A.idkpi = B.idkpi \
-			AND A.timedata < ${$hasta} \
-			', parametros)
+			AND A.timedata between ${$desde} and ${$hasta} \
+			order by 1', parametros)
 		.then(function(data) {
 			//Lectura datos y transformación de json a Array
 			var datos = data.map((elem) => {

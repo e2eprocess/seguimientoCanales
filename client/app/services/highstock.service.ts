@@ -7,10 +7,12 @@ import {Observable} from 'rxjs/Observable';
 @Injectable()
 export class HighstockService {
 	public url: string;
-	public monitor: string;
+	public idmonitor: number;
 	public namekpi: string;
 	public desde: string;
 	public hasta: string;
+	public idchannel: number;
+	public idhost: number;
 
 	constructor(private _http: Http) {		
 		//this.url = 'http://15.17.167.155:3845/api/';
@@ -24,6 +26,10 @@ export class HighstockService {
 
 	getIdHostChannel(idchannel){
 		return this._http.get(this.url+'getIdHostChannel/'+idchannel)
+							.map(res => res.json());
+	}
+	getDateAndDatavalueHost(idhost, namekpi, desde, hasta){
+		return this._http.get(this.url+'getDateAndDatavalueHost/'+idhost+'/'+namekpi+'/'+'fechas/'+desde+'/'+hasta)
 							.map(res => res.json());
 	}
 }

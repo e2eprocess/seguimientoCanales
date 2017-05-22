@@ -14,6 +14,7 @@ var router_1 = require("@angular/router");
 var http_1 = require("@angular/http");
 var comparativa_service_1 = require("../services/comparativa.service");
 var highstock_service_1 = require("../services/highstock.service");
+var propertiesSeries_1 = require("../models/propertiesSeries");
 var Highstock = (function () {
     function Highstock(_comparativaService, _highstockService, _route, _router, jsonp) {
         this._comparativaService = _comparativaService;
@@ -38,6 +39,7 @@ var Highstock = (function () {
                         tooltip: {
                             valueDecimals: 2
                         },
+                        color: 'blue',
                         data: response.data
                     };
                     _this.series.push(_this.serie);
@@ -50,6 +52,7 @@ var Highstock = (function () {
                         tooltip: {
                             valueDecimals: 0
                         },
+                        color: 'black',
                         data: response.data
                     };
                     _this.series.push(_this.serie);
@@ -64,20 +67,38 @@ var Highstock = (function () {
             });
         });
     };
-    Highstock.prototype.obtenerHostData = function (idChannel) {
+    Highstock.prototype.obtenerHostData = function (host, desde, hasta, index) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this._highstockService.getIdHostChannel(idChannel).subscribe(function (response) {
-                _this.host = response.data;
-                _this.arrayHost.forEach(function (host, index) {
-                });
+            var properties = new propertiesSeries_1.PropertiesSeries();
+            var color = index % properties.colorHost.length;
+            _this._highstockService.getDateAndDatavalueHost(host.idhost, 'CPU', desde, hasta).subscribe(function (response) {
+                _this.serie = {
+                    type: 'area',
+                    name: host.name,
+                    yAxis: 2,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    dataGrouping: {
+                        approximation: "high"
+                    },
+                    index: index + 1,
+                    legendIndex: index + 1,
+                    color: properties.colorHost[color],
+                    data: response.data
+                };
+                _this.series.push(_this.serie);
+                resolve();
             }, function (error) {
+                reject();
             });
         });
     };
     Highstock.prototype.highstock = function () {
         var _this = this;
         this._route.params.forEach(function (params) {
+            _this.series = [];
             var channel = params['channel'];
             var idMonitor = params['idMonitor'];
             _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
@@ -92,17 +113,21 @@ var Highstock = (function () {
                     + ' ' + new Date(horaMenos20).getHours()
                     + ':' + new Date(horaMenos20).getMinutes()
                     + ':' + new Date(horaMenos20).getSeconds();
-                _this.series = [];
                 var promesas = [];
                 _this.obtenerMonitorData(idMonitor, 'Time', desde, hasta).then(function () {
                     _this.obtenerMonitorData(idMonitor, 'Throughput', desde, hasta).then(function () {
-                        _this.obtenerHostData(_this.channel.idchannel);
-                        _this.grafico();
+                        _this._highstockService.getIdHostChannel(_this.channel.idchannel).subscribe(function (response) {
+                            _this.arrayHost = response.data;
+                            _this.arrayHost.forEach(function (host, index) {
+                                promesas.push(_this.obtenerHostData(host, desde, hasta, index));
+                            });
+                            Promise.all(promesas).then(function () {
+                                _this.grafico();
+                            });
+                        }, function (error) {
+                        });
                     });
                 });
-                /*Promise.all(promesas).then(() => {
-                    this.grafico();
-                });*/
             }, function (error) {
                 _this.errorMessage = error;
                 if (_this.errorMessage != null) {
@@ -148,19 +173,13 @@ var Highstock = (function () {
                 inputEditDateFormat: '%e-%m-%Y'
             },
             yAxis: [{
-                    labels: {
-                        align: 'rigth'
-                    },
                     title: {
-                        text: 'tiempo respuesta (ms.)'
+                        text: 'Tiempo respuesta (ms.)'
                     },
                     height: '25%',
                     opposite: false,
                     lineWidth: 1
                 }, {
-                    labels: {
-                        align: 'rigth'
-                    },
                     title: {
                         text: 'Peticiones'
                     },
@@ -169,7 +188,25 @@ var Highstock = (function () {
                     offset: 0,
                     opposite: false,
                     lineWidth: 1
+                }, {
+                    title: {
+                        text: 'CPU %'
+                    },
+                    height: '25%',
+                    top: '65%',
+                    opposite: false,
+                    lineWidth: 1,
+                    offset: 0,
+                    max: 100
                 }],
+            plotOptions: {
+                series: {
+                    showInNavigator: true
+                }
+            },
+            tooltip: {
+                split: true
+            },
             series: this.series
         };
     };

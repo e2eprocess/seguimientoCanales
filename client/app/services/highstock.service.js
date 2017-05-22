@@ -26,6 +26,10 @@ var HighstockService = (function () {
         return this._http.get(this.url + 'getIdHostChannel/' + idchannel)
             .map(function (res) { return res.json(); });
     };
+    HighstockService.prototype.getDateAndDatavalueHost = function (idhost, namekpi, desde, hasta) {
+        return this._http.get(this.url + 'getDateAndDatavalueHost/' + idhost + '/' + namekpi + '/' + 'fechas/' + desde + '/' + hasta)
+            .map(function (res) { return res.json(); });
+    };
     return HighstockService;
 }());
 HighstockService = __decorate([
