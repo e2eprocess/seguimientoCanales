@@ -1,8 +1,12 @@
 var db = require('./controllerPg').db;
 var logger = require('../gestionLog').logger;
 
+/** @description Devuelve el idClon, el nombre y la descripción de los clones pertenecientes al canal.  
+ * @param {idchannel} Indentificador del canal.
+ * @param {name} Nombre de la UUAA
+ * @return {data} idclon, nombre del clon y descripción del clon.
+ */
 function getIdClon (req, res, next) {
-
 	var parametros = {
 		$idchannel: req.params.idchannel,
 		$name: req.params.name+'%'
@@ -24,15 +28,20 @@ function getIdClon (req, res, next) {
 			});
 }
 
+/** @description Devuelve fecha y los valores de CPU o MEMORIA de un CLON entre las fechas indicadas.    
+ * @param {idclon} Indentificador unico del CLON.
+ * @param {desde} Fecha inicial de la búsqieda.
+ * @param {hasta} Fecha límite de la búsqueda.
+ * @param {kpi} Nombre del kpi (CPU o MEMORIA)
+ * @return {data} Fecha y valor del consumo.
+ */
 function getDateAndDatavalueClon (req, res, next) {
-
 	var parametros = {
 		$idclon: req.params.idclon,
 		$desde: req.params.desde,
 		$hasta: req.params.hasta,
 		$kpi: req.params.kpi,
 	}
-
 	db.any('SELECT ((extract(epoch from b.timedata))::numeric)*1000 as x, \
 				b.datavalue as y \
 			FROM \"E2E\".clon A, \"E2E\".clondata B, \"E2E\".kpi C \
@@ -43,16 +52,14 @@ function getDateAndDatavalueClon (req, res, next) {
 			AND a.idclon = b.idclon \
 			ORDER BY 1 asc', parametros)
 		.then(function(data) {
-
 			//Lectura datos y transformación de json a Array
-			var array = data.map((elem) => {
+			var datos  = data.map((elem) => {
 				return [ parseInt(elem.x), parseFloat(elem.y)]
 			})
-
 			//Devuelve el array si es una ejecuión correcta
 			res.status(200)
 				.send({
-					data: array
+					data: datos
 				});
 			})
 			.catch(function (err) {
@@ -61,15 +68,20 @@ function getDateAndDatavalueClon (req, res, next) {
 			})
 }
 
+/** @description Devuelve los valores de CPU o MEMORIA de un CLON entre las fechas indicadas.    
+ * @param {idclon} Indentificador unico del CLON.
+ * @param {desde} Fecha inicial de la búsqieda.
+ * @param {hasta} Fecha límite de la búsqueda.
+ * @param {kpi} Nombre del kpi (CPU o MEMORIA)
+ * @return {data} Valor del consumo
+ */
 function getDatavalueClon (req, res, next) {
-
 	var parametros = {
 		$idclon: req.params.idclon,
 		$desde: req.params.desde,
 		$hasta: req.params.hasta,
 		$kpi: req.params.kpi,
 	}
-
 	db.any('select y from \
 				(SELECT ((extract(epoch from b.timedata))::numeric)*1000 as x,  \
 				b.datavalue as y \
@@ -81,16 +93,14 @@ function getDatavalueClon (req, res, next) {
 				AND a.idclon = b.idclon \
 				ORDER BY 1 asc) as t1', parametros)
 		.then(function(data) {
-
 			//Lectura datos y transformación de json a Array
-			var array = data.map((elem) => {
+			var datos = data.map((elem) => {
 				return parseFloat(elem.y)
 			})
-
 			//Devuelve el array si es una ejecuión correcta
 			res.status(200)
 				.send({
-					data: array
+					data: datos
 				});
 			})
 			.catch(function (err) {
@@ -99,8 +109,16 @@ function getDatavalueClon (req, res, next) {
 			})
 }
 
+/** @description Devuelve la fecha y los valores de CPU o MEMORIA de un CLON perteneciente a un host entre las fechas indicadas.    
+ * @param {maquina} Indentificador unico del HOST.
+ * @param {desde} Fecha inicial de la búsqieda.
+ * @param {hasta} Fecha límite de la búsqueda.
+ * @param {canal} Identificador del canal.
+ * @param {uuaa} Nombre de la UUAA.
+ * @param {kpi} Nombre del kpi (CPU o MEMORIA)
+ * @return {data} Fecha formato epoch y valor del consumo.
+ */
 function getDateAndDatavalueClonByHost (req, res, next) {
-
 	var parametros = {
 		$maquina: req.params.idhost,
 		$desde: req.params.desde,
@@ -109,7 +127,6 @@ function getDateAndDatavalueClonByHost (req, res, next) {
 		$uuaa: req.params.uuaa+'%',
 		$kpi: req.params.kpi,
 	}
-
 	db.any('select ((extract(epoch from a.timedata))::numeric)*1000 as x, \
 			sum(a.datavalue) as y \
 			FROM \"E2E\".clondata a, \"E2E\".clon B, \"E2E\".host c, \"E2E\".channel d, \"E2E\".kpi e \
@@ -126,20 +143,16 @@ function getDateAndDatavalueClonByHost (req, res, next) {
 	          ORDER BY 1  \
 			', parametros)
 		.then(function(data) {
-
 			//Lectura datos y transformación de json a Array
-			var array = data.map((elem) => {
+			var datos = data.map((elem) => {
 				return [ parseInt(elem.x), parseFloat(elem.y)]
 			})
-
 			//Devuelve el array si es una ejecuión correcta
 			res.status(200)
 				.send({
-					data: array
+					data: datos
 				});
 			})
-
-
 			.catch(function (err) {
 				logger.error(err);
 				res.status(500).send({Status: 'Error al obtener HostData',
@@ -147,8 +160,16 @@ function getDateAndDatavalueClonByHost (req, res, next) {
 			})
 }
 
+/** @description Devuelve los valores de CPU o MEMORIA de un CLON perteneciente a un host entre las fechas indicadas.    
+ * @param {maquina} Indentificador unico del HOST.
+ * @param {desde} Fecha inicial de la búsqieda.
+ * @param {hasta} Fecha límite de la búsqueda.
+ * @param {canal} Identificador del canal.
+ * @param {uuaa} Nombre de la UUAA.
+ * @param {kpi} Nombre del kpi (CPU o MEMORIA)
+ * @return {data} Valor del consumo.
+ */
 function getDatavalueClonByHost (req, res, next) {
-
 	var parametros = {
 		$maquina: req.params.idhost,
 		$desde: req.params.desde,
@@ -157,7 +178,6 @@ function getDatavalueClonByHost (req, res, next) {
 		$uuaa: req.params.uuaa+'%',
 		$kpi: req.params.kpi,
 	}
-
 	db.any('SELECT y FROM \
 			(select ((extract(epoch from a.timedata))::numeric)*1000 as x, \
 				sum(a.datavalue) as y \
@@ -175,20 +195,16 @@ function getDatavalueClonByHost (req, res, next) {
 		          ORDER BY 1)as T1  \
 				', parametros)
 		.then(function(data) {
-
 			//Lectura datos y transformación de json a Array
-			var array = data.map((elem) => {
+			var datos = data.map((elem) => {
 				return  parseFloat(elem.y)
 			})
-
 			//Devuelve el array si es una ejecuión correcta
 			res.status(200)
 				.send({
-					data: array
+					data: datos
 				});
 			})
-
-
 			.catch(function (err) {
 				logger.error(err);
 				res.status(500).send({Status: 'Error al obtener HostData',
@@ -196,6 +212,7 @@ function getDatavalueClonByHost (req, res, next) {
 			})
 }
 
+/*Módulos a exportar*/
 module.exports = {
 	getIdClon,
 	getDateAndDatavalueClon,

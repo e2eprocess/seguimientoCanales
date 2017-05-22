@@ -1,6 +1,11 @@
 var db = require('./controllerPg').db;
 var logger = require('../gestionLog').logger;
 
+/** @description Devuelve el id y la descripción de la UUAA.  
+ * @param {idchannel} Indentificador único del canal.
+ * @param {name} Nombre de la UUAA
+ * @return {data} Unico registro - id y la descripción de la UUAA.
+ */
 function getIdUuaa (req, res, next) {
 
 	var parametros = {
@@ -24,6 +29,10 @@ function getIdUuaa (req, res, next) {
 			})
 }
 
+/** @description Devuelve el id y la descripción del canal.  
+ * @param {channel} Indentificador único del canal.
+ * @return {data} Unico registro - idchannel y la descripción del canal.
+ */
 function getIdChannel (req, res, next) {
 	var channel = req.params.channel;
 	db.one('select idchannel, description \
@@ -40,9 +49,6 @@ function getIdChannel (req, res, next) {
 				res.status(500).send({message: 'Error al devolver el idChannel'});
 			})
 }
-
-
-
 
 module.exports = {
   getIdUuaa,

@@ -1,13 +1,16 @@
 var db = require('./controllerPg').db;
 var logger = require('../gestionLog').logger;
 
+/** @description Devuelve los idhost y el nombre de los host pertenecientes al canal y la UUAA indicadas.  
+ * @param {idhost} Indentificador único del host
+ * @param {name} nombre de la UUAA
+ * @return {data} Array de objetos (idhost y nombre)
+ */
 function getIdHost (req, res, next) {
-
 	var parametros = {
 		$idchannel: req.params.idchannel,
 		$name: req.params.name+'%'
 	};
-
 	db.any('select a.idhost, \
 					b.name\
 			from \"E2E\".clon a, \"E2E\".host b \
@@ -28,6 +31,10 @@ function getIdHost (req, res, next) {
 			});
 }
 
+/** @description Devuelve los idhost y el nombre de los host pertenecientes al canal.  
+ * @param {idchannel} Indentificador único del host
+ * @return {data} Array de objetos (idhost, name)
+ */
 function getIdHostChannel (req, res, next) {
 	var idchannel = req.params.idchannel
 	db.any('select a.idhost, b.name \
@@ -57,13 +64,11 @@ function getIdHostChannel (req, res, next) {
  * @return {array} Array con las fechas y valor de kpi solicitados
  */
 function getDateAndDatavalueHost (req, res, next) {
-
 	var parametros = {
 		$maquina: req.params.idhost,
 		$kpi: req.params.kpi,
 		$hasta: req.params.hasta
 	}
-
 	db.any('select ((extract(epoch from A.timedata))::numeric)*1000 as x, \
 			A.datavalue as y \
 			FROM \"E2E\".hostdata A, \"E2E\".kpi B \
@@ -73,19 +78,16 @@ function getDateAndDatavalueHost (req, res, next) {
 			AND A.timedata < ${$hasta} \
 			', parametros)
 		.then(function(data) {
-
 			//Lectura datos y transformación de json a Array
-			var array = data.map((elem) => {
+			var datos = data.map((elem) => {
 				return [ parseInt(elem.x), parseFloat(elem.y)]
 			})
-
 			//Devuelve el array si es una ejecuión correcta
 			res.status(200)
 				.send({
-					data: array
+					data: datos
 				});
 			})
-
 			.catch(function (err) {
 				logger.error(err);
 				res.status(500).send({Status: 'Error al obtener HostData',
