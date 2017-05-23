@@ -1,8 +1,7 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { FormsModule } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { Jsonp } from '@angular/http';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { ComparativaService } from '../services/comparativa.service';
 import { HighstockService }from '../services/highstock.service';
@@ -33,7 +32,6 @@ export class Highstock implements OnInit {
 		private _highstockService: HighstockService,
 		private _route: ActivatedRoute,
   		private _router: Router,
-  		private jsonp : Jsonp
 	){}
 	ngOnInit(){
 		this.highstock()

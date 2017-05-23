@@ -11,17 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var http_1 = require("@angular/http");
 var comparativa_service_1 = require("../services/comparativa.service");
 var highstock_service_1 = require("../services/highstock.service");
 var propertiesSeries_1 = require("../models/propertiesSeries");
 var Highstock = (function () {
-    function Highstock(_comparativaService, _highstockService, _route, _router, jsonp) {
+    function Highstock(_comparativaService, _highstockService, _route, _router) {
         this._comparativaService = _comparativaService;
         this._highstockService = _highstockService;
         this._route = _route;
         this._router = _router;
-        this.jsonp = jsonp;
         this.series = [];
         this.arrayHost = [];
     }
@@ -222,8 +220,7 @@ Highstock = __decorate([
     __metadata("design:paramtypes", [comparativa_service_1.ComparativaService,
         highstock_service_1.HighstockService,
         router_1.ActivatedRoute,
-        router_1.Router,
-        http_1.Jsonp])
+        router_1.Router])
 ], Highstock);
 exports.Highstock = Highstock;
 //# sourceMappingURL=highstock.component.js.map
