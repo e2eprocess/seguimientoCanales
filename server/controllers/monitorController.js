@@ -1,6 +1,23 @@
 var db = require('./controllerPg').db;
 var logger = require('../gestionLog').logger;
 
+function getNameDescriptionMonitor (req, res, next) {
+	var idmonitor = req.params.idmonitor;
+	db.one('select name, description \
+			from \"E2E\".monitor \
+			where idmonitor = $1', idmonitor)
+		.then((data)=>{
+			res.status(200)
+				.json({
+					data: data
+				});
+		})
+		.catch(function (err) {
+				logger.error(err);
+				res.status(500).send({message: 'Error al devolver el nombre y la descripción del monitor'});
+		})
+}
+
 function getMonitors (req, res, next) {
 	var iduuaa = req.params.iduuaa;
 	db.any('select idmonitor, name \
@@ -15,6 +32,34 @@ function getMonitors (req, res, next) {
 			.catch(function (err) {
 				logger.error(err);
 				res.status(500).send({message: 'Error al devolver el id del monitor'});
+			})
+}
+
+function getDate(req, res, next) {
+	var idmonitor = req.params.idmonitor,
+		 desde = req.params.desde,
+		 hasta = req.params.hasta;
+
+	var parametros = {
+		$idmonitor: idmonitor,
+		$desde: desde,
+		$hasta: hasta
+	}
+
+	db.any('select distinct(((extract(epoch from timedata))::numeric)*1000) as x \
+		from \"E2E\".monitordata \
+		where idmonitor = ${$idmonitor} \
+		and timedata between ${$desde} and ${$hasta} \
+		order by 1', parametros)
+		.then((data) => {
+			var datos = data.map((elem) => {
+				return [parseInt(elem.x)]
+			})
+			res.status(200).send({data: datos});
+		})
+		.catch(function (err) {
+				logger.error(err);
+				res.status(500).send({Status: 'Error al obtener la fecha'});
 			})
 }
 
@@ -141,5 +186,7 @@ module.exports = {
   getMonitors,
   getDateAndDataValueMonitor,
   getDataValueMonitor,
-  getWaterMark
+  getWaterMark,
+  getNameDescriptionMonitor,
+  getDate
 }

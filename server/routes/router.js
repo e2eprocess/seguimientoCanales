@@ -10,10 +10,13 @@ var clonController = require('../controllers/clonController');
 
 api.get('/getIdUuaa/:idchannel/:name', controller.getIdUuaa);
 api.get('/getIdChannel/:channel', controller.getIdChannel);
+api.get('/getDescriptionChannel/:idmonitor', controller.getDescriptionChannel);
 
 api.get('/getMonitors/:iduuaa', monitorController.getMonitors);
+api.get('/getNameDescriptionMonitor/:idmonitor', monitorController.getNameDescriptionMonitor);
 api.get('/getDateAndDataValueMonitor/:idmonitor/:namekpi/fechas/:desde/:hasta', monitorController.getDateAndDataValueMonitor);
 api.get('/getDataValueMonitor/:idmonitor/:namekpi/fechas/:desde/:hasta', monitorController.getDataValueMonitor);
+api.get('/getDate/:idmonitor/fechas/:desde/:hasta', monitorController.getDate);
 api.get('/getWaterMark/:monitors', monitorController.getWaterMark);
 
 api.get('/getIdHost/:idchannel/:name', hostController.getIdHost);

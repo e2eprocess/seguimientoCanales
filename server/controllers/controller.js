@@ -50,7 +50,28 @@ function getIdChannel (req, res, next) {
 			})
 }
 
+/** @description Devuelve la descripción del canal a partir del idmonitor  
+ * @param {idmonitor} Indentificador único del monitor.
+ * @return {data} Unico registro - La descripción del canal.
+ */
+ function getDescriptionChannel (req, res, next) {
+ 	var idmonitor = req.params.idmonitor;
+ 	db.one('select a.name, a.description \
+ 			from \"E2E\".channel a, \"E2E\".uuaa b, \"E2E\".monitor c \
+ 			where a.idchannel = b.idchannel \
+ 			and b.iduuaa = c.iduuaa \
+ 			and c.idmonitor = $1', idmonitor).then((data)=> {
+ 		res.status(200)
+ 			.json({data: data});
+ 		})
+ 	.catch((err)=> {
+ 		logger.error(err);
+		res.status(500).send({message: 'Error al devolver la descripción del Canal'});
+ 	})
+ }
+
 module.exports = {
   getIdUuaa,
-  getIdChannel
+  getIdChannel,
+  getDescriptionChannel
 }
