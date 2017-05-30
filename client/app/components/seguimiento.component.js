@@ -20,6 +20,7 @@ var Seguimiento = (function () {
         this._highstockService = _highstockService;
         this._route = _route;
         this._router = _router;
+        this.ejeX = [];
         this.myDatePickerOptions = {
             dateFormat: 'dd.mm.yyyy',
             height: '34px',
@@ -39,9 +40,10 @@ var Seguimiento = (function () {
                 month: date.getMonth() + 1,
                 day: date.getDate()
             } };
+        console.log();
         this.seguimiento(this.fecha);
     };
-    Seguimiento.prototype.onDateChangedTo = function (event) {
+    Seguimiento.prototype.onDateChanged = function (event) {
         this.fecha = { date: {
                 year: event.date.year,
                 month: event.date.month,
@@ -49,13 +51,93 @@ var Seguimiento = (function () {
             } };
         this.seguimiento(this.fecha);
     };
-    Seguimiento.prototype.gestionGrafico = function (idmonitor, fechas) {
+    Seguimiento.prototype.pintarGrafico = function (series, canal) {
+        jQuery('#' + canal.name).highcharts({
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: canal.description,
+                x: -20
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: [{
+                    labels: {
+                        format: '{value} ms.'
+                    },
+                    title: {
+                        text: 'Tiempo de respuesta (ms.)'
+                    }
+                }, {
+                    title: {
+                        text: 'Peticiones'
+                    },
+                    opposite: true,
+                }],
+            tooltip: {
+                shared: true,
+                followPointer: true,
+                borderColor: 'grey'
+            },
+            legend: {
+                layout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom',
+                borderWidth: 1,
+                itemStyle: {
+                    fontSize: "10px"
+                }
+            },
+            plotOptions: {
+                line: {
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 1,
+                    }
+                },
+                scatter: {
+                    marker: {
+                        symbol: 'square',
+                        radius: 1
+                    }
+                }
+            },
+            series: series
+        });
+    };
+    Seguimiento.prototype.obtencionWaterMakr = function (idmonitor, fechas) {
         var _this = this;
-        var promesas = [];
-        promesas.push(this.obtencionDatos(idmonitor, 'Throughput', fechas));
-        promesas.push(this.obtencionDatos(idmonitor, 'Time', fechas));
-        Promise.all(promesas).then(function (resultado) {
-            _this.pintarGrafico(resultado);
+        var datos = [];
+        var serieMaxPeti = {
+            name: '',
+            color: 'rgba(255,0,0,1.0)',
+            type: 'line',
+            yAxis: 1,
+            legendIndex: 2,
+            data: []
+        };
+        return new Promise(function (resolve, reject) {
+            _this._comparativaService.getWaterMark(idmonitor).subscribe(function (response) {
+                serieMaxPeti.name = 'Max. peticiones' + response.data.fecha;
+                var valor = response.data.max_peticiones;
+                _this._comparativaService.getDate(idmonitor, fechas.fromDesde, fechas.fromHasta)
+                    .subscribe(function (response) {
+                    response.data.forEach(function (elem) {
+                        datos.push([elem[0], parseInt(valor)]);
+                    });
+                    serieMaxPeti.data = datos;
+                    resolve(serieMaxPeti);
+                }, function (error) {
+                });
+            }, function (error) {
+                reject();
+            });
         });
     };
     Seguimiento.prototype.obtencionDatos = function (idmonitor, kpi, fechas) {
@@ -69,7 +151,7 @@ var Seguimiento = (function () {
             legendIndex: 0,
             data: [],
             tooltip: {
-                xDateFormat: '%e %B %Y %H:%MM'
+                xDateFormat: '%e %B %Y %H:%M'
             },
             turboThreshold: 0
         };
@@ -79,11 +161,11 @@ var Seguimiento = (function () {
             color: 'rgba(65,105,225,1.0)',
             type: 'column',
             yAxis: 1,
-            index: 1,
+            index: 0,
             legendIndex: 1,
             data: [],
             tooltip: {
-                xDateFormat: '%e %B %Y %H:%MM'
+                xDateFormat: '%e %B %Y %H:%M'
             },
             turboThreshold: 0
         };
@@ -107,23 +189,66 @@ var Seguimiento = (function () {
             });
         });
     };
-    Seguimiento.prototype.pintarGrafico = function (series) {
+    Seguimiento.prototype.obtencionNombreCanal = function (idmonitor) {
+        var _this = this;
         return new Promise(function (resolve, reject) {
-            console.log('mUESTRA EL ARRAY');
-            console.log(series);
-            resolve();
+            _this._comparativaService.getDescriptionChannel(idmonitor).subscribe(function (response) {
+                if (response.data.name == 'office') {
+                    _this._comparativaService.getNameDescriptionMonitor(idmonitor).subscribe(function (response) {
+                        resolve(response.data);
+                    }, function (error) {
+                        if (_this.errorMessage != null) {
+                            alert('Error en la obtención de la descripción del monitor para Oficinas');
+                        }
+                        reject();
+                    });
+                }
+                else {
+                    resolve(response.data);
+                }
+            }, function (error) {
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención de la descripción del canal');
+                }
+                reject();
+            });
+        });
+    };
+    Seguimiento.prototype.gestionGrafico = function (idmonitor, fechas) {
+        var _this = this;
+        var promesas = [];
+        this.obtencionNombreCanal(idmonitor).then(function (canal) {
+            promesas.push(_this.obtencionDatos(idmonitor, 'Throughput', fechas));
+            promesas.push(_this.obtencionDatos(idmonitor, 'Time', fechas));
+            promesas.push(_this.obtencionWaterMakr(idmonitor, fechas));
+            Promise.all(promesas).then(function (resultado) {
+                _this.pintarGrafico(resultado, canal);
+            });
         });
     };
     Seguimiento.prototype.seguimiento = function (fecha) {
         this.fechas = new fechas_1.Fechas('', '', '', '', '', '');
+        this.fechaTitulo = fecha.date.day + '-' + fecha.date.month + '-' + fecha.date.year;
         //Gestión Net Particulares
         this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
         this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 23:59:00';
         this.gestionGrafico(14, this.fechas);
-        //Gestión Net Particulares	
+        //Gestión Banca empresas
         this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
         this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
         this.gestionGrafico(1, this.fechas);
+        //Gestión Movil
+        this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
+        this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
+        this.gestionGrafico(15, this.fechas);
+        //Gestión Escenarios comerciales
+        this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
+        this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
+        this.gestionGrafico(17, this.fechas);
+        //Gestión Objeto cliente
+        this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
+        this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
+        this.gestionGrafico(16, this.fechas);
     };
     return Seguimiento;
 }());

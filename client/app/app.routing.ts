@@ -6,10 +6,10 @@ import { Highstock } from './components/highstock.component';
 import { Seguimiento } from './components/seguimiento.component';
 
 const appRoutes: Routes = [
-	{path:'', component: Comparativa},
+	{path:'', component: Seguimiento},
+	{path:'seguimiento', component: Seguimiento},
 	{path:'comparativa/:channel/:name', component: Comparativa},
 	{path:'highstock/:channel/:idMonitor', component: Highstock},
-	{path:'seguimiento', component: Seguimiento},
 	{path:'**', component: Seguimiento}
 ];
 

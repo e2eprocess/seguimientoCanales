@@ -1,13 +1,27 @@
 <div id="submenu"> <span class="activo">Seguimiento </span></div>
 
-<div class="titulo">	
-	<h1>Fecha Seguimiento</h1>
-</div>
-
 <div> 
 	<form id="comparador" #myForm="ngForm" novalidate> 
 	    <my-date-picker name="mydate" [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)"
-	                    [(ngModel)]="fecha" required [locale]="locale"></my-date-picker>
-	 	
+	                    [(ngModel)]="fecha" required [locale]="locale"></my-date-picker>	 	
 	</form> 
 </div>
+
+<div class="titulo" style="margin-bottom: -15px;">	
+	<h1>{{fechaTitulo}}</h1>
+</div>
+
+<fieldset class="recuadro">
+	<div id="net"></div>
+</fieldset>
+<fieldset class="recuadro">
+	<div id="netcash"></div>
+</fieldset>
+<fieldset class="recuadro">
+	<div id="mobile"></div>
+</fieldset>
+<fieldset id="recuadro" style="width:48%;">
+	<div id="eecc" style="height:199.5px;"></div>
+	<div style="border-top:1px solid #CDCDCD;margin:0;padding:0;clear:both;"></div>
+	<div id="ncoc_es_web" style="height:199.5px;"></div>
+</fieldset>

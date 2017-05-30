@@ -71,4 +71,19 @@ export class ComparativaService {
 							.map(res => res.json());
 	}
 
+	getDescriptionChannel(idmonitor){
+		return this._http.get(this.url+'getDescriptionChannel/'+idmonitor)
+							.map(res => res.json());
+	}
+
+	getNameDescriptionMonitor(idmonitor){
+		return this._http.get(this.url+'getNameDescriptionMonitor/'+idmonitor)
+							.map(res => res.json());
+	}
+
+	getDate(idmonitor, desde, hasta){
+		return this._http.get(this.url+'getDate/'+idmonitor+'/'+'fechas/'+desde+'/'+hasta)
+							.map(res => res.json());
+	}
+
 }

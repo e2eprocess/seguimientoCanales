@@ -54,6 +54,18 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getWaterMark/' + idmonitors)
             .map(function (res) { return res.json(); });
     };
+    ComparativaService.prototype.getDescriptionChannel = function (idmonitor) {
+        return this._http.get(this.url + 'getDescriptionChannel/' + idmonitor)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getNameDescriptionMonitor = function (idmonitor) {
+        return this._http.get(this.url + 'getNameDescriptionMonitor/' + idmonitor)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getDate = function (idmonitor, desde, hasta) {
+        return this._http.get(this.url + 'getDate/' + idmonitor + '/' + 'fechas/' + desde + '/' + hasta)
+            .map(function (res) { return res.json(); });
+    };
     return ComparativaService;
 }());
 ComparativaService = __decorate([

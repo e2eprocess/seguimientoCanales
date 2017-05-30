@@ -1,0 +1,273 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'moment',
+1 verbose cli   '--save' ]
+2 info using npm@3.10.9
+3 info using node@v6.9.2
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData moment
+8 silly fetchNamedPackageData moment
+9 silly mapToRegistry name moment
+10 silly mapToRegistry using default registry
+11 silly mapToRegistry registry http://registry.npmjs.org/
+12 silly mapToRegistry data Result {
+12 silly mapToRegistry   raw: 'moment',
+12 silly mapToRegistry   scope: null,
+12 silly mapToRegistry   escapedName: 'moment',
+12 silly mapToRegistry   name: 'moment',
+12 silly mapToRegistry   rawSpec: '',
+12 silly mapToRegistry   spec: 'latest',
+12 silly mapToRegistry   type: 'tag' }
+13 silly mapToRegistry uri http://registry.npmjs.org/moment
+14 verbose request uri http://registry.npmjs.org/moment
+15 verbose request no auth needed
+16 info attempt registry request try #1 at 10:26:07
+17 verbose request id 5b367929a1d6f87e
+18 http request GET http://registry.npmjs.org/moment
+19 http 407 http://registry.npmjs.org/moment
+20 verbose bad json <HTML><HEAD>
+20 verbose bad json <TITLE>Acceso Denegado</TITLE>
+20 verbose bad json </HEAD>
+20 verbose bad json <FONT face="Helvetica">
+20 verbose bad json <big><strong></strong></big><BR>
+20 verbose bad json </FONT>
+20 verbose bad json <blockquote>
+20 verbose bad json <TABLE border=0 cellPadding=1 width="80%">
+20 verbose bad json <TR><TD>
+20 verbose bad json <FONT face="Helvetica">
+20 verbose bad json <big>Acceso Denegado (authentication_failed)</big>
+20 verbose bad json <BR>
+20 verbose bad json <BR>
+20 verbose bad json </FONT>
+20 verbose bad json </TD></TR>
+20 verbose bad json <TR><TD>
+20 verbose bad json <FONT face="Helvetica">
+20 verbose bad json Existe un problema con la autenticación de su usuario para utilizar el acceso corporativo a INTERNET.
+20 verbose bad json </FONT>
+20 verbose bad json </TD></TR>
+20 verbose bad json <TR><TD>
+20 verbose bad json <FONT face="Helvetica">
+20 verbose bad json Contacte con su Centro de Asistencia a Usuarios para averiguar la causa del problema.
+20 verbose bad json </FONT>
+20 verbose bad json </TD></TR>
+20 verbose bad json <TR><TD>
+20 verbose bad json <FONT face="Helvetica" SIZE=2>
+20 verbose bad json <BR>
+20 verbose bad json Soporte técnico BBVA.
+20 verbose bad json </FONT>
+20 verbose bad json </TD></TR>
+20 verbose bad json </TABLE>
+20 verbose bad json </blockquote>
+20 verbose bad json </FONT>
+20 verbose bad json </BODY></HTML>
+21 error registry error parsing json
+22 verbose headers { 'proxy-authenticate': 'BASIC realm="LDAP_BBVA"',
+22 verbose headers   'cache-control': 'no-cache',
+22 verbose headers   pragma: 'no-cache',
+22 verbose headers   'content-type': 'text/html; charset=utf-8',
+22 verbose headers   'proxy-connection': 'close',
+22 verbose headers   'set-cookie': [ 'BCSI-CS-00ee0aa1e636b651=2; Path=/' ],
+22 verbose headers   connection: 'close',
+22 verbose headers   'content-length': '747' }
+23 silly get cb [ 407,
+23 silly get   { 'proxy-authenticate': 'BASIC realm="LDAP_BBVA"',
+23 silly get     'cache-control': 'no-cache',
+23 silly get     pragma: 'no-cache',
+23 silly get     'content-type': 'text/html; charset=utf-8',
+23 silly get     'proxy-connection': 'close',
+23 silly get     'set-cookie': [ 'BCSI-CS-00ee0aa1e636b651=2; Path=/' ],
+23 silly get     connection: 'close',
+23 silly get     'content-length': '747' } ]
+24 silly fetchPackageMetaData SyntaxError: Unexpected token < in JSON at position 0
+24 silly fetchPackageMetaData <HTML><HEAD>
+24 silly fetchPackageMetaData <TITLE>Acceso Denegado</TITLE>
+24 silly fetchPackageMetaData </HEAD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData <big><strong></strong></big><BR>
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData <blockquote>
+24 silly fetchPackageMetaData <TABLE border=0 cellPadding=1 width="80%">
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData <big>Acceso Denegado (authentication_failed)</big>
+24 silly fetchPackageMetaData <BR>
+24 silly fetchPackageMetaData <BR>
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData Existe un problema con la autenticación de su usuario para utilizar el acceso corporativo a INTERNET.
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData Contacte con su Centro de Asistencia a Usuarios para averiguar la causa del problema.
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica" SIZE=2>
+24 silly fetchPackageMetaData <BR>
+24 silly fetchPackageMetaData Soporte técnico BBVA.
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData </TABLE>
+24 silly fetchPackageMetaData </blockquote>
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </BODY></HTML>
+24 silly fetchPackageMetaData
+24 silly fetchPackageMetaData     at Object.parse (native)
+24 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:237:23)
+24 silly fetchPackageMetaData     at Request._callback (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:210:14)
+24 silly fetchPackageMetaData     at Request.self.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:187:22)
+24 silly fetchPackageMetaData     at emitTwo (events.js:106:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:191:7)
+24 silly fetchPackageMetaData     at Request.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1048:10)
+24 silly fetchPackageMetaData     at emitOne (events.js:96:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:188:7)
+24 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:969:12)
+24 silly fetchPackageMetaData  error for moment SyntaxError: Unexpected token < in JSON at position 0
+24 silly fetchPackageMetaData <HTML><HEAD>
+24 silly fetchPackageMetaData <TITLE>Acceso Denegado</TITLE>
+24 silly fetchPackageMetaData </HEAD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData <big><strong></strong></big><BR>
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData <blockquote>
+24 silly fetchPackageMetaData <TABLE border=0 cellPadding=1 width="80%">
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData <big>Acceso Denegado (authentication_failed)</big>
+24 silly fetchPackageMetaData <BR>
+24 silly fetchPackageMetaData <BR>
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData Existe un problema con la autenticación de su usuario para utilizar el acceso corporativo a INTERNET.
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica">
+24 silly fetchPackageMetaData Contacte con su Centro de Asistencia a Usuarios para averiguar la causa del problema.
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData <TR><TD>
+24 silly fetchPackageMetaData <FONT face="Helvetica" SIZE=2>
+24 silly fetchPackageMetaData <BR>
+24 silly fetchPackageMetaData Soporte técnico BBVA.
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </TD></TR>
+24 silly fetchPackageMetaData </TABLE>
+24 silly fetchPackageMetaData </blockquote>
+24 silly fetchPackageMetaData </FONT>
+24 silly fetchPackageMetaData </BODY></HTML>
+24 silly fetchPackageMetaData
+24 silly fetchPackageMetaData     at Object.parse (native)
+24 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:237:23)
+24 silly fetchPackageMetaData     at Request._callback (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:210:14)
+24 silly fetchPackageMetaData     at Request.self.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:187:22)
+24 silly fetchPackageMetaData     at emitTwo (events.js:106:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:191:7)
+24 silly fetchPackageMetaData     at Request.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1048:10)
+24 silly fetchPackageMetaData     at emitOne (events.js:96:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:188:7)
+24 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:969:12)
+25 silly rollbackFailedOptional Starting
+26 silly rollbackFailedOptional Finishing
+27 silly runTopLevelLifecycles Finishing
+28 silly install printInstalled
+29 verbose stack SyntaxError: Unexpected token < in JSON at position 0
+29 verbose stack <HTML><HEAD>
+29 verbose stack <TITLE>Acceso Denegado</TITLE>
+29 verbose stack </HEAD>
+29 verbose stack <FONT face="Helvetica">
+29 verbose stack <big><strong></strong></big><BR>
+29 verbose stack </FONT>
+29 verbose stack <blockquote>
+29 verbose stack <TABLE border=0 cellPadding=1 width="80%">
+29 verbose stack <TR><TD>
+29 verbose stack <FONT face="Helvetica">
+29 verbose stack <big>Acceso Denegado (authentication_failed)</big>
+29 verbose stack <BR>
+29 verbose stack <BR>
+29 verbose stack </FONT>
+29 verbose stack </TD></TR>
+29 verbose stack <TR><TD>
+29 verbose stack <FONT face="Helvetica">
+29 verbose stack Existe un problema con la autenticación de su usuario para utilizar el acceso corporativo a INTERNET.
+29 verbose stack </FONT>
+29 verbose stack </TD></TR>
+29 verbose stack <TR><TD>
+29 verbose stack <FONT face="Helvetica">
+29 verbose stack Contacte con su Centro de Asistencia a Usuarios para averiguar la causa del problema.
+29 verbose stack </FONT>
+29 verbose stack </TD></TR>
+29 verbose stack <TR><TD>
+29 verbose stack <FONT face="Helvetica" SIZE=2>
+29 verbose stack <BR>
+29 verbose stack Soporte técnico BBVA.
+29 verbose stack </FONT>
+29 verbose stack </TD></TR>
+29 verbose stack </TABLE>
+29 verbose stack </blockquote>
+29 verbose stack </FONT>
+29 verbose stack </BODY></HTML>
+29 verbose stack
+29 verbose stack     at Object.parse (native)
+29 verbose stack     at CachingRegistryClient.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:237:23)
+29 verbose stack     at Request._callback (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:210:14)
+29 verbose stack     at Request.self.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:187:22)
+29 verbose stack     at emitTwo (events.js:106:13)
+29 verbose stack     at Request.emit (events.js:191:7)
+29 verbose stack     at Request.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1048:10)
+29 verbose stack     at emitOne (events.js:96:13)
+29 verbose stack     at Request.emit (events.js:188:7)
+29 verbose stack     at IncomingMessage.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:969:12)
+30 verbose cwd C:\wamp\www\seguimientoCanales\client
+31 error Windows_NT 6.1.7601
+32 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "moment" "--save"
+33 error node v6.9.2
+34 error npm  v3.10.9
+35 error Unexpected token < in JSON at position 0
+35 error <HTML><HEAD>
+35 error <TITLE>Acceso Denegado</TITLE>
+35 error </HEAD>
+35 error <FONT face="Helvetica">
+35 error <big><strong></strong></big><BR>
+35 error </FONT>
+35 error <blockquote>
+35 error <TABLE border=0 cellPadding=1 width="80%">
+35 error <TR><TD>
+35 error <FONT face="Helvetica">
+35 error <big>Acceso Denegado (authentication_failed)</big>
+35 error <BR>
+35 error <BR>
+35 error </FONT>
+35 error </TD></TR>
+35 error <TR><TD>
+35 error <FONT face="Helvetica">
+35 error Existe un problema con la autenticación de su usuario para utilizar el acceso corporativo a INTERNET.
+35 error </FONT>
+35 error </TD></TR>
+35 error <TR><TD>
+35 error <FONT face="Helvetica">
+35 error Contacte con su Centro de Asistencia a Usuarios para averiguar la causa del problema.
+35 error </FONT>
+35 error </TD></TR>
+35 error <TR><TD>
+35 error <FONT face="Helvetica" SIZE=2>
+35 error <BR>
+35 error Soporte técnico BBVA.
+35 error </FONT>
+35 error </TD></TR>
+35 error </TABLE>
+35 error </blockquote>
+35 error </FONT>
+35 error </BODY></HTML>
+36 error If you need help, you may report this error at:
+36 error     <https://github.com/npm/npm/issues>
+37 verbose exit [ 1, true ]
