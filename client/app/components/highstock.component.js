@@ -69,7 +69,7 @@ var Highstock = (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var properties = new propertiesSeries_1.PropertiesSeries();
-            var color = index % properties.colorHost.length;
+            var color = index % properties.colorHostHighstock.length;
             _this._highstockService.getDateAndDatavalueHost(host.idhost, 'CPU', desde, hasta).subscribe(function (response) {
                 _this.serie = {
                     type: 'area',
@@ -83,7 +83,7 @@ var Highstock = (function () {
                     },
                     index: index + 1,
                     legendIndex: index + 1,
-                    color: properties.colorHost[color],
+                    color: properties.colorHostHighstock[color],
                     data: response.data
                 };
                 _this.series.push(_this.serie);
@@ -138,8 +138,6 @@ var Highstock = (function () {
         this.options = {
             chart: {
                 type: "StockChart",
-                marginRight: 60,
-                marginLeft: 70,
                 zoomType: 'xy'
             },
             legend: {

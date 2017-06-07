@@ -15,8 +15,8 @@ export class HighstockService {
 	public idhost: number;
 
 	constructor(private _http: Http) {		
-		//this.url = 'http://15.17.167.155:3845/api/';
-		this.url = 'http://localhost:3845/api/';
+		this.url = 'http://15.17.167.155:3845/api/';
+		//this.url = 'http://localhost:3845/api/';
 	}
 
 	getDateAndDataValueMonitor(idmonitor, nameKpi, desde, hasta){

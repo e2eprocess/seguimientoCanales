@@ -10,10 +10,6 @@ import { MyDatePickerModule } from 'mydatepicker';
 
 import { AppComponent }  from './app.component';
 import { Comparativa }  from './components/comparativa.component';
-import { GraficaTiempo }  from './components/comparativa/comparativaGrafTiempo.component';
-import { GraficaPeticiones }  from './components/comparativa/comparativaGrafPeticiones.component';
-import { GraficaCpu }  from './components/comparativa/comparativaGrafCpu.component';
-import { GraficaMemoria } from './components/comparativa/comparativaGrafMemoria.component';
 import { Highstock }  from './components/highstock.component';
 import { Seguimiento }  from './components/seguimiento.component';
 
@@ -31,10 +27,6 @@ import { Seguimiento }  from './components/seguimiento.component';
   declarations: [
                 AppComponent,
                 Comparativa,
-                GraficaTiempo,
-                GraficaPeticiones,
-                GraficaCpu,
-                GraficaMemoria,
                 Highstock,
                 Seguimiento
                 ],

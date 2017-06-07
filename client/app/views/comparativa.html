@@ -19,14 +19,18 @@
 <fieldset class="recuadro"> 
 	<div id="Throughput"></div>
 </fieldset>
-<fieldset *ngIf="visibleCPU" class="recuadroCPU"> 
+<fieldset *ngIf="visibleCPU" class="recuadroCpu"> 
 	<div id="CPU"></div>
 </fieldset>
-<fieldset *ngIf="visibleMemoria" class="recuadroCPU"> 
+<fieldset *ngIf="visibleMemoria" class="recuadroMemoria"> 
 	<div id="Memory"></div>
 </fieldset>
-<fieldset *ngIf="visibleCPUOficinas">
-	<div id="cpuPar"></div>
-	<div id="cpuImpar"></div>
-</fieldset>
+<div *ngIf="visibleCPUOficinas">
+	<fieldset class="recuadroMemoria"> 
+		<div id="cpuPar"></div>
+	</fieldset>
+	<fieldset class="recuadroMemoria"> 
+		<div id="cpuImpar"></div>
+	</fieldset>
+</div>
 <div class="clearfix"></div>

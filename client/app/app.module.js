@@ -15,10 +15,6 @@ var app_routing_1 = require("./app.routing");
 var mydatepicker_1 = require("mydatepicker");
 var app_component_1 = require("./app.component");
 var comparativa_component_1 = require("./components/comparativa.component");
-var comparativaGrafTiempo_component_1 = require("./components/comparativa/comparativaGrafTiempo.component");
-var comparativaGrafPeticiones_component_1 = require("./components/comparativa/comparativaGrafPeticiones.component");
-var comparativaGrafCpu_component_1 = require("./components/comparativa/comparativaGrafCpu.component");
-var comparativaGrafMemoria_component_1 = require("./components/comparativa/comparativaGrafMemoria.component");
 var highstock_component_1 = require("./components/highstock.component");
 var seguimiento_component_1 = require("./components/seguimiento.component");
 var AppModule = (function () {
@@ -40,10 +36,6 @@ AppModule = __decorate([
         declarations: [
             app_component_1.AppComponent,
             comparativa_component_1.Comparativa,
-            comparativaGrafTiempo_component_1.GraficaTiempo,
-            comparativaGrafPeticiones_component_1.GraficaPeticiones,
-            comparativaGrafCpu_component_1.GraficaCpu,
-            comparativaGrafMemoria_component_1.GraficaMemoria,
             highstock_component_1.Highstock,
             seguimiento_component_1.Seguimiento
         ],

@@ -110,7 +110,7 @@ export class Comparativa implements OnInit {
             plotLinesZIndex = 0,
             plotLinesLabelText = '',
             plotLinesLabelAlign = '',
-            plotLinesX = 0,
+            plotLinesX = 0;
 
 
         switch (kpi) {
@@ -414,6 +414,11 @@ export class Comparativa implements OnInit {
             legendIndex: i,
             data: []
         }
+
+        var properties = new PropertiesSeries();
+        var color = i%properties.colorMonitor.length;
+        
+        serie.color = properties.colorMonitor[color];
 
         return new Promise((resolve, reject)=>{
 

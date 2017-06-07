@@ -335,6 +335,9 @@ var Comparativa = (function () {
             legendIndex: i,
             data: []
         };
+        var properties = new propertiesSeries_1.PropertiesSeries();
+        var color = i % properties.colorMonitor.length;
+        serie.color = properties.colorMonitor[color];
         return new Promise(function (resolve, reject) {
             var properties = new propertiesSeries_1.PropertiesSeries();
             if (busqueda.includes('from')) {

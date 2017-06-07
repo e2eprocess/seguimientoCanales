@@ -177,7 +177,7 @@ export class Seguimiento implements OnInit {
     	const serieTime = {
 				name: 'Tiempo Respuesta',
 				id: 'Tiempo',
-				color: 'rgba(41,198,248,1.0)',
+				color: '#2DCCCD',
 	            type: 'line',
 	            index: 1,
 	            legendIndex: 0,
@@ -190,7 +190,7 @@ export class Seguimiento implements OnInit {
         const seriePeticiones = {
 				name: 'Peticiones',
 				id: 'Peticiones',
-				color: 'rgba(65,105,225,1.0)',
+				color: '#0A5FB4',
 	            type: 'column',
 	            yAxis: 1,
 	            index: 0,

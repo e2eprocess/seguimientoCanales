@@ -80,7 +80,7 @@ export class Highstock implements OnInit {
 	obtenerHostData(host,desde,hasta,index){
 		return new Promise((resolve, reject)=> {
             var properties = new PropertiesSeries();
-            var color = index%properties.colorHost.length;
+            var color = index%properties.colorHostHighstock.length;
 			this._highstockService.getDateAndDatavalueHost(host.idhost,'CPU',desde, hasta).subscribe(
                 response => {
                     this.serie = {
@@ -95,7 +95,7 @@ export class Highstock implements OnInit {
                         },
                         index: index+1,
                         legendIndex: index+1,
-                        color: properties.colorHost[color],
+                        color: properties.colorHostHighstock[color],
                         data: response.data
                     };
                     this.series.push(this.serie);
@@ -163,8 +163,6 @@ export class Highstock implements OnInit {
 		this.options = {
             chart: {
             	type: "StockChart",
-            	marginRight:60,
-            	marginLeft: 70,
             	zoomType: 'xy'
             },
             legend: {

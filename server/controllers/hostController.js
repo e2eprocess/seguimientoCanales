@@ -109,20 +109,21 @@ function getDatavalueHost (req, res, next) {
 		$desde: req.params.desde,
 		$hasta: req.params.hasta
 	}
-	db.any('select  y as data from\
-			(select ((extract(epoch from A.timedata))::numeric)*1000 as x, \
-			A.datavalue as y \
-			FROM \"E2E\".hostdata A, \"E2E\".kpi B, \"E2E\".host C \
-			WHERE c.name = ${$maquina} \
-			AND B.name = ${$kpi} \
-	        AND A.idkpi = B.idkpi \
-	        AND A.idhost = C.idhost \
-			AND A.timedata between ${$desde} and ${$hasta} \
-			order by 1)as t1', parametros)
+	db.any('select  y \
+			from\
+				(select ((extract(epoch from A.timedata))::numeric)*1000 as x, \
+				A.datavalue as y \
+				FROM \"E2E\".hostdata A, \"E2E\".kpi B, \"E2E\".host C \
+				WHERE c.name = ${$maquina} \
+				AND B.name = ${$kpi} \
+		        AND A.idkpi = B.idkpi \
+		        AND A.idhost = C.idhost \
+				AND A.timedata between ${$desde} and ${$hasta} \
+				order by 1)as t1', parametros)
 		.then(function(data) {
 			//Lectura datos y transformación de json a Array
 			var datos = data.map((elem) => {
-				return [ parseInt(elem.x), parseFloat(elem.y)]
+				return parseFloat(elem.y)
 			})
 			//Devuelve el array si es una ejecuión correcta
 			res.status(200)
