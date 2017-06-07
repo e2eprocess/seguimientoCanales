@@ -14,15 +14,19 @@
 </div>
 
 <fieldset class="recuadro"> 
-	<grafico-tiempo></grafico-tiempo>
+	<div id="Time"></div>
 </fieldset>
-<fieldset class="recuadro">
-	<grafico-peticiones></grafico-peticiones>
+<fieldset class="recuadro"> 
+	<div id="Throughput"></div>
 </fieldset>
-<fieldset class="recuadroCpu">
-	<grafico-cpu></grafico-cpu>
+<fieldset *ngIf="visibleCPU" class="recuadroCPU"> 
+	<div id="CPU"></div>
 </fieldset>
-<fieldset class="recuadroMemoria">
-	<grafico-memoria></grafico-memoria>
+<fieldset *ngIf="visibleMemoria" class="recuadroCPU"> 
+	<div id="Memory"></div>
+</fieldset>
+<fieldset *ngIf="visibleCPUOficinas">
+	<div id="cpuPar"></div>
+	<div id="cpuImpar"></div>
 </fieldset>
 <div class="clearfix"></div>

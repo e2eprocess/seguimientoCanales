@@ -82,7 +82,12 @@ export class ComparativaService {
 	}
 
 	getDate(idmonitor, desde, hasta){
-		return this._http.get(this.url+'getDate/'+idmonitor+'/'+'fechas/'+desde+'/'+hasta)
+		return this._http.get(this.url+'getDate/'+idmonitor+'/fechas/'+desde+'/'+hasta)
+							.map(res => res.json());
+	}
+
+	getDatavalueHost(maquina,kpi,desde,hasta){
+		return this._http.get(this.url+'getDatavalueHost/'+maquina+'/'+kpi+'/fechas/'+desde+'/'+hasta)
 							.map(res => res.json());
 	}
 

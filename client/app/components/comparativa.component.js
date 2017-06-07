@@ -11,12 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var comparativaGrafTiempo_component_1 = require("./comparativa/comparativaGrafTiempo.component");
-var comparativaGrafPeticiones_component_1 = require("./comparativa/comparativaGrafPeticiones.component");
-var comparativaGrafCpu_component_1 = require("./comparativa/comparativaGrafCpu.component");
-var comparativaGrafMemoria_component_1 = require("./comparativa/comparativaGrafMemoria.component");
 var comparativa_service_1 = require("../services/comparativa.service");
 var fechas_1 = require("../models/fechas");
+var propertiesSeries_1 = require("../models/propertiesSeries");
 var Comparativa = (function () {
     function Comparativa(_comparativaService, _route, _router) {
         this._comparativaService = _comparativaService;
@@ -32,15 +29,29 @@ var Comparativa = (function () {
             inline: false,
             disableUntil: { year: 2016, month: 9, day: 2 }
         };
-        this.locale = 'es';
+        this.visibleCPU = false;
+        this.visibleMemoria = false;
+        this.visibleCPUOficinas = false;
+        this.plotLines = {
+            value: this.value,
+            color: 'red',
+            width: 3,
+            zIndex: 5,
+            label: {
+                text: 'Máx. núm. Peticiones <b>' + this.value + '</b>',
+                align: 'right',
+                x: -10
+            }
+        };
     }
     Comparativa.prototype.ngOnInit = function () {
+        var today = new Date();
         var dateTo = new Date();
-        var dateFrom = new Date();
+        var dateFrom = new Date(today.setDate(today.getDate() - 7));
         this.from = { date: {
                 year: dateFrom.getFullYear(),
                 month: dateFrom.getMonth() + 1,
-                day: new Date(dateFrom.setDate(dateFrom.getDate() - 7)).getDate()
+                day: dateFrom.getDate()
             } };
         this.to = { date: {
                 year: dateTo.getFullYear(),
@@ -55,9 +66,6 @@ var Comparativa = (function () {
                 month: event.date.month,
                 day: event.date.day
             } };
-        var copy = this.getCopyOfOptions();
-        var fecha = event.date.day + '-' + event.date.month + '-' + event.date.year;
-        this.myDatePickerOptions = copy;
         this.comparativa(this.from, this.to);
     };
     Comparativa.prototype.onDateChangedTo = function (event) {
@@ -66,15 +74,403 @@ var Comparativa = (function () {
                 month: event.date.month,
                 day: event.date.day
             } };
-        var copy = this.getCopyOfOptions();
-        this.myDatePickerOptions = copy;
         this.comparativa(this.from, this.to);
     };
-    Comparativa.prototype.getCopyOfOptions = function () {
-        return JSON.parse(JSON.stringify(this.myDatePickerOptions));
+    Comparativa.prototype.pintarGrafica = function (series, kpi) {
+        var fecha = ((new Date(this.fechas.toDesde)).getTime()) + 7200000;
+        var chartHeight = 0, plotLinesValue = 0, plotLinesColor = '', plotLinesWidth = 0, plotLinesZIndex = 0, plotLinesLabelText = '', plotLinesLabelAlign = '', plotLinesX = 0;
+        switch (kpi) {
+            case "Time":
+                var textTitle = 'Tiempo medio de respuesta (ms.)', yAxisTitleText = 'Tiempo de respuesta (ms.)', yAxislabelsFormat = '{value} ms.', yAxisMax = null;
+                break;
+            case "Throughput":
+                var textTitle = 'Peticiones / 5min.', yAxisTitleText = 'Peticiones', yAxislabelsFormat = '{value}';
+                plotLinesValue = this.value,
+                    plotLinesColor = 'red';
+                plotLinesWidth = 3,
+                    plotLinesZIndex = 5;
+                plotLinesLabelText = 'Max. núm. Peticiones <b>' + this.value + '</b>',
+                    plotLinesLabelAlign = 'right',
+                    plotLinesX = -10,
+                    yAxisMax = null;
+                break;
+            case "CPU":
+                var textTitle = 'Consumo CPU%', chartHeight = 250, yAxisTitleText = 'CPU%', yAxislabelsFormat = '{value} %';
+                yAxisMax = 100;
+                break;
+            case "Memory":
+                var textTitle = 'Consumo Memoria%', yAxisTitleText = 'Memoria %', yAxislabelsFormat = '{value}';
+                yAxisMax = 100;
+                break;
+            case "cpuPar":
+                var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas pares)</font>', yAxisTitleText = 'CPU %', yAxislabelsFormat = '{value} %';
+                yAxisMax = 100;
+                break;
+            case "cpuImpar":
+                var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas impares)</font>', yAxisTitleText = 'CPU %', yAxislabelsFormat = '{value} %';
+                yAxisMax = 100;
+                break;
+        }
+        jQuery('#' + kpi).highcharts({
+            chart: {
+                zoomType: 'xy',
+                height: chartHeight
+            },
+            title: {
+                text: textTitle
+            },
+            subtitle: {
+                text: 'Comparativa entre <b>' + this.fechas.from + '</b> y <b>' + this.fechas.to + '</b>'
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    hour: '%H:%M'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: yAxisTitleText
+                },
+                labels: {
+                    format: yAxislabelsFormat
+                },
+                lineWidth: 1,
+                plotLines: [{
+                        value: plotLinesValue,
+                        color: plotLinesColor,
+                        width: plotLinesWidth,
+                        zIndex: plotLinesZIndex,
+                        label: {
+                            text: plotLinesLabelText,
+                            align: plotLinesLabelAlign,
+                            x: plotLinesX
+                        }
+                    }],
+                max: yAxisMax
+            },
+            tooltip: {
+                shared: true,
+                followPointer: true,
+                xDateFormat: '%H:%M',
+                borderColor: 'grey'
+            },
+            legend: {
+                layout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom',
+                borderWidth: 1,
+                itemStyle: {
+                    fontSize: "10px"
+                }
+            },
+            plotOptions: {
+                series: {
+                    pointStart: fecha,
+                    pointInterval: 300 * 1000,
+                    marker: {
+                        enabled: false
+                    }
+                },
+                line: {
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 1,
+                        states: {
+                            hover: { enabled: true }
+                        }
+                    }
+                },
+                spline: {
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 1,
+                        states: {
+                            hover: { enabled: true }
+                        }
+                    }
+                }
+            },
+            scatter: {
+                marker: {
+                    symbol: 'square',
+                    radius: 1
+                }
+            },
+            series: series
+        });
+    };
+    Comparativa.prototype.obtenerWaterMark = function (monitores) {
+        var _this = this;
+        var arr = [];
+        monitores.forEach(function (monitor) {
+            arr.push(monitor.idmonitor);
+        });
+        var idmonitores = arr.join(",");
+        return new Promise(function (resolve, reject) {
+            _this._comparativaService.getWaterMark(idmonitores).subscribe(function (response) {
+                _this.value = parseInt(response.data.max_peticiones);
+                var waterMark = [];
+                waterMark.push(_this.value);
+                var seriesWatermark = {
+                    name: 'Máx. peticiones ' + response.data.fecha,
+                    type: 'scatter',
+                    color: 'red',
+                    legendIndex: 99,
+                    data: [waterMark]
+                };
+                resolve(seriesWatermark);
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención de las watermarks');
+                }
+            });
+        });
+    };
+    Comparativa.prototype.obtencionSeriesCPU = function (maquina, i, busqueda, desde, hasta) {
+        var _this = this;
+        var serie = {
+            name: '',
+            type: '',
+            color: 0,
+            index: i,
+            legendIndex: i,
+            data: []
+        };
+        var properties = new propertiesSeries_1.PropertiesSeries();
+        var color = i % properties.colorHost.length;
+        serie.color = properties.colorHost[color];
+        if (busqueda.includes('from')) {
+            serie.type = 'column',
+                serie.name = maquina + ' (F)';
+        }
+        else {
+            serie.type = 'line',
+                serie.name = maquina + ' (T)';
+        }
+        ;
+        return new Promise(function (resolve, reject) {
+            _this._comparativaService.getDatavalueHost(maquina, 'CPU', desde, hasta)
+                .subscribe(function (response) {
+                serie.data = response.data;
+                resolve(serie);
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    console.log(_this.errorMessage);
+                }
+                reject();
+            });
+        });
+    };
+    Comparativa.prototype.obtencionSeriesRecursos = function (id, idchannel, uuaa, kpi, i, busqueda, desde, hasta) {
+        var _this = this;
+        var serie = {
+            name: '',
+            type: '',
+            color: 0,
+            index: i,
+            legendIndex: i,
+            data: []
+        };
+        var properties = new propertiesSeries_1.PropertiesSeries();
+        var color = i % properties.colorHost.length;
+        serie.color = properties.colorHost[color];
+        if (busqueda.includes('from')) {
+            serie.type = 'column',
+                serie.name = id.name + '_' + uuaa + ' (F)';
+        }
+        else {
+            serie.type = 'line',
+                serie.name = id.name + '_' + uuaa + ' (T)';
+        }
+        ;
+        return new Promise(function (resolve, reject) {
+            switch (kpi) {
+                case "CPU":
+                    _this._comparativaService.getDatavalueClonByHost(id.idhost, desde, hasta, idchannel, uuaa, kpi)
+                        .subscribe(function (response) {
+                        _this.visibleCPU = true;
+                        serie.data = response.data;
+                        resolve(serie);
+                    }, function (error) {
+                        _this.errorMessage = error;
+                        if (_this.errorMessage != null) {
+                            console.log(_this.errorMessage);
+                        }
+                        reject();
+                    });
+                    break;
+                case "Memory":
+                    _this._comparativaService.getDatavalueClon(id.idclon, desde, hasta, kpi)
+                        .subscribe(function (response) {
+                        _this.visibleMemoria = true;
+                        serie.data = response.data;
+                        resolve(serie);
+                    }, function (error) {
+                        _this.errorMessage = error;
+                        if (_this.errorMessage != null) {
+                            console.log(_this.errorMessage);
+                        }
+                        reject();
+                    });
+                    break;
+            }
+        });
+    };
+    Comparativa.prototype.obtencionSeriesMonitores = function (monitor, i, kpi, busqueda, desde, hasta) {
+        var _this = this;
+        var serie = {
+            name: '',
+            type: '',
+            dashStyle: '',
+            color: '',
+            index: i,
+            legendIndex: i,
+            data: []
+        };
+        return new Promise(function (resolve, reject) {
+            var properties = new propertiesSeries_1.PropertiesSeries();
+            if (busqueda.includes('from')) {
+                serie.name = monitor.name + ' (F)';
+                serie.type = 'spline';
+                serie.dashStyle = 'shortdot';
+            }
+            else {
+                serie.name = monitor.name + ' (T)';
+                serie.type = 'line';
+                serie.dashStyle = '';
+            }
+            ;
+            _this._comparativaService.getDatavalueMonitor(monitor.idmonitor, kpi, desde, hasta).subscribe(function (response) {
+                serie.data = response.data;
+                resolve(serie);
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención del ' + kpi + ' del monitor ' + monitor.name);
+                }
+                reject();
+            });
+        });
+    };
+    Comparativa.prototype.gestionCPUOficinas = function (maquinas, parOImpar) {
+        var _this = this;
+        var promesas = [];
+        this.visibleCPUOficinas = true;
+        maquinas.forEach(function (maquina, index) {
+            promesas.push(_this.obtencionSeriesCPU(maquina, index, 'from', _this.fechas.fromDesde, _this.fechas.fromHasta));
+        });
+        Promise.all(promesas).then(function () {
+            maquinas.forEach(function (maquina, index) {
+                promesas.push(_this.obtencionSeriesCPU(maquina, index, 'from', _this.fechas.fromDesde, _this.fechas.fromHasta));
+            });
+            Promise.all(promesas).then(function (resultado) {
+                _this.pintarGrafica(resultado, parOImpar);
+            });
+        });
+    };
+    Comparativa.prototype.gestionGraficoRecursos = function (ids, idchannel, kpi) {
+        var _this = this;
+        var promesas = [];
+        ids.forEach(function (id, index) {
+            promesas.push(_this.obtencionSeriesRecursos(id, idchannel, _this.name, kpi, index, 'from', _this.fechas.fromDesde, _this.fechas.fromHasta));
+        });
+        Promise.all(promesas).then(function () {
+            ids.forEach(function (id, index) {
+                promesas.push(_this.obtencionSeriesRecursos(id, idchannel, _this.name, kpi, index, 'to', _this.fechas.toDesde, _this.fechas.toHasta));
+            });
+            Promise.all(promesas).then(function (resultado) {
+                _this.pintarGrafica(resultado, kpi);
+            });
+        });
+    };
+    Comparativa.prototype.gestionGraficoMonitores = function (monitores, kpi) {
+        var _this = this;
+        var promesas = [];
+        //var series = [];
+        monitores.forEach(function (monitor, index) {
+            promesas.push(_this.obtencionSeriesMonitores(monitor, index, kpi, 'from', _this.fechas.fromDesde, _this.fechas.fromHasta));
+        });
+        Promise.all(promesas).then(function () {
+            monitores.forEach(function (monitor, index) {
+                promesas.push(_this.obtencionSeriesMonitores(monitor, index, kpi, 'to', _this.fechas.toDesde, _this.fechas.toHasta));
+            });
+            Promise.all(promesas).then(function (resultado) {
+                if (kpi === 'Throughput') {
+                    promesas.push(_this.obtenerWaterMark(monitores));
+                }
+                Promise.all(promesas).then(function (resultado) {
+                    _this.pintarGrafica(resultado, kpi);
+                });
+            });
+        });
+    };
+    Comparativa.prototype.gestionRecursos = function (idchannel, channel, name) {
+        var _this = this;
+        //Obtención idHost asociado al canal y a la UUAA informada
+        if (idchannel != 4) {
+            this._comparativaService.getIdHost(idchannel, name).subscribe(function (response) {
+                console.log(response.data);
+                _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención de los IDHOST asociados al Canal');
+                }
+            });
+        }
+        else {
+            this.visibleCPU = false;
+            this.visibleMemoria = false;
+            var cpuPar = ['spnac006', 'spnac008', 'spnac010', 'spnac012'];
+            var cpuImpar = ['spnac005', 'spnac007', 'spnac009'];
+            this.gestionCPUOficinas(cpuPar, 'cpuPar');
+            this.gestionCPUOficinas(cpuImpar, 'cpuImpar');
+        }
+        //Obtención idclon asociado al canal y a la UUAA informada
+        if (idchannel < 4) {
+            this._comparativaService.getIdClon(idchannel, name).subscribe(function (response) {
+                _this.gestionGraficoRecursos(response.data, idchannel, 'Memory');
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención de los IDHOST asociados al Canal');
+                }
+            });
+        }
+    };
+    Comparativa.prototype.gestionMonitores = function (idchannel, name) {
+        var _this = this;
+        //obtención del idUUAA asociado a la UUAA del canal informado.
+        this._comparativaService.getIdUuaa(idchannel, name).subscribe(function (response) {
+            _this.uuaa = response.data;
+            var iduuaa = response.data.iduuaa;
+            _this._comparativaService.getMonitors(iduuaa).subscribe(function (response) {
+                _this.gestionGraficoMonitores(response.data, 'Time');
+                _this.gestionGraficoMonitores(response.data, 'Throughput');
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención del ID del monitor');
+                }
+            });
+        }, function (error) {
+            _this.errorMessage = error;
+            if (_this.errorMessage != null) {
+                alert('Error en la obtención del ID de la UUAA');
+            }
+        });
     };
     Comparativa.prototype.comparativa = function (from, to) {
         var _this = this;
+        //Gestión fechas From y To. Si To es el día actual se realiza la busqueda hasta la hora actual - menos 20 minutos;
         this.fechas = new fechas_1.Fechas('', '', '', '', '', '');
         var horaMenos20 = new Date().getTime() - 1200000;
         if (new Date().toDateString() === new Date(to.date.year + '-' + to.date.month + '-' + to.date.day).toDateString()) {
@@ -90,57 +486,19 @@ var Comparativa = (function () {
         this.fechas.to = to.date.day + '-' + to.date.month + '-' + to.date.year;
         this.fechas.from = from.date.day + '-' + from.date.month + '-' + from.date.year;
         this._route.params.forEach(function (params) {
+            //Recupera parametros URL.
             var name = params['name'];
-            _this.name = name;
             var channel = params['channel'];
+            _this.name = name;
+            //Obtención idchannel asociado al canal
             _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
-                _this.channel = response.data;
-                //Obtención del iduuaa perteneciente al nombre de la UUAA proporcionada.
-                _this._comparativaService.getIdUuaa(_this.channel.idchannel, name).subscribe(function (response) {
-                    _this.uuaa = response.data;
-                    _this._comparativaService.getMonitors(_this.uuaa.iduuaa).subscribe(function (response) {
-                        _this.monitors = response.data;
-                        //Grafcio tiempo respuesta
-                        var graficoTiempo = new comparativaGrafTiempo_component_1.GraficaTiempo(_this._comparativaService);
-                        graficoTiempo.inicioGrafico(_this.monitors, _this.fechas);
-                        var graficoPeticiones = new comparativaGrafPeticiones_component_1.GraficaPeticiones(_this._comparativaService);
-                        graficoPeticiones.inicioGrafico(_this.monitors, _this.fechas);
-                    }, function (error) {
-                        _this.errorMessage = error;
-                        if (_this.errorMessage != null) {
-                            alert('Error en la obtención de los MONITORES asociados');
-                        }
-                    });
-                }, function (error) {
-                    _this.errorMessage = error;
-                    if (_this.errorMessage != null) {
-                        alert('Error en la  obtención del IDUUAA de la UUAA solicitada');
-                    }
-                });
-                _this._comparativaService.getIdHost(_this.channel.idchannel, name).subscribe(function (response) {
-                    _this.hosts = response.data;
-                    var graficoCpu = new comparativaGrafCpu_component_1.GraficaCpu(_this._comparativaService);
-                    graficoCpu.inicioGrafico(_this.hosts, _this.channel, name, _this.fechas);
-                }, function (error) {
-                    _this.errorMessage = error;
-                    if (_this.errorMessage != null) {
-                        alert('Error en la obtención de los IDHOST asociados al Canal');
-                    }
-                });
-                _this._comparativaService.getIdClon(_this.channel.idchannel, name).subscribe(function (response) {
-                    _this.clon = response.data;
-                    var graficoMemoria = new comparativaGrafMemoria_component_1.GraficaMemoria(_this._comparativaService);
-                    graficoMemoria.inicioGrafico(_this.clon, _this.fechas);
-                }, function (error) {
-                    _this.errorMessage = error;
-                    if (_this.errorMessage != null) {
-                        alert('Error en la petición obtención los idHosts asociados al Canal');
-                    }
-                });
+                var idchannel = response.data.idchannel;
+                _this.gestionMonitores(idchannel, name);
+                _this.gestionRecursos(idchannel, channel, name);
             }, function (error) {
                 _this.errorMessage = error;
                 if (_this.errorMessage != null) {
-                    alert('Error en la obtención del IDCHANNEL');
+                    alert('Error en la obtención del ID del canal');
                 }
             });
         });

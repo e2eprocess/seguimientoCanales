@@ -1,8 +1,8 @@
 'use strict'
 
-global.config = require('./config');
+var config = require('./config').config;
 var app = require('./app');
-var port = process.env.PORT || global.config.host.port;
+var port = process.env.PORT || config.host.port;
 var logger = require('./gestionLog').logger;
 
 app.listen(port, function() {

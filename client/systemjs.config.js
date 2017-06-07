@@ -48,6 +48,11 @@
       'angular2-highcharts': {
         main: './index.js',
         defaultExtension: 'js'
+      },
+      moment: {
+        map: 'node_modules/moment/moment.js',
+        type: 'cjs',
+        defaultExtension: 'js'
       }
     }
   });

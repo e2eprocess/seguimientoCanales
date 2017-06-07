@@ -217,7 +217,7 @@ export class GraficaPeticiones {
             }
         },
         plotOptions: {
-           series: {
+          series: {
             pointStart: fecha,
             pointInterval: 300 * 1000
           },
@@ -240,8 +240,9 @@ export class GraficaPeticiones {
           },
           scatter: {
             marker: {
+              enabled: false,
               symbol: 'square',
-              radius: 1
+              radius: 0
             }
           }   
         },

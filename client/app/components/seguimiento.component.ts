@@ -50,15 +50,14 @@ export class Seguimiento implements OnInit {
 	){}
 
 	ngOnInit(){
-    var date = new Date();
-
+    var today = new Date();
+    var date = new Date(today.setDate(today.getDate()-1));
+    
     this.fecha = {date:{
       year: date.getFullYear(),
       month: date.getMonth()+1,
       day: date.getDate()
     }};
-
-    console.log();
 
     this.seguimiento(this.fecha)
 	}

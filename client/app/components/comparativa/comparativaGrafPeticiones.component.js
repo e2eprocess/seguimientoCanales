@@ -190,8 +190,9 @@ var GraficaPeticiones = (function () {
                 },
                 scatter: {
                     marker: {
+                        enabled: false,
                         symbol: 'square',
-                        radius: 1
+                        radius: 0
                     }
                 }
             },

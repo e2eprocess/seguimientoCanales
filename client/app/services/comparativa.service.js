@@ -63,7 +63,11 @@ var ComparativaService = (function () {
             .map(function (res) { return res.json(); });
     };
     ComparativaService.prototype.getDate = function (idmonitor, desde, hasta) {
-        return this._http.get(this.url + 'getDate/' + idmonitor + '/' + 'fechas/' + desde + '/' + hasta)
+        return this._http.get(this.url + 'getDate/' + idmonitor + '/fechas/' + desde + '/' + hasta)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getDatavalueHost = function (maquina, kpi, desde, hasta) {
+        return this._http.get(this.url + 'getDatavalueHost/' + maquina + '/' + kpi + '/fechas/' + desde + '/' + hasta)
             .map(function (res) { return res.json(); });
     };
     return ComparativaService;
