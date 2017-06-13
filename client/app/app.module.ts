@@ -12,6 +12,7 @@ import { AppComponent }  from './app.component';
 import { Comparativa }  from './components/comparativa.component';
 import { Highstock }  from './components/highstock.component';
 import { Seguimiento }  from './components/seguimiento.component';
+import { Informe }  from './components/informe.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { Seguimiento }  from './components/seguimiento.component';
                 AppComponent,
                 Comparativa,
                 Highstock,
-                Seguimiento
+                Seguimiento,
+                Informe
                 ],
   exports: [
                 MyDatePickerModule

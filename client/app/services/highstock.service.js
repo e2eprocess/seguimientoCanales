@@ -17,6 +17,7 @@ var HighstockService = (function () {
         this._http = _http;
         this.url = 'http://15.17.167.155:3845/api/';
         //this.url = 'http://localhost:3845/api/';
+        //this.url = 'http://v1128scp451.ad.bbva.com:3845/api/';
     }
     HighstockService.prototype.getDateAndDataValueMonitor = function (idmonitor, nameKpi, desde, hasta) {
         return this._http.get(this.url + 'getDateAndDataValueMonitor/' + idmonitor + '/' + nameKpi + '/' + 'fechas/' + desde + '/' + hasta)

@@ -18,6 +18,8 @@ api.get('/getDateAndDataValueMonitor/:idmonitor/:namekpi/fechas/:desde/:hasta', 
 api.get('/getDataValueMonitor/:idmonitor/:namekpi/fechas/:desde/:hasta', monitorController.getDataValueMonitor);
 api.get('/getDate/:idmonitor/fechas/:desde/:hasta', monitorController.getDate);
 api.get('/getWaterMark/:monitors', monitorController.getWaterMark);
+api.get('/getDataMonitorInforme/:idmonitor/:fecha/:interval/:kpi', monitorController.getDataMonitorInforme);
+
 
 api.get('/getIdHost/:idchannel/:name', hostController.getIdHost);
 api.get('/getIdHostChannel/:idchannel', hostController.getIdHostChannel);

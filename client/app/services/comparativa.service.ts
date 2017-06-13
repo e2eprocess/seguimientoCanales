@@ -24,6 +24,7 @@ export class ComparativaService {
 	constructor(private _http: Http) {		
 		this.url = 'http://15.17.167.155:3845/api/';
 		//this.url = 'http://localhost:3845/api/';
+		//this.url = 'http://v1128scp451.ad.bbva.com:3845/api/';
 	}
 
 	getIdUuaa(idchannel, name){

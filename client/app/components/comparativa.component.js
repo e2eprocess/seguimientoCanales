@@ -58,6 +58,10 @@ var Comparativa = (function () {
                 month: dateTo.getMonth() + 1,
                 day: dateTo.getDate()
             } };
+        this.visibleCPU = false;
+        this.visibleMemoria = false;
+        this.visibleCPUOficinas = false;
+        this.series = [];
         this.comparativa(this.from, this.to);
     };
     Comparativa.prototype.onDateChangedFrom = function (event) {
@@ -76,7 +80,7 @@ var Comparativa = (function () {
             } };
         this.comparativa(this.from, this.to);
     };
-    Comparativa.prototype.pintarGrafica = function (series, kpi) {
+    Comparativa.prototype.pintarGrafica = function (kpi) {
         var fecha = ((new Date(this.fechas.toDesde)).getTime()) + 7200000;
         var chartHeight = 0, plotLinesValue = 0, plotLinesColor = '', plotLinesWidth = 0, plotLinesZIndex = 0, plotLinesLabelText = '', plotLinesLabelAlign = '', plotLinesX = 0;
         switch (kpi) {
@@ -202,7 +206,7 @@ var Comparativa = (function () {
                     radius: 1
                 }
             },
-            series: series
+            series: this.series
         });
     };
     Comparativa.prototype.obtenerWaterMark = function (monitores) {
@@ -375,7 +379,8 @@ var Comparativa = (function () {
                 promesas.push(_this.obtencionSeriesCPU(maquina, index, 'from', _this.fechas.fromDesde, _this.fechas.fromHasta));
             });
             Promise.all(promesas).then(function (resultado) {
-                _this.pintarGrafica(resultado, parOImpar);
+                _this.series = resultado;
+                _this.pintarGrafica(parOImpar);
             });
         });
     };
@@ -390,7 +395,8 @@ var Comparativa = (function () {
                 promesas.push(_this.obtencionSeriesRecursos(id, idchannel, _this.name, kpi, index, 'to', _this.fechas.toDesde, _this.fechas.toHasta));
             });
             Promise.all(promesas).then(function (resultado) {
-                _this.pintarGrafica(resultado, kpi);
+                _this.series = resultado;
+                _this.pintarGrafica(kpi);
             });
         });
     };
@@ -405,12 +411,13 @@ var Comparativa = (function () {
             monitores.forEach(function (monitor, index) {
                 promesas.push(_this.obtencionSeriesMonitores(monitor, index, kpi, 'to', _this.fechas.toDesde, _this.fechas.toHasta));
             });
-            Promise.all(promesas).then(function (resultado) {
+            Promise.all(promesas).then(function () {
                 if (kpi === 'Throughput') {
                     promesas.push(_this.obtenerWaterMark(monitores));
                 }
                 Promise.all(promesas).then(function (resultado) {
-                    _this.pintarGrafica(resultado, kpi);
+                    _this.series = resultado;
+                    _this.pintarGrafica(kpi);
                 });
             });
         });
@@ -420,7 +427,6 @@ var Comparativa = (function () {
         //Obtención idHost asociado al canal y a la UUAA informada
         if (idchannel != 4) {
             this._comparativaService.getIdHost(idchannel, name).subscribe(function (response) {
-                console.log(response.data);
                 _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
             }, function (error) {
                 _this.errorMessage = error;

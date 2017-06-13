@@ -181,6 +181,45 @@ function getWaterMark(req, res, next){
 				})
 }
 
+function getDataMonitorInforme(req, res, next){
+	var idmonitor = req.params.idmonitor;
+	var fecha = req.params.fecha;
+	var interval = req.params.interval;
+	var kpi = req.params.kpi;
+	var hour = 'hour';
+
+	var parametros = {
+		$idmonitor: idmonitor,
+		$fecha: fecha,
+		$interval: interval,
+		$kpi: kpi,
+		$hour: hour
+
+	};
+
+	db.any('SELECT ((extract(epoch from fecha))::numeric)*1000 as x, \
+					peticiones as y \
+			FROM ( \
+				SELECT 	date_trunc(${$hour}, B.timedata) as fecha, \
+    			     	c.name as nombre, \
+              			sum(B.datavalue)::DECIMAL(10,2) as peticiones\
+      			FROM \"E2E\".monitor A, \"E2E\".monitordata B, \"E2E\".kpi C \
+      			WHERE A.idmonitor = ${$idmonitor} \
+  				AND 	B.timedata > (TIMESTAMP ${$fecha} - INTERVAL ${$interval})\
+              	AND B.timedata <= (TIMESTAMP ${$fecha}) \
+                AND C.name = ${$kpi} \
+                AND B.idkpi = c.idkpi \
+                AND A.idmonitor = B.idmonitor \
+                GROUP BY 1,2 \
+              	ORDER BY 1 asc ) as T1 ', parametros)
+		.then((data)=>{
+			res.status(200).json({data:data});
+		}).catch((err)=>{
+			logger.error(err);
+			res.status(500).send({message: 'Error al devolver los datos del monitor para el Informe'});
+		});
+}
+
 
 module.exports = {
   getMonitors,
@@ -188,5 +227,6 @@ module.exports = {
   getDataValueMonitor,
   getWaterMark,
   getNameDescriptionMonitor,
-  getDate
+  getDate,
+  getDataMonitorInforme
 }

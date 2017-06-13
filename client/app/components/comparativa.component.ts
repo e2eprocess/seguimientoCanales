@@ -26,7 +26,6 @@ export class Comparativa implements OnInit {
         markCurrentDay: true,
         toLocaleDateString: 'es',
         showClearDateBtn: false,
-
         inline: false,
         disableUntil: { year: 2016, month: 9, day: 2 }
     };
@@ -41,6 +40,7 @@ export class Comparativa implements OnInit {
     public visibleCPU: boolean = false;
     public visibleMemoria: boolean = false;
     public visibleCPUOficinas: boolean = false;
+    public series: Array<any>;
     public plotLines: object = {
         value: this.value,
         color: 'red',
@@ -76,6 +76,10 @@ export class Comparativa implements OnInit {
         day: dateTo.getDate()
     }};
 
+    this.visibleCPU = false;
+    this.visibleMemoria = false;
+    this.visibleCPUOficinas = false;
+    this.series = [];
 
     this.comparativa(this.from, this.to);
   }
@@ -100,7 +104,7 @@ export class Comparativa implements OnInit {
         this.comparativa(this.from, this.to);
     }
 
-    pintarGrafica(series, kpi){
+    pintarGrafica(kpi){
         var fecha = ((new Date(this.fechas.toDesde)).getTime())+7200000;
 
         var chartHeight= 0,
@@ -257,7 +261,7 @@ export class Comparativa implements OnInit {
                   radius: 1
                 }
             },
-            series: series
+            series: this.series
           });
     }
 
@@ -465,7 +469,8 @@ export class Comparativa implements OnInit {
             });
 
             Promise.all(promesas).then((resultado)=>{
-                this.pintarGrafica(resultado,parOImpar)
+                this.series = resultado;
+                this.pintarGrafica(parOImpar)
             });             
         });
 
@@ -483,7 +488,8 @@ export class Comparativa implements OnInit {
             })
 
             Promise.all(promesas).then((resultado)=>{
-                this.pintarGrafica(resultado, kpi);
+                this.series = resultado;
+                this.pintarGrafica(kpi);
             })
 
         })
@@ -505,12 +511,13 @@ export class Comparativa implements OnInit {
                 promesas.push(this.obtencionSeriesMonitores(monitor,index,kpi,'to',this.fechas.toDesde,this.fechas.toHasta));
             }); 
 
-            Promise.all(promesas).then((resultado)=>{
+            Promise.all(promesas).then(()=>{
                 if (kpi === 'Throughput'){
                     promesas.push(this.obtenerWaterMark(monitores))    
                 }
                 Promise.all(promesas).then((resultado)=> {
-                    this.pintarGrafica(resultado, kpi);
+                    this.series = resultado;
+                    this.pintarGrafica(kpi);
                 }) 
             });
         });
@@ -523,7 +530,6 @@ export class Comparativa implements OnInit {
         if (idchannel!=4){
             this._comparativaService.getIdHost(idchannel,name).subscribe(
                 response => {
-                    console.log(response.data);
                     this.gestionGraficoRecursos(response.data,idchannel,'CPU');
                 },
                 error => {
