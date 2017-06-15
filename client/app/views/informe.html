@@ -1,7 +1,9 @@
-<div id="submenu"> <span class="activo">Seguimiento </span></div>
-<div class="titulo">
-	<h1>{{channelDescription}}</h1>
+<div id="submenu"> <span class="activo">Informe </span></div>
+
+<div class="titulo" *ngIf="uuaa">	
+	<h1>{{name}} - {{uuaa.description}}</h1>
 </div>
+
 <fieldset>
-	LA MUJER DE.......
+	<chart type="StockChart" [options]="options"></chart>
 </fieldset>
