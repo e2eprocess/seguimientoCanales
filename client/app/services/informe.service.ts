@@ -27,10 +27,14 @@ export class InformeService {
 		//this.url = 'http://v1128scp451.ad.bbva.com:3845/api/';
 	}
 
-	getDataMonitorInforme(idmonitor, fecha, interval, kpi){
-		return this._http.get(this.url+'getDataMonitorInforme/'+idmonitor+'/'+fecha+'/'+interval+'/'+kpi)
+	getDataMonitorInformePeticiones(idmonitor, fecha, interval, kpi){
+		return this._http.get(this.url+'getDataMonitorInformePeticiones/'+idmonitor+'/'+fecha+'/'+interval+'/'+kpi)
 							.map(res => res.json());
 	}
+
+	getDataMonitorInformeTime(idmonitor, fecha, interval, kpi){
+		return this._http.get(this.url+'getDataMonitorInformeTime/'+idmonitor+'/'+fecha+'/'+interval+'/'+kpi)
+							.map(res => res.json());
 
 
 }

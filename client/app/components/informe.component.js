@@ -25,7 +25,7 @@ var Informe = (function () {
         this.series = [];
         this.informe();
     };
-    Informe.prototype.grafico = function () {
+    Informe.prototype.grafico = function (series) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var grafico = {
@@ -35,71 +35,152 @@ var Informe = (function () {
                 title: {
                     text: _this.name + ' - APLICACÓN'
                 },
-                series: _this.series
+                subtitle: {
+                    text: 'Subtitulo'
+                },
+                credits: { enabled: false },
+                navigator: { enabled: false },
+                scrollbar: { enabled: false },
+                rangeSelector: { enabled: false },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: [{
+                        labels: {
+                            format: '{value} ms.'
+                        },
+                        title: {
+                            text: 'Tiempo de respuesta (ms.)'
+                        },
+                        min: 0,
+                        opposite: false
+                    }, {
+                        title: {
+                            text: 'Peticiones por hora'
+                        }
+                    }],
+                tooltip: {
+                    shared: true,
+                    crosshair: true
+                },
+                legend: {
+                    enabled: true,
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    borderWidth: 1,
+                    itemStyle: {
+                        fontSize: "10px"
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        marker: {
+                            enabled: false,
+                            symbol: 'circle',
+                            radius: 1,
+                            states: {
+                                hover: { enabled: true }
+                            }
+                        }
+                    },
+                    spline: {
+                        marker: {
+                            enabled: false,
+                            symbol: 'circle',
+                            radius: 1,
+                            states: {
+                                hover: { enabled: true }
+                            }
+                        }
+                    },
+                    series: {
+                        marker: {
+                            enabled: false,
+                            symbol: 'circle',
+                            radius: 2
+                        },
+                        fillOpacity: 0.5
+                    },
+                    flags: {
+                        tooltip: {
+                            xDateFormat: '%B %e, %Y'
+                        }
+                    }
+                },
+                series: series
             };
             resolve(grafico);
         });
     };
-    Informe.prototype.getDataMonitors = function (monitors, fecha, interval, kpi) {
+    Informe.prototype.getDataMonitors = function (index, monitor, fecha, interval, kpi) {
         var _this = this;
         var series = [];
         var properties = new propertiesSeries_1.PropertiesSeries();
         return new Promise(function (resolve, reject) {
-            monitors.forEach(function (monitor, index) {
-                var serie = {
-                    name: '',
-                    type: '',
-                    color: 0,
-                    yAxis: 0,
-                    index: index,
-                    legendIndex: index,
-                    data: []
-                };
-                serie.name = monitor.name;
-                if (kpi.includes('Time')) {
-                    serie.name = 'Tiempo respuesta ' + monitor.name;
-                    serie.type = 'Line';
-                }
-                else {
-                    serie.name = 'Peticiones ' + monitor.name;
-                    serie.type = 'Column';
-                    serie.yAxis = 1;
-                }
+            var serie = {
+                name: '',
+                type: '',
+                color: 0,
+                yAxis: 0,
+                index: index,
+                legendIndex: index,
+                dataGrouping: {
+                    enabled: false
+                },
+                data: []
+            };
+            serie.name = monitor.name;
+            if (kpi.includes('Time')) {
+                serie.name = 'Tiempo respuesta ' + monitor.name;
+                serie.type = 'line';
                 serie.color = properties.colorHost[index % properties.colorHost.length];
-                _this._informeService.getDataMonitorInforme(monitor.idmonitor, fecha, interval, kpi).subscribe(function (response) {
+                _this._informeService.getDataMonitorInformeTime(monitor.idmonitor, fecha, interval, kpi).subscribe(function (response) {
                     serie.data = response.data;
-                    series.push(serie);
-                    _this.series.push(serie);
+                    resolve(serie);
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {
                         alert('Error en la obtención de los datos de las series');
                     }
                 });
-            });
-            resolve(series);
+            }
+            else {
+                serie.name = 'Peticiones ' + monitor.name;
+                serie.type = 'column';
+                serie.yAxis = 1;
+                _this._informeService.getDataMonitorInformePeticiones(monitor.idmonitor, fecha, interval, kpi).subscribe(function (response) {
+                    serie.data = response.data;
+                    resolve(serie);
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la obtención de los datos de las series');
+                    }
+                });
+            }
         });
     };
     Informe.prototype.gestionMonitores = function (iduuaa, fecha, interval) {
         var _this = this;
         this._comparativaService.getMonitors(iduuaa).subscribe(function (response) {
+            var monitors = response.data;
             var promesasMonitors = [];
-            promesasMonitors.push(_this.getDataMonitors(response.data, fecha, interval, 'Throughput'));
-            Promise.all(promesasMonitors).then(function () {
-                promesasMonitors.push(_this.getDataMonitors(response.data, fecha, interval, 'Time'));
-                Promise.all(promesasMonitors).then(function (resultado) {
-                    if (interval.includes('10')) {
-                        console.log(_this.series);
-                        var p1 = _this.grafico();
-                        p1.then(function (res) {
-                            console.log(res);
-                            _this.options = res;
-                        });
-                    }
-                    else {
-                        console.log('Busqueda 40');
-                    }
-                });
+            monitors.forEach(function (monitor, index) {
+                promesasMonitors.push(_this.getDataMonitors(index, monitor, fecha, interval, 'Throughput'));
+                promesasMonitors.push(_this.getDataMonitors(index, monitor, fecha, interval, 'Time'));
+            });
+            Promise.all(promesasMonitors).then(function (resultado) {
+                if (interval.includes('10')) {
+                    _this.grafico(resultado).then(function (res) {
+                        _this.apl_semanal = res;
+                    });
+                }
+                else {
+                    _this.grafico(resultado).then(function (res) {
+                        _this.apl_mensual = res;
+                    });
+                }
             });
         }, function (error) {
             _this.errorMessage = error;
@@ -111,8 +192,10 @@ var Informe = (function () {
     Informe.prototype.informe = function () {
         var _this = this;
         var date = new Date();
+        var horaMenos20 = new Date().getTime() - 1200000;
         var mes = date.getMonth() + 1;
-        var fecha = date.getFullYear() + '-' + mes + '-' + date.getDate();
+        var fecha = date.getFullYear() + '-' + mes + '-' + date.getDate() + ' ' + new Date(horaMenos20).getHours() + ':' +
+            new Date(horaMenos20).getMinutes() + ':' + new Date(horaMenos20).getSeconds();
         this._route.params.forEach(function (params) {
             //Recupera parametros URL.
             var name = params['name'];
@@ -123,6 +206,7 @@ var Informe = (function () {
                     _this.uuaa = response.data;
                     var idUuaa = response.data.iduuaa;
                     _this.gestionMonitores(idUuaa, fecha, '10 days');
+                    _this.gestionMonitores(idUuaa, fecha, '40 days');
                 }, function (error) {
                     _this.errorMessage = error;
                     if (_this.errorMessage != null) {

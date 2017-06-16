@@ -78,6 +78,13 @@ body{
   width: 97%
 }
 
+.informeApli {
+  width: : 50%;
+  height: 400px;
+  margin: 1 auto;
+  float: left;
+}
+
 
 footer {
   width: 80%;

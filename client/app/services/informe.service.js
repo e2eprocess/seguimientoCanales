@@ -19,8 +19,12 @@ var InformeService = (function () {
         //this.url = 'http://localhost:3845/api/';
         //this.url = 'http://v1128scp451.ad.bbva.com:3845/api/';
     }
-    InformeService.prototype.getDataMonitorInforme = function (idmonitor, fecha, interval, kpi) {
-        return this._http.get(this.url + 'getDataMonitorInforme/' + idmonitor + '/' + fecha + '/' + interval + '/' + kpi)
+    InformeService.prototype.getDataMonitorInformePeticiones = function (idmonitor, fecha, interval, kpi) {
+        return this._http.get(this.url + 'getDataMonitorInformePeticiones/' + idmonitor + '/' + fecha + '/' + interval + '/' + kpi)
+            .map(function (res) { return res.json(); });
+    };
+    InformeService.prototype.getDataMonitorInformeTime = function (idmonitor, fecha, interval, kpi) {
+        return this._http.get(this.url + 'getDataMonitorInformeTime/' + idmonitor + '/' + fecha + '/' + interval + '/' + kpi)
             .map(function (res) { return res.json(); });
     };
     return InformeService;

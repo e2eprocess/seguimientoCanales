@@ -74,6 +74,7 @@ export class Seguimiento implements OnInit {
     }
 
     pintarGrafico(series, canal){
+        console.log(series);
         jQuery('#'+canal.name).highcharts({
             chart: {
                 zoomType: 'xy'

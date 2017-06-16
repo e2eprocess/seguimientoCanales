@@ -52,6 +52,7 @@ var Seguimiento = (function () {
         this.seguimiento(this.fecha);
     };
     Seguimiento.prototype.pintarGrafico = function (series, canal) {
+        console.log(series);
         jQuery('#' + canal.name).highcharts({
             chart: {
                 zoomType: 'xy'
