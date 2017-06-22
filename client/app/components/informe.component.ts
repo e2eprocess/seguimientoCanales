@@ -128,9 +128,58 @@ export class Informe implements OnInit {
 
 	}
 
+	getDataClon(index,clon,fecha,interval,kpi){
+		var series = [];
+		var properties = new PropertiesSeries();
+
+		return new Promise((resolve,reject)=> {
+			const serie = {
+	            name: '',
+	            type: '',
+	            color: 0,
+	            yAxis: 0,
+	            index: index,
+	            legendIndex: index,
+	            dataGrouping: {
+	            	enabled: false
+	            },
+	            data: [] 
+    		};
+
+    		serie.name = clon.description;
+
+    		if(kpi.includes('CPU')){
+    			serie.name = 'CPU'+ clon.description;
+    			serie.type = 'column';
+			}else{
+				serie.name = 'Memoria'+ clon.description;
+    			serie.type = 'line';
+			}
+
+			serie.color = properties.colorHost[index%properties.colorHost.length];
+
+			this._informeService.getDataValueClonInforme(clon.idclon,fecha,interval,kpi).subscribe(
+				response =>{
+					serie.data = response.data
+ 					resolve(serie)
+				},
+				error =>{
+					this.errorMessage = <any>error;
+	                if(this.errorMessage != null){
+	      	        	alert('Error en la obtención de los datos de las series');
+	      	        	reject();
+	                }
+				});
+ 		
+
+		});
+
+
+	}
+
+
 	getDataMonitors(index,monitor,fecha,interval,kpi){
 		var series = []
-		
 		var properties = new PropertiesSeries();
 
 		return new Promise((resolve,reject)=>{
@@ -148,48 +197,44 @@ export class Informe implements OnInit {
 	            data: [] 
     		};
 
-    		serie.name = monitor.name;
-
 		    if(kpi.includes('Time')){
 	        	serie.name = 'Tiempo respuesta '+ monitor.name;
 	        	serie.type = 'line';
-	        
-		        serie.color = properties.colorHost[index%properties.colorHost.length];
-		
-				this._informeService.getDataMonitorInformeTime(monitor.idmonitor,fecha,interval,kpi).subscribe(
-					response=>{
-						serie.data = response.data;
-						resolve(serie);
-
-					},
-					error=>{
-						this.errorMessage = <any>error;
-		                if(this.errorMessage != null){
-		      	        	alert('Error en la obtención de los datos de las series');
-		                }
-					}
-				);
-			}else{
-	        	serie.name = 'Peticiones '+ monitor.name;
+        	}else{
+        		serie.name = 'Peticiones '+ monitor.name;
 	        	serie.type = 'column';
 	        	serie.yAxis = 1;
+        	}
+	        
+	        serie.color = properties.colorHost[index%properties.colorHost.length];
+	
+			this._informeService.getDataMonitorInformeTime(monitor.idmonitor,fecha,interval,kpi).subscribe(
+				response=>{
+					serie.data = response.data;
+					resolve(serie);
 
-	        	this._informeService.getDataMonitorInformePeticiones(monitor.idmonitor,fecha,interval,kpi).subscribe(
-					response=>{
-						serie.data = response.data;
-						resolve(serie);
-
-					},
-					error=>{
-						this.errorMessage = <any>error;
-		                if(this.errorMessage != null){
-		      	        	alert('Error en la obtención de los datos de las series');
-		                }
-					}
-				);
-	        }
-			
+				},
+				error=>{
+					this.errorMessage = <any>error;
+	                if(this.errorMessage != null){
+	      	        	alert('Error en la obtención de los datos de las series');
+	      	        	reject();
+	                }
+				}
+			);
 		});
+	}
+
+	gestionClones(clons,fecha,interval){
+		var promesasClon = [];
+
+		clons.forEach((clon,index)=>{
+			promesasClon.push(this.getDataClon(index,clon,fecha,interval,'CPU'));
+			promesasClon.push(this.getDataClon(index,clon,fecha,interval,'Memory'));
+		})
+
+		Promise.all(promesasClon).then((resultado)=>{})
+
 	}
 
 	gestionMonitores(iduuaa,fecha,interval){
@@ -242,7 +287,8 @@ export class Informe implements OnInit {
 
             this._comparativaService.getIdChannel(channel).subscribe(
             	response => {
-            		this._comparativaService.getIdUuaa(response.data.idchannel, name).subscribe(
+            		var idChannel = response.data.idchannel;
+            		this._comparativaService.getIdUuaa(idChannel, name).subscribe(
             			response => {
             				this.uuaa = response.data;
             				var idUuaa = response.data.iduuaa;
@@ -256,6 +302,14 @@ export class Informe implements OnInit {
 			                }
             			}
         			);
+        			this._comparativaService.getIdClon(idChannel,name).subscribe(
+        				response=>{
+        					var clons = response.data;
+        					this.gestionClones(clons,fecha,'10 days')
+        				},
+        				error=>{
+
+        				});
             	},
             	error => {
             		this.errorMessage = <any>error;

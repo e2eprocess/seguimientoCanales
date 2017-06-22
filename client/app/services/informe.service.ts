@@ -35,6 +35,11 @@ export class InformeService {
 	getDataMonitorInformeTime(idmonitor, fecha, interval, kpi){
 		return this._http.get(this.url+'getDataMonitorInformeTime/'+idmonitor+'/'+fecha+'/'+interval+'/'+kpi)
 							.map(res => res.json());
+						}
 
+	getDataValueClonInforme(idclon, fecha, interval, kpi){
+		return this._http.get(this.url+'getDataValueClonInforme/'+idclon+'/'+fecha+'/'+interval+'/'+kpi)
+							.map(res => res.json());
+						}
 
 }

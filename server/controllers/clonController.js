@@ -212,11 +212,67 @@ function getDatavalueClonByHost (req, res, next) {
 			})
 }
 
+
+/** @description Devuelve los valores de CPU o MEMORIA de un CLON perteneciente a un host entre las fechas indicadas.    
+ * @param {maquina} Indentificador unico del HOST.
+ * @param {desde} Fecha inicial de la búsqieda.
+ * @param {hasta} Fecha límite de la búsqueda.
+ * @param {canal} Identificador del canal.
+ * @param {uuaa} Nombre de la UUAA.
+ * @param {kpi} Nombre del kpi (CPU o MEMORIA)
+ * @return {data} Valor del consumo.
+ */
+function getDataValueClonInforme (req, res, next) {
+	var parametros = {
+		$idclon: req.params.idclon,
+		$fecha: req.params.fecha,
+		$interval: req.params.interval,
+		$kpi: req.params.kpi,
+		$hour: 'hour'
+	}
+	db.any('SELECT ((extract(epoch from fecha))::numeric)*1000 as x, \
+					peticiones as y \
+			FROM ( \
+				SELECT 	date_trunc(${$hour}, B.timedata) as fecha, \
+    			     	c.name as nombre, \
+              			max(B.datavalue)::DECIMAL(10,2) as peticiones\
+      			FROM \"E2E\".clon A, \"E2E\".clondata B, \"E2E\".kpi C \
+                  WHERE A.idclon = ${$idclon} \
+  				AND 	B.timedata > (TIMESTAMP ${$fecha} - INTERVAL ${$interval})\
+              	AND B.timedata <= (TIMESTAMP ${$fecha}) \
+                AND C.name = ${$kpi} \
+                AND B.idkpi = c.idkpi \
+                AND A.idclon = B.idclon \
+                GROUP BY 1,2 \
+              	ORDER BY 1 asc ) as T1 ', parametros)
+		.then(function(data) {
+			//Lectura datos y transformación de json a Array
+			var datos = data.map((elem) => {
+				return [ parseInt(elem.x), parseFloat(elem.y)]
+			})
+			//Devuelve el array si es una ejecuión correcta
+			res.status(200)
+				.send({
+					data: datos
+				});
+			})
+			.catch(function (err) {
+				logger.error(err);
+				res.status(500).send({Status: 'Error al obtener HostData',
+										message: err.message});
+			})
+}
+
+
+
+
+
 /*Módulos a exportar*/
 module.exports = {
 	getIdClon,
 	getDateAndDatavalueClon,
 	getDatavalueClon,
 	getDateAndDatavalueClonByHost,
-	getDatavalueClonByHost
+	getDatavalueClonByHost,
+	getDataValueClonInforme
 }

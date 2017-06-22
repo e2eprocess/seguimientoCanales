@@ -27,6 +27,10 @@ var InformeService = (function () {
         return this._http.get(this.url + 'getDataMonitorInformeTime/' + idmonitor + '/' + fecha + '/' + interval + '/' + kpi)
             .map(function (res) { return res.json(); });
     };
+    InformeService.prototype.getDataValueClonInforme = function (idclon, fecha, interval, kpi) {
+        return this._http.get(this.url + 'getDataValueClonInforme/' + idclon + '/' + fecha + '/' + interval + '/' + kpi)
+            .map(function (res) { return res.json(); });
+    };
     return InformeService;
 }());
 InformeService = __decorate([

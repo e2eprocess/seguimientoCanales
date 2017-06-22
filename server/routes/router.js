@@ -33,5 +33,7 @@ api.get('/getDatavalueClonByHost/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kp
 api.get('/getIdClon/:idchannel/:name', clonController.getIdClon);
 api.get('/getClonDataComparativa/:idclon/fechas/:desde/:hasta/:kpi', clonController.getDateAndDatavalueClon);
 api.get('/getDatavalueClon/:idclon/fechas/:desde/:hasta/:kpi', clonController.getDatavalueClon);
+api.get('/getDataValueClonInforme/:idclon/:fecha/:interval/:kpi', clonController.getDataValueClonInforme);
+
 
 module.exports = api;

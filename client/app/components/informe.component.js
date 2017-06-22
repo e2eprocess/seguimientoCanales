@@ -113,6 +113,45 @@ var Informe = (function () {
             resolve(grafico);
         });
     };
+    Informe.prototype.getDataClon = function (index, clon, fecha, interval, kpi) {
+        var _this = this;
+        var series = [];
+        var properties = new propertiesSeries_1.PropertiesSeries();
+        return new Promise(function (resolve, reject) {
+            var serie = {
+                name: '',
+                type: '',
+                color: 0,
+                yAxis: 0,
+                index: index,
+                legendIndex: index,
+                dataGrouping: {
+                    enabled: false
+                },
+                data: []
+            };
+            serie.name = clon.description;
+            if (kpi.includes('CPU')) {
+                serie.name = 'CPU' + clon.description;
+                serie.type = 'column';
+            }
+            else {
+                serie.name = 'Memoria' + clon.description;
+                serie.type = 'line';
+            }
+            serie.color = properties.colorHost[index % properties.colorHost.length];
+            _this._informeService.getDataValueClonInforme(clon.idclon, fecha, interval, kpi).subscribe(function (response) {
+                serie.data = response.data;
+                resolve(serie);
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención de los datos de las series');
+                    reject();
+                }
+            });
+        });
+    };
     Informe.prototype.getDataMonitors = function (index, monitor, fecha, interval, kpi) {
         var _this = this;
         var series = [];
@@ -130,36 +169,36 @@ var Informe = (function () {
                 },
                 data: []
             };
-            serie.name = monitor.name;
             if (kpi.includes('Time')) {
                 serie.name = 'Tiempo respuesta ' + monitor.name;
                 serie.type = 'line';
-                serie.color = properties.colorHost[index % properties.colorHost.length];
-                _this._informeService.getDataMonitorInformeTime(monitor.idmonitor, fecha, interval, kpi).subscribe(function (response) {
-                    serie.data = response.data;
-                    resolve(serie);
-                }, function (error) {
-                    _this.errorMessage = error;
-                    if (_this.errorMessage != null) {
-                        alert('Error en la obtención de los datos de las series');
-                    }
-                });
             }
             else {
                 serie.name = 'Peticiones ' + monitor.name;
                 serie.type = 'column';
                 serie.yAxis = 1;
-                _this._informeService.getDataMonitorInformePeticiones(monitor.idmonitor, fecha, interval, kpi).subscribe(function (response) {
-                    serie.data = response.data;
-                    resolve(serie);
-                }, function (error) {
-                    _this.errorMessage = error;
-                    if (_this.errorMessage != null) {
-                        alert('Error en la obtención de los datos de las series');
-                    }
-                });
             }
+            serie.color = properties.colorHost[index % properties.colorHost.length];
+            _this._informeService.getDataMonitorInformeTime(monitor.idmonitor, fecha, interval, kpi).subscribe(function (response) {
+                serie.data = response.data;
+                resolve(serie);
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención de los datos de las series');
+                    reject();
+                }
+            });
         });
+    };
+    Informe.prototype.gestionClones = function (clons, fecha, interval) {
+        var _this = this;
+        var promesasClon = [];
+        clons.forEach(function (clon, index) {
+            promesasClon.push(_this.getDataClon(index, clon, fecha, interval, 'CPU'));
+            promesasClon.push(_this.getDataClon(index, clon, fecha, interval, 'Memory'));
+        });
+        Promise.all(promesasClon).then(function (resultado) { });
     };
     Informe.prototype.gestionMonitores = function (iduuaa, fecha, interval) {
         var _this = this;
@@ -202,7 +241,8 @@ var Informe = (function () {
             var channel = params['channel'];
             _this.name = name;
             _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
-                _this._comparativaService.getIdUuaa(response.data.idchannel, name).subscribe(function (response) {
+                var idChannel = response.data.idchannel;
+                _this._comparativaService.getIdUuaa(idChannel, name).subscribe(function (response) {
                     _this.uuaa = response.data;
                     var idUuaa = response.data.iduuaa;
                     _this.gestionMonitores(idUuaa, fecha, '10 days');
@@ -212,6 +252,11 @@ var Informe = (function () {
                     if (_this.errorMessage != null) {
                         alert('Error en la obtención del ID de la UUAA');
                     }
+                });
+                _this._comparativaService.getIdClon(idChannel, name).subscribe(function (response) {
+                    var clons = response.data;
+                    _this.gestionClones(clons, fecha, '10 days');
+                }, function (error) {
                 });
             }, function (error) {
                 _this.errorMessage = error;
