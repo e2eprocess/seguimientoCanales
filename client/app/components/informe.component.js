@@ -25,8 +25,19 @@ var Informe = (function () {
         this.series = [];
         this.informe();
     };
-    Informe.prototype.grafico = function (series) {
+    Informe.prototype.grafico = function (series, interval) {
         var _this = this;
+        var subtitleText = '';
+        if (interval.includes('10')) {
+            subtitleText = 'Visión últimos 10 dias';
+        }
+        else {
+            subtitleText = 'Visión últimos 40 dias';
+        }
+        ;
+        /*if(kpi=='CPU'&kpi=='Memory'){
+            console.log('hemos entrado');
+        }*/
         return new Promise(function (resolve, reject) {
             var grafico = {
                 chart: {
@@ -36,7 +47,7 @@ var Informe = (function () {
                     text: _this.name + ' - APLICACÓN'
                 },
                 subtitle: {
-                    text: 'Subtitulo'
+                    text: subtitleText
                 },
                 credits: { enabled: false },
                 navigator: { enabled: false },
@@ -132,11 +143,11 @@ var Informe = (function () {
             };
             serie.name = clon.description;
             if (kpi.includes('CPU')) {
-                serie.name = 'CPU' + clon.description;
+                serie.name = 'CPU-' + clon.description;
                 serie.type = 'column';
             }
             else {
-                serie.name = 'Memoria' + clon.description;
+                serie.name = 'Memoria-' + clon.description;
                 serie.type = 'line';
             }
             serie.color = properties.colorHost[index % properties.colorHost.length];
@@ -198,7 +209,11 @@ var Informe = (function () {
             promesasClon.push(_this.getDataClon(index, clon, fecha, interval, 'CPU'));
             promesasClon.push(_this.getDataClon(index, clon, fecha, interval, 'Memory'));
         });
-        Promise.all(promesasClon).then(function (resultado) { });
+        Promise.all(promesasClon).then(function (resultado) {
+            _this.grafico(resultado, interval).then(function (res) {
+                _this.rec_semanal = res;
+            });
+        });
     };
     Informe.prototype.gestionMonitores = function (iduuaa, fecha, interval) {
         var _this = this;
@@ -211,12 +226,12 @@ var Informe = (function () {
             });
             Promise.all(promesasMonitors).then(function (resultado) {
                 if (interval.includes('10')) {
-                    _this.grafico(resultado).then(function (res) {
+                    _this.grafico(resultado, interval).then(function (res) {
                         _this.apl_semanal = res;
                     });
                 }
                 else {
-                    _this.grafico(resultado).then(function (res) {
+                    _this.grafico(resultado, interval).then(function (res) {
                         _this.apl_mensual = res;
                     });
                 }

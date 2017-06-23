@@ -22,6 +22,7 @@ export class Informe implements OnInit {
 	public errorMessage;
 	public apl_semanal: Object;
 	public apl_mensual: Object;
+	public rec_semanal: Object;
 	public name: string;
 	public uuaa: object;
 	public series: Array<any>
@@ -38,7 +39,19 @@ export class Informe implements OnInit {
 		this.informe()
 	}
 
-	grafico(series){
+	grafico(series,interval){
+		var subtitleText = '';
+
+		if(interval.includes('10')){
+			subtitleText = 'Visión últimos 10 dias';
+		}else{
+			subtitleText = 'Visión últimos 40 dias';
+		};
+
+		/*if(kpi=='CPU'&kpi=='Memory'){
+			console.log('hemos entrado');
+		}*/
+
 		return new Promise((resolve,reject)=>{
 			var grafico = {
 				chart: {
@@ -48,7 +61,7 @@ export class Informe implements OnInit {
 					text: this.name+' - APLICACÓN'
 				},
 				subtitle: {
-					text:'Subtitulo'
+					text: subtitleText
 				},
 				credits: { enabled: false },
 				navigator: {enabled: false },
@@ -149,10 +162,10 @@ export class Informe implements OnInit {
     		serie.name = clon.description;
 
     		if(kpi.includes('CPU')){
-    			serie.name = 'CPU'+ clon.description;
+    			serie.name = 'CPU-'+ clon.description;
     			serie.type = 'column';
 			}else{
-				serie.name = 'Memoria'+ clon.description;
+				serie.name = 'Memoria-'+ clon.description;
     			serie.type = 'line';
 			}
 
@@ -233,7 +246,11 @@ export class Informe implements OnInit {
 			promesasClon.push(this.getDataClon(index,clon,fecha,interval,'Memory'));
 		})
 
-		Promise.all(promesasClon).then((resultado)=>{})
+		Promise.all(promesasClon).then((resultado)=>{
+			this.grafico(resultado,interval).then((res)=>{
+				this.rec_semanal = res;
+			});
+		})
 
 	}
 
@@ -250,12 +267,12 @@ export class Informe implements OnInit {
 		
 				Promise.all(promesasMonitors).then((resultado)=>{
 					if(interval.includes('10')){
-						this.grafico(resultado).then((res)=>{
+						this.grafico(resultado, interval).then((res)=>{
 							this.apl_semanal = res;
 						});
 
 					}else{
-						this.grafico(resultado).then((res)=>{
+						this.grafico(resultado, interval).then((res)=>{
 							this.apl_mensual = res;
 						});
 					}
