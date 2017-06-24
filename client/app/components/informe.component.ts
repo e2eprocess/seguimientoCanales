@@ -22,6 +22,8 @@ export class Informe implements OnInit {
 	public errorMessage;
 	public apl_semanal: Object;
 	public apl_mensual: Object;
+	public rec_semanal: Object;
+	public rec_mensual: Object;
 	public name: string;
 	public uuaa: object;
 	public series: Array<any>
@@ -38,17 +40,44 @@ export class Informe implements OnInit {
 		this.informe()
 	}
 
-	grafico(series){
+	grafico(series, interval, info){
+
+		var chartHeight = 0,
+			subtitleText = 'Visión úl4imos 10 días',
+		 	legendEnable = true,
+		 	yAxisLabelsFormat = '{value} ms.',
+			yAxisTittleText = 'Tiempo de respuesta (ms.)',
+			yAxisLabelsFormatOpposite = '{value}',
+			yAxisTittleTextOpposite = 'Peticiones por hora',
+			columnStacking = '';
+
+
+		if (interval.includes('40')){
+			var subtitleText = 'Visión últimos 40 días';
+		}
+		if (info.includes('RECURSOS')){
+			chartHeight = 275;
+			legendEnable = false;
+			yAxisLabelsFormat = '{value} %';
+			yAxisTittleText = 'CPU %';
+			yAxisLabelsFormatOpposite = '{value} %';
+			yAxisTittleTextOpposite = 'Memoria %';
+			columnStacking = 'normal';
+		}
+
+
+
 		return new Promise((resolve,reject)=>{
 			var grafico = {
 				chart: {
+					height: chartHeight,
 					zoomType: 'xy'
 				},
 				title: {
-					text: this.name+' - APLICACÓN'
+					text: this.name+' - '+info
 				},
 				subtitle: {
-					text:'Subtitulo'
+					text: subtitleText
 				},
 				credits: { enabled: false },
 				navigator: {enabled: false },
@@ -57,26 +86,21 @@ export class Informe implements OnInit {
 				xAxis: {
 					type: 'datetime'
 				},
-				yAxis: [{ //tiempo de respuesta
-					labels: {
-						format: '{value} ms.'
-					},
-					title: {
-						text: 'Tiempo de respuesta (ms.)'
-					},
-					min: 0,
-					opposite: false
-					},{ //Peticiones
-					title: {
-						text: 'Peticiones por hora'
-					}
+				yAxis: [{ 
+						labels: {format: yAxisLabelsFormat},
+						title: {text: yAxisTittleText},
+						min: 0,
+						opposite: false
+					},{
+						labels: {format: yAxisLabelsFormatOpposite},
+						title: {text: yAxisTittleTextOpposite}
 				}],
 				tooltip: {
 					shared: true,
 					crosshair: true
 				},
 				legend: {
-					enabled: true,
+					enabled: legendEnable,
 					layout: 'horizontal',
 					align: 'center',
 					verticalAlign: 'bottom',
@@ -106,6 +130,9 @@ export class Informe implements OnInit {
 							}
 						}
 					},
+					column : {
+						stacking: columnStacking
+					}
 					series: {
 						marker: {
 							enabled: false,
@@ -149,10 +176,10 @@ export class Informe implements OnInit {
     		serie.name = clon.description;
 
     		if(kpi.includes('CPU')){
-    			serie.name = 'CPU'+ clon.description;
+    			serie.name = 'CPU '+ clon.description;
     			serie.type = 'column';
 			}else{
-				serie.name = 'Memoria'+ clon.description;
+				serie.name = 'Memoria '+ clon.description;
     			serie.type = 'line';
 			}
 
@@ -231,9 +258,20 @@ export class Informe implements OnInit {
 		clons.forEach((clon,index)=>{
 			promesasClon.push(this.getDataClon(index,clon,fecha,interval,'CPU'));
 			promesasClon.push(this.getDataClon(index,clon,fecha,interval,'Memory'));
-		})
+		});
 
-		Promise.all(promesasClon).then((resultado)=>{})
+		Promise.all(promesasClon).then((resultado)=>{
+			if(interval.includes('10')){
+				this.grafico(resultado, interval, 'RECURSOS').then((res)=>{
+					this.rec_semanal = res;
+				});
+
+			}else{
+				this.grafico(resultado, interval, 'RECURSOS').then((res)=>{
+					this.rec_mensual = res;
+				});
+			}
+		});
 
 	}
 
@@ -250,12 +288,12 @@ export class Informe implements OnInit {
 		
 				Promise.all(promesasMonitors).then((resultado)=>{
 					if(interval.includes('10')){
-						this.grafico(resultado).then((res)=>{
+						this.grafico(resultado, interval, 'APLICACIÓN').then((res)=>{
 							this.apl_semanal = res;
 						});
 
 					}else{
-						this.grafico(resultado).then((res)=>{
+						this.grafico(resultado, interval, 'APLICACIÓN').then((res)=>{
 							this.apl_mensual = res;
 						});
 					}
@@ -305,7 +343,8 @@ export class Informe implements OnInit {
         			this._comparativaService.getIdClon(idChannel,name).subscribe(
         				response=>{
         					var clons = response.data;
-        					this.gestionClones(clons,fecha,'10 days')
+        					this.gestionClones(clons,fecha,'10 days');
+        					this.gestionClones(clons,fecha,'40 days');
         				},
         				error=>{
 

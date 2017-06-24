@@ -25,18 +25,32 @@ var Informe = (function () {
         this.series = [];
         this.informe();
     };
-    Informe.prototype.grafico = function (series) {
+    Informe.prototype.grafico = function (series, interval, info) {
         var _this = this;
+        var chartHeight = 0, subtitleText = 'Visión úl4imos 10 días', legendEnable = true, yAxisLabelsFormat = '{value} ms.', yAxisTittleText = 'Tiempo de respuesta (ms.)', yAxisLabelsFormatOpposite = '{value}', yAxisTittleTextOpposite = 'Peticiones por hora', columnStacking = '';
+        if (interval.includes('40')) {
+            var subtitleText = 'Visión últimos 40 días';
+        }
+        if (info.includes('RECURSOS')) {
+            chartHeight = 275;
+            legendEnable = false;
+            yAxisLabelsFormat = '{value} %';
+            yAxisTittleText = 'CPU %';
+            yAxisLabelsFormatOpposite = '{value} %';
+            yAxisTittleTextOpposite = 'Memoria %';
+            columnStacking = 'normal';
+        }
         return new Promise(function (resolve, reject) {
             var grafico = {
                 chart: {
+                    height: chartHeight,
                     zoomType: 'xy'
                 },
                 title: {
-                    text: _this.name + ' - APLICACÓN'
+                    text: _this.name + ' - ' + info
                 },
                 subtitle: {
-                    text: 'Subtitulo'
+                    text: subtitleText
                 },
                 credits: { enabled: false },
                 navigator: { enabled: false },
@@ -46,25 +60,20 @@ var Informe = (function () {
                     type: 'datetime'
                 },
                 yAxis: [{
-                        labels: {
-                            format: '{value} ms.'
-                        },
-                        title: {
-                            text: 'Tiempo de respuesta (ms.)'
-                        },
+                        labels: { format: yAxisLabelsFormat },
+                        title: { text: yAxisTittleText },
                         min: 0,
                         opposite: false
                     }, {
-                        title: {
-                            text: 'Peticiones por hora'
-                        }
+                        labels: { format: yAxisLabelsFormatOpposite },
+                        title: { text: yAxisTittleTextOpposite }
                     }],
                 tooltip: {
                     shared: true,
                     crosshair: true
                 },
                 legend: {
-                    enabled: true,
+                    enabled: legendEnable,
                     layout: 'horizontal',
                     align: 'center',
                     verticalAlign: 'bottom',
@@ -93,6 +102,9 @@ var Informe = (function () {
                                 hover: { enabled: true }
                             }
                         }
+                    },
+                    column: {
+                        stacking: columnStacking
                     },
                     series: {
                         marker: {
@@ -132,11 +144,11 @@ var Informe = (function () {
             };
             serie.name = clon.description;
             if (kpi.includes('CPU')) {
-                serie.name = 'CPU' + clon.description;
+                serie.name = 'CPU ' + clon.description;
                 serie.type = 'column';
             }
             else {
-                serie.name = 'Memoria' + clon.description;
+                serie.name = 'Memoria ' + clon.description;
                 serie.type = 'line';
             }
             serie.color = properties.colorHost[index % properties.colorHost.length];
@@ -198,7 +210,18 @@ var Informe = (function () {
             promesasClon.push(_this.getDataClon(index, clon, fecha, interval, 'CPU'));
             promesasClon.push(_this.getDataClon(index, clon, fecha, interval, 'Memory'));
         });
-        Promise.all(promesasClon).then(function (resultado) { });
+        Promise.all(promesasClon).then(function (resultado) {
+            if (interval.includes('10')) {
+                _this.grafico(resultado, interval, 'RECURSOS').then(function (res) {
+                    _this.rec_semanal = res;
+                });
+            }
+            else {
+                _this.grafico(resultado, interval, 'RECURSOS').then(function (res) {
+                    _this.rec_mensual = res;
+                });
+            }
+        });
     };
     Informe.prototype.gestionMonitores = function (iduuaa, fecha, interval) {
         var _this = this;
@@ -211,12 +234,12 @@ var Informe = (function () {
             });
             Promise.all(promesasMonitors).then(function (resultado) {
                 if (interval.includes('10')) {
-                    _this.grafico(resultado).then(function (res) {
+                    _this.grafico(resultado, interval, 'APLICACIÓN').then(function (res) {
                         _this.apl_semanal = res;
                     });
                 }
                 else {
-                    _this.grafico(resultado).then(function (res) {
+                    _this.grafico(resultado, interval, 'APLICACIÓN').then(function (res) {
                         _this.apl_mensual = res;
                     });
                 }
@@ -256,6 +279,7 @@ var Informe = (function () {
                 _this._comparativaService.getIdClon(idChannel, name).subscribe(function (response) {
                     var clons = response.data;
                     _this.gestionClones(clons, fecha, '10 days');
+                    _this.gestionClones(clons, fecha, '40 days');
                 }, function (error) {
                 });
             }, function (error) {
