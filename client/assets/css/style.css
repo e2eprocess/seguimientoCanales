@@ -85,6 +85,13 @@ body{
   float: left;
 }
 
+.informeRec {
+  width: : 50%;
+  height: 275px;
+  margin: 1 auto;
+  float: left;
+}
+
 
 footer {
   width: 80%;

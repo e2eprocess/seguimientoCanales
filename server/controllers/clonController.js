@@ -231,11 +231,11 @@ function getDataValueClonInforme (req, res, next) {
 		$hour: 'hour'
 	}
 	db.any('SELECT ((extract(epoch from fecha))::numeric)*1000 as x, \
-					peticiones as y \
+					valor as y \
 			FROM ( \
 				SELECT 	date_trunc(${$hour}, B.timedata) as fecha, \
     			     	c.name as nombre, \
-              			max(B.datavalue)::DECIMAL(10,2) as peticiones\
+              			(max(B.datavalue)::DECIMAL(10,2)) as valor\
       			FROM \"E2E\".clon A, \"E2E\".clondata B, \"E2E\".kpi C \
                   WHERE A.idclon = ${$idclon} \
   				AND 	B.timedata > (TIMESTAMP ${$fecha} - INTERVAL ${$interval})\

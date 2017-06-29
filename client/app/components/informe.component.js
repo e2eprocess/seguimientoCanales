@@ -25,26 +25,30 @@ var Informe = (function () {
         this.series = [];
         this.informe();
     };
-    Informe.prototype.grafico = function (series, interval) {
+    Informe.prototype.grafico = function (series, interval, info) {
         var _this = this;
-        var subtitleText = '';
-        if (interval.includes('10')) {
-            subtitleText = 'Visión últimos 10 dias';
+        var chartHeight = 0, subtitleText = 'Visión úl4imos 10 días', legendEnable = true, yAxisLabelsFormat = '{value} ms.', yAxisTittleText = 'Tiempo de respuesta (ms.)', yAxisLabelsFormatOpposite = '{value}', yAxisTittleTextOpposite = 'Peticiones por hora', yAxisMax = null, columnStacking = '';
+        if (interval.includes('40')) {
+            var subtitleText = 'Visión últimos 40 días';
         }
-        else {
-            subtitleText = 'Visión últimos 40 dias';
+        if (info.includes('RECURSOS')) {
+            chartHeight = 275;
+            legendEnable = false;
+            yAxisLabelsFormat = '{value} %';
+            yAxisTittleText = 'CPU %';
+            yAxisLabelsFormatOpposite = '{value} %';
+            yAxisTittleTextOpposite = 'Memoria %';
+            yAxisMax = 100;
+            columnStacking = 'normal';
         }
-        ;
-        /*if(kpi=='CPU'&kpi=='Memory'){
-            console.log('hemos entrado');
-        }*/
         return new Promise(function (resolve, reject) {
             var grafico = {
                 chart: {
+                    height: chartHeight,
                     zoomType: 'xy'
                 },
                 title: {
-                    text: _this.name + ' - APLICACÓN'
+                    text: _this.name + ' - ' + info
                 },
                 subtitle: {
                     text: subtitleText
@@ -57,25 +61,22 @@ var Informe = (function () {
                     type: 'datetime'
                 },
                 yAxis: [{
-                        labels: {
-                            format: '{value} ms.'
-                        },
-                        title: {
-                            text: 'Tiempo de respuesta (ms.)'
-                        },
+                        labels: { format: yAxisLabelsFormat },
+                        title: { text: yAxisTittleText },
                         min: 0,
+                        max: yAxisMax,
                         opposite: false
                     }, {
-                        title: {
-                            text: 'Peticiones por hora'
-                        }
+                        labels: { format: yAxisLabelsFormatOpposite },
+                        title: { text: yAxisTittleTextOpposite },
+                        max: yAxisMax,
                     }],
                 tooltip: {
                     shared: true,
                     crosshair: true
                 },
                 legend: {
-                    enabled: true,
+                    enabled: legendEnable,
                     layout: 'horizontal',
                     align: 'center',
                     verticalAlign: 'bottom',
@@ -104,6 +105,9 @@ var Informe = (function () {
                                 hover: { enabled: true }
                             }
                         }
+                    },
+                    column: {
+                        stacking: columnStacking
                     },
                     series: {
                         marker: {
@@ -143,14 +147,15 @@ var Informe = (function () {
             };
             serie.name = clon.description;
             if (kpi.includes('CPU')) {
-                serie.name = 'CPU-' + clon.description;
+                serie.name = 'CPU ' + clon.description;
                 serie.type = 'column';
+                serie.color = properties.colorInformeCpu[index % properties.colorInformeCpu.length];
             }
             else {
-                serie.name = 'Memoria-' + clon.description;
+                serie.name = 'Memoria ' + clon.description;
                 serie.type = 'line';
+                serie.color = properties.colorInformeMemoria[index % properties.colorInformeMemoria.length];
             }
-            serie.color = properties.colorHost[index % properties.colorHost.length];
             _this._informeService.getDataValueClonInforme(clon.idclon, fecha, interval, kpi).subscribe(function (response) {
                 serie.data = response.data;
                 resolve(serie);
@@ -183,13 +188,14 @@ var Informe = (function () {
             if (kpi.includes('Time')) {
                 serie.name = 'Tiempo respuesta ' + monitor.name;
                 serie.type = 'line';
+                serie.color = properties.colorInformeTiempo[index % properties.colorInformeTiempo.length];
             }
             else {
                 serie.name = 'Peticiones ' + monitor.name;
                 serie.type = 'column';
                 serie.yAxis = 1;
+                serie.color = properties.colorInformePeticiones[index % properties.colorInformePeticiones.length];
             }
-            serie.color = properties.colorHost[index % properties.colorHost.length];
             _this._informeService.getDataMonitorInformeTime(monitor.idmonitor, fecha, interval, kpi).subscribe(function (response) {
                 serie.data = response.data;
                 resolve(serie);
@@ -210,9 +216,16 @@ var Informe = (function () {
             promesasClon.push(_this.getDataClon(index, clon, fecha, interval, 'Memory'));
         });
         Promise.all(promesasClon).then(function (resultado) {
-            _this.grafico(resultado, interval).then(function (res) {
-                _this.rec_semanal = res;
-            });
+            if (interval.includes('10')) {
+                _this.grafico(resultado, interval, 'RECURSOS').then(function (res) {
+                    _this.rec_semanal = res;
+                });
+            }
+            else {
+                _this.grafico(resultado, interval, 'RECURSOS').then(function (res) {
+                    _this.rec_mensual = res;
+                });
+            }
         });
     };
     Informe.prototype.gestionMonitores = function (iduuaa, fecha, interval) {
@@ -226,12 +239,12 @@ var Informe = (function () {
             });
             Promise.all(promesasMonitors).then(function (resultado) {
                 if (interval.includes('10')) {
-                    _this.grafico(resultado, interval).then(function (res) {
+                    _this.grafico(resultado, interval, 'APLICACIÓN').then(function (res) {
                         _this.apl_semanal = res;
                     });
                 }
                 else {
-                    _this.grafico(resultado, interval).then(function (res) {
+                    _this.grafico(resultado, interval, 'APLICACIÓN').then(function (res) {
                         _this.apl_mensual = res;
                     });
                 }
@@ -271,6 +284,7 @@ var Informe = (function () {
                 _this._comparativaService.getIdClon(idChannel, name).subscribe(function (response) {
                     var clons = response.data;
                     _this.gestionClones(clons, fecha, '10 days');
+                    _this.gestionClones(clons, fecha, '40 days');
                 }, function (error) {
                 });
             }, function (error) {

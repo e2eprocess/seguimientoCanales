@@ -24,6 +24,7 @@ api.get('/getDataMonitorInformeTime/:idmonitor/:fecha/:interval/:kpi', monitorCo
 
 api.get('/getIdHost/:idchannel/:name', hostController.getIdHost);
 api.get('/getIdHostChannel/:idchannel', hostController.getIdHostChannel);
+api.get('/getIdHostChannelAsoApx/:idchannel/:desc', hostController.getIdHostChannelAsoApx);
 api.get('/getDateAndDatavalueHost/:idhost/:kpi/fechas/:desde/:hasta', hostController.getDateAndDatavalueHost);
 api.get('/getDatavalueHost/:idhost/:kpi/fechas/:desde/:hasta', hostController.getDatavalueHost);
 api.get('/getDateAndDatavalueClonByHost/:idhost/fechas/:desde/:hasta/:channel/:uuaa/:kpi', clonController.getDateAndDatavalueClonByHost);

@@ -40,10 +40,37 @@ function getIdHostChannel (req, res, next) {
 	db.any('select a.idhost, b.name \
 			from \"E2E\".hostbychannel a, \"E2E\".host b \
 			where a.idchannel = $1 \
-			and b.description not like \'%ASO%\' \
-			and b.description not like \'%APX%\' \
+			and b.description not like \'ASO%\' \
+			and b.description not like \'APX%\' \
 			and a.idhost = b.idhost \
 			order by 1', idchannel)
+		.then(function(data) {
+			res.status(200)
+				.json({
+					data: data
+				});
+			})
+			.catch(function (err) {
+				logger.error(err);
+				res.status(500).send({message: 'Error al devolver el idhost'});
+			});
+}
+
+/** @description Devuelve los idhost y el nombre de los host pertenecientes al canal.  
+ * @param {idchannel} Indentificador único del host
+ * @return {data} Array de objetos (idhost, name)
+ */
+function getIdHostChannelAsoApx (req, res, next) {
+	var parametros = {
+		idchannel: req.params.idchannel,
+		desc: req.params.desc+'%'
+	};
+	db.any('select a.idhost, b.name \
+			from \"E2E\".hostbychannel a, \"E2E\".host b \
+			where a.idchannel = ${$idchannel} \
+			and b.description like ${$desc} \
+			and a.idhost = b.idhost \
+			order by 1', parametros)
 		.then(function(data) {
 			res.status(200)
 				.json({
@@ -142,5 +169,6 @@ module.exports = {
 	getIdHost,
 	getIdHostChannel,
 	getDateAndDatavalueHost,
-	getDatavalueHost
+	getDatavalueHost,
+	getIdHostChannelAsoApx
 }
