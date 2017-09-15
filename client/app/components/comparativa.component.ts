@@ -156,6 +156,7 @@ export class Comparativa implements OnInit {
 
             case "cpuPar":
                 var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas pares)</font>',
+                    chartHeight= 250,
                     yAxisTitleText = 'CPU %',
                     yAxislabelsFormat = '{value} %';
                     yAxisMax = 100
@@ -163,6 +164,7 @@ export class Comparativa implements OnInit {
 
             case "cpuImpar":
                 var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas impares)</font>',
+                    chartHeight= 250,
                     yAxisTitleText = 'CPU %',
                     yAxislabelsFormat = '{value} %';
                     yAxisMax = 100
@@ -359,31 +361,56 @@ export class Comparativa implements OnInit {
         serie.color = properties.colorHost[color];
 
         if(busqueda.includes('from')) {
-            serie.type = 'column',
-            serie.name = id.name+'_'+uuaa + ' (F)'
+            serie.type = 'column';
+            if(id < 17){
+            	serie.name = id.name+'_'+uuaa + ' (F)'
+            }else{
+            	serie.name = id.name;
+            }
         }else{
-             serie.type = 'line' ,
-             serie.name = id.name+'_'+uuaa + ' (T)'
+         	serie.type = 'line' 
+            if(id < 17){
+            	serie.name = id.name+'_'+uuaa + ' (T)'
+         	}else{
+         		serie.name = id.name;	
+         	}
         };
 
         return new Promise((resolve, reject)=>{
             switch (kpi) {
                 case "CPU":
-                    this._comparativaService.getDatavalueClonByHost(id.idhost,desde,hasta,idchannel,uuaa,kpi)
-                        .subscribe(
-                            response => {
-                                this.visibleCPU = true;
-                                serie.data = response.data
-                                resolve(serie);
-                            },
-                            error => {
-                                this.errorMessage = <any>error;
-                                    if(this.errorMessage != null){
-                                      console.log(this.errorMessage);                                         
-                                }
-                                reject();
-                            }
-                        );
+                	if (id < 17){
+                	    this._comparativaService.getDatavalueClonByHost(id.idhost,desde,hasta,idchannel,uuaa,kpi)
+	                        .subscribe(
+	                            response => {
+	                                this.visibleCPU = true;
+	                                serie.data = response.data
+	                                resolve(serie);
+	                            },
+	                            error => {
+	                                this.errorMessage = <any>error;
+	                                    if(this.errorMessage != null){
+	                                      console.log(this.errorMessage);                                         
+	                                }
+	                                reject();
+	                            }
+	                        );
+                	}else{
+                		this._comparativaService.getDatavalueHost(id.name,kpi,desde,hasta).subscribe(
+                				response => {
+	                                this.visibleCPU = true;
+	                                serie.data = response.data
+	                                resolve(serie);
+	                            },
+	                            error => {
+	                                this.errorMessage = <any>error;
+	                                    if(this.errorMessage != null){
+	                                      console.log(this.errorMessage);                                         
+	                                }
+	                                reject();
+	                            }
+                			);
+                	}
                     break;
                 
                 case "Memory":
@@ -528,16 +555,44 @@ export class Comparativa implements OnInit {
     gestionRecursos(idchannel,channel,name){      
     //Obtención idHost asociado al canal y a la UUAA informada
         if (idchannel!=4){
-            this._comparativaService.getIdHost(idchannel,name).subscribe(
-                response => {
-                    this.gestionGraficoRecursos(response.data,idchannel,'CPU');
-                },
-                error => {
-                    this.errorMessage = <any>error;
-                        if(this.errorMessage != null){
-                    alert('Error en la obtención de los IDHOST asociados al Canal');
-                  }
-            });
+        	if (idchannel==6){
+        		this._comparativaService.getIdHostChannelAsoApx(idchannel,channel).subscribe(
+        			response =>{
+        				this.gestionGraficoRecursos(response.data,idchannel,'CPU');
+        			},error => {
+        				this.errorMessage = <any>error;
+	                    if(this.errorMessage != null){
+	                    	alert('Error en la obtención de los IDHOST asociados al Canal');
+	                  	}
+        			}
+    			);
+        	}else{
+        		if(name.indexOf('ASO')!=-1){
+        			this._comparativaService.getIdHostChannelAsoApx(idchannel,name.substring(0,3)).subscribe(
+        				response => {
+        					this.gestionGraficoRecursos(response.data,idchannel,'CPU');
+        				},
+        				error => {
+	                		this.errorMessage = <any>error;
+		                    if(this.errorMessage != null){
+		                    	alert('Error en la obtención de los IDHOST asociados al Canal');
+		                  	}
+		            	}
+        			);
+        		}else{
+		            this._comparativaService.getIdHost(idchannel,name).subscribe(
+		                response => {
+		                    this.gestionGraficoRecursos(response.data,idchannel,'CPU');
+		                },
+		                error => {
+	                		this.errorMessage = <any>error;
+		                    if(this.errorMessage != null){
+		                    	alert('Error en la obtención de los IDHOST asociados al Canal');
+		                  	}
+		            	}
+	            	);
+            	}
+            }
         }else{
             this.visibleCPU = false;
             this.visibleMemoria = false;
@@ -593,6 +648,10 @@ export class Comparativa implements OnInit {
 
     comparativa(from, to){
 
+    	this.visibleCPU = false;
+        this.visibleMemoria = false;
+        this.visibleCPUOficinas = false;
+
         //Gestión fechas From y To. Si To es el día actual se realiza la busqueda hasta la hora actual - menos 20 minutos;
         this.fechas = new Fechas('','','','','','');
         var horaMenos20 = new Date().getTime()-1200000;
@@ -612,11 +671,27 @@ export class Comparativa implements OnInit {
 
             //Recupera parametros URL.
             let name = params['name'];
-            let channel = params['channel'];
+            let channel = params['channel'];    
             this.name = name;
 
-            //Obtención idchannel asociado al canal
-            this._comparativaService.getIdChannel(channel).subscribe(
+            if (channel == 'APX') {
+                
+                var monitor = [{
+                    idmonitor: 361,
+                    name: 'Transacciones APX'
+                }];
+
+                this.name = "APX";
+                this.uuaa = {
+                    description: 'Acumulado Transacciones'
+                }
+    
+                this.gestionGraficoMonitores(monitor,'Time');
+                this.gestionGraficoMonitores(monitor,'Throughput');
+                this.gestionRecursos(6,channel,"");
+            }else{
+                //Obtención idchannel asociado al canal
+                this._comparativaService.getIdChannel(channel).subscribe(
                 response => {
                     var idchannel = response.data.idchannel;
                     this.gestionMonitores(idchannel,name);
@@ -628,9 +703,8 @@ export class Comparativa implements OnInit {
                     if(this.errorMessage != null){
                         alert('Error en la obtención del ID del canal');
                     }   
-                });
-
-
+                });    
+            }
         });
 
     }

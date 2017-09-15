@@ -1,7 +1,12 @@
 <header id="header">
 	<nav>
 	  <ul id="menu">
-	  	<li><a [routerLink]="['/seguimiento']">Seguimiento</a></li>
+	  	<li><a>Seguimiento</a>
+		  	<ul>
+		  		<li><a [routerLink]="['/seguimiento_canales']">Canales</a></li>	
+		  		<li><a [routerLink]="['/seguimiento_transacciones']">Transacciones</a></li>	
+		  	</ul>
+	  	</li>
 	  	<li><a [routerLink]="['/highstock/net/14']">Net Particulares</a>
 	  		<ul>
 	  			<li><a>KQOF-Frontal</a>
@@ -22,7 +27,7 @@
 	  					<li><a [routerLink]="['/informe/net/ESMB']">Informe</a></li>
 	  				</UL>
 	  			</li>
-	  			<li><a [routerLink]="['/comparativa/net/v_MQ']">Visión Máquinas</a></li>
+	  			<li><a [routerLink]="['/V_MQ/net']">Visión Máquinas</a></li>
 	  		</ul>
 	  	</li>
 	  	<li><a [routerLink]="['/highstock/netcash/1']">Net Cash</a>
@@ -30,28 +35,28 @@
 	  			<li><a>KYOP-Portal</a>
 	  				<UL>
 	  					<li><a [routerLink]="['/comparativa/netcash/KYOP']">Comparativa</a></li>
-	  					<li><a>Informe</a></li>
+	  					<li><a [routerLink]="['/informe/netcash/KYOP']">Informe</a></li>
 	  				</UL>
 	  			</li>
 	  			<li><a>KYGU-Perfilado de usuarios</a>
 	  				<UL>
 	  					<li><a [routerLink]="['/comparativa/netcash/KYGU']">Comparativa</a></li>
-	  					<li><a>Informe</a></li>
+	  					<li><a [routerLink]="['/informe/netcash/KYGU']">Informe</a></li>
 	  				</UL>
 	  			</li>
 	  			<li><a>KYOS-Gestión de saldos</a>
 	  				<UL>
 	  					<li><a [routerLink]="['/comparativa/netcash/KYOS']">Comparativa</a></li>
-	  					<li><a>Informe</a></li>
+	  					<li><a [routerLink]="['/informe/netcash/KYOS']">Informe</a></li>
 	  				</UL>
 	  			</li>
 	  			<li><a>KYFB-Módulo de firmas</a>
 	  				<UL>
 	  					<li><a [routerLink]="['/comparativa/netcash/KYFB']">Comparativa</a></li>
-	  					<li><a>Informe</a></li>
+	  					<li><a [routerLink]="['/informe/netcash/KYFB']">Informe</a></li>
 	  				</UL>
 	  			</li>
-	  			<li><a [routerLink]="['/comparativa/netcash/V_MQ']">Visión Máquinas</a></li>
+	  			<li><a [routerLink]="['/V_MQ/netcash']">Visión Máquinas</a></li>
 	  		</ul>
 	  	</li>
 	  	<li><a [routerLink]="['/highstock/mobile/15']">Móvil</a>
@@ -59,22 +64,22 @@
 	  			<li><a>ENPP-Frontal</a>
 	  				<UL>
 	  					<li><a [routerLink]="['/comparativa/mobile/ENPP']">Comparativa</a></li>
-	  					<li><a>Informe</a></li>
+	  					<li><a [routerLink]="['/informe/mobile/ENPP']">Informe</a></li>
 	  				</UL>
 	  			</li>
 	  			<li><a>ENPS-Servicion multicanal</a>
 	  				<UL>
 	  					<li><a [routerLink]="['/comparativa/mobile/ENPS']">Comparativa</a></li>
-	  					<li><a>Informe</a></li>
+	  					<li><a [routerLink]="['/informe/mobile/ENPS']">Informe</a></li>
 	  				</UL>
 	  			</li>
 	  			<li><a>ESMB-Servicios básicos</a>
 	  				<UL>
 	  					<li><a  [routerLink]="['/comparativa/mobile/ESMB']">Comparativa</a></li>
-	  					<li><a>Informe</a></li>
+	  					<li><a [routerLink]="['/informe/mobile/ESMB']">Informe</a></li>
 	  				</UL>
 	  			</li>
-	  			<li><a [routerLink]="['/comparativa/mobile/V_MQ']">Visión Máquinas</a></li>
+	  			<li><a [routerLink]="['/V_MQ/mobile']">Visión Máquinas</a></li>
 	  		</ul>
 	  	</li>
 	  	<li><a>Oficinas</a>
@@ -91,7 +96,7 @@
 	  			<li><a [routerLink]="['/comparativa/office/ASO_office']">Oficinas</a></li>
 	  		</ul>
 	  	</li>
-	  	<li><a>APX</a></li>
+	  	<li><a [routerLink]="['/comparativa/APX']">APX</a></li>
 	  </ul>
   </nav>
   <div class="clearfix"></div>

@@ -17,7 +17,9 @@ var app_component_1 = require("./app.component");
 var comparativa_component_1 = require("./components/comparativa.component");
 var highstock_component_1 = require("./components/highstock.component");
 var seguimiento_component_1 = require("./components/seguimiento.component");
+var transacciones_component_1 = require("./components/transacciones.component");
 var informe_component_1 = require("./components/informe.component");
+var visionMaquina_component_1 = require("./components/visionMaquina.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -39,7 +41,9 @@ AppModule = __decorate([
             comparativa_component_1.Comparativa,
             highstock_component_1.Highstock,
             seguimiento_component_1.Seguimiento,
-            informe_component_1.Informe
+            informe_component_1.Informe,
+            visionMaquina_component_1.VisionMaquina,
+            transacciones_component_1.Transacciones
         ],
         exports: [
             mydatepicker_1.MyDatePickerModule

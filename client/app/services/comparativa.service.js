@@ -15,8 +15,8 @@ require("rxjs/add/operator/map");
 var ComparativaService = (function () {
     function ComparativaService(_http) {
         this._http = _http;
-        this.url = 'http://15.17.167.155:3845/api/';
-        //this.url = 'http://localhost:3845/api/';
+        //this.url = 'http://15.17.167.155:3845/api/';
+        this.url = 'http://localhost:3845/api/';
         //this.url = 'http://v1128scp451.ad.bbva.com:3845/api/';
     }
     ComparativaService.prototype.getIdUuaa = function (idchannel, name) {
@@ -69,6 +69,33 @@ var ComparativaService = (function () {
     };
     ComparativaService.prototype.getDatavalueHost = function (maquina, kpi, desde, hasta) {
         return this._http.get(this.url + 'getDatavalueHost/' + maquina + '/' + kpi + '/fechas/' + desde + '/' + hasta)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getIdHostChannel = function (idchannel) {
+        return this._http.get(this.url + 'getIdHostChannel/' + idchannel).map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getDateAndDataMachine = function (idhost, interval, kpi) {
+        return this._http.get(this.url + 'getDateAndDataMachine/' + idhost + '/intervalo/' + interval + '/' + kpi)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getMaxThroughput = function (desde) {
+        return this._http.get(this.url + 'getMaxEjecuciones/' + desde)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getIdHostChannelAsoApx = function (idchannel, desc) {
+        return this._http.get(this.url + 'getIdHostChannelAsoApx/' + idchannel + '/' + desc)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getGroupedWaterMark = function (canal, fecha) {
+        return this._http.get(this.url + 'getGroupedWaterMark/' + canal + '/' + fecha)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getThroughputToday = function (idmonitor, kpi) {
+        return this._http.get(this.url + 'getThroughputToday/' + idmonitor + '/' + kpi)
+            .map(function (res) { return res.json(); });
+    };
+    ComparativaService.prototype.getDateAndThroughputGrouped = function (type, canal, fecha) {
+        return this._http.get(this.url + 'getDateAndThroughputGrouped/agrupacion/' + type + '/' + canal + '/' + fecha)
             .map(function (res) { return res.json(); });
     };
     return ComparativaService;

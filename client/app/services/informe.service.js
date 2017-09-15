@@ -15,8 +15,8 @@ require("rxjs/add/operator/map");
 var InformeService = (function () {
     function InformeService(_http) {
         this._http = _http;
-        this.url = 'http://15.17.167.155:3845/api/';
-        //this.url = 'http://localhost:3845/api/';
+        //this.url = 'http://15.17.167.155:3845/api/';
+        this.url = 'http://localhost:3845/api/';
         //this.url = 'http://v1128scp451.ad.bbva.com:3845/api/';
     }
     InformeService.prototype.getDataMonitorInformePeticiones = function (idmonitor, fecha, interval, kpi) {

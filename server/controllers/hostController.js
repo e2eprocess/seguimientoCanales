@@ -62,8 +62,8 @@ function getIdHostChannel (req, res, next) {
  */
 function getIdHostChannelAsoApx (req, res, next) {
 	var parametros = {
-		idchannel: req.params.idchannel,
-		desc: req.params.desc+'%'
+		$idchannel: req.params.idchannel,
+		$desc: req.params.desc+'%'
 	};
 	db.any('select a.idhost, b.name \
 			from \"E2E\".hostbychannel a, \"E2E\".host b \
@@ -165,10 +165,51 @@ function getDatavalueHost (req, res, next) {
 			})
 }
 
+
+function getDateAndDataMachine (req,res,next) {
+	var parametros = {
+		$maquina: req.params.idhost,
+		$interval: req.params.interval,
+		$intervalNow: '40 minutes',
+		$kpi: req.params.kpi
+	}
+
+	db.any('select ((extract(epoch from b.timedata))::numeric)*1000 as x,\
+					b.datavalue as y\
+			FROM \"E2E\".host A, \"E2E\".hostdata B, \"E2E\".kpi C \
+			WHERE a.name = ${$maquina} \
+			AND b.timedata >= (now() - interval ${$interval}) \
+			AND b.timedata < (now() - interval ${$intervalNow}) \
+			AND c.name = ${$kpi} \
+			AND b.idkpi = c.idkpi \
+			AND a.idhost = b.idhost \
+			ORDER BY b.timedata asc', parametros)
+
+		.then(function(data) {
+			//Lectura datos y transformación de json a Array
+			var datos = data.map((elem) => {
+				return [ parseInt(elem.x), parseFloat(elem.y)]
+			})
+			//Devuelve el array si es una ejecuión correcta
+			res.status(200)
+				.send({
+					data: datos
+				});
+			})
+			.catch(function (err) {
+				logger.error(err);
+				res.status(500).send({Status: 'Error al obtener HostData',
+										message: err.message});
+			})
+
+
+}
+
 module.exports = {
 	getIdHost,
 	getIdHostChannel,
 	getDateAndDatavalueHost,
 	getDatavalueHost,
-	getIdHostChannelAsoApx
+	getIdHostChannelAsoApx,
+	getDateAndDataMachine
 }

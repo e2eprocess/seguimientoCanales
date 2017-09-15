@@ -45,6 +45,7 @@ var Informe = (function () {
             var grafico = {
                 chart: {
                     height: chartHeight,
+                    width: 675,
                     zoomType: 'xy'
                 },
                 title: {

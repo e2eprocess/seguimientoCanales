@@ -74,7 +74,6 @@ export class Seguimiento implements OnInit {
     }
 
     pintarGrafico(series, canal){
-        console.log(series);
         jQuery('#'+canal.name).highcharts({
             chart: {
                 zoomType: 'xy'
@@ -276,31 +275,23 @@ export class Seguimiento implements OnInit {
 	seguimiento(fecha){
 		this.fechas = new Fechas('','','','','','');
 
-        this.fechaTitulo = fecha.date.day+'-'+fecha.date.month+'-'+fecha.date.year;
-		
-		//Gestión Net Particulares
+        this.fechaTitulo = fecha.date.day+'-'+fecha.date.month+'-'+fecha.date.year;	
 		this.fechas.fromDesde = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 07:00:00';
     	this.fechas.fromHasta = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 23:59:00';
-    	this.gestionGrafico(14,this.fechas);
+    	
+        //Gestión Net Particulares
+        this.gestionGrafico(14,this.fechas);
 
     	//Gestión Banca empresas
-    	this.fechas.fromDesde = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 07:00:00';
-    	this.fechas.fromHasta = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 21:59:00';
     	this.gestionGrafico(1,this.fechas);
 
         //Gestión Movil
-        this.fechas.fromDesde = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 07:00:00';
-        this.fechas.fromHasta = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 21:59:00';
         this.gestionGrafico(15,this.fechas);
 
         //Gestión Escenarios comerciales
-        this.fechas.fromDesde = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 07:00:00';
-        this.fechas.fromHasta = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 21:59:00';
         this.gestionGrafico(17,this.fechas);
 
         //Gestión Objeto cliente
-        this.fechas.fromDesde = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 07:00:00';
-        this.fechas.fromHasta = fecha.date.year+'-'+fecha.date.month+'-'+fecha.date.day+' 21:59:00';
         this.gestionGrafico(16,this.fechas);
 	
 	}

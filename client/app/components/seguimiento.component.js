@@ -52,7 +52,6 @@ var Seguimiento = (function () {
         this.seguimiento(this.fecha);
     };
     Seguimiento.prototype.pintarGrafico = function (series, canal) {
-        console.log(series);
         jQuery('#' + canal.name).highcharts({
             chart: {
                 zoomType: 'xy'
@@ -230,25 +229,17 @@ var Seguimiento = (function () {
     Seguimiento.prototype.seguimiento = function (fecha) {
         this.fechas = new fechas_1.Fechas('', '', '', '', '', '');
         this.fechaTitulo = fecha.date.day + '-' + fecha.date.month + '-' + fecha.date.year;
-        //Gestión Net Particulares
         this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
         this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 23:59:00';
+        //Gestión Net Particulares
         this.gestionGrafico(14, this.fechas);
         //Gestión Banca empresas
-        this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
-        this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
         this.gestionGrafico(1, this.fechas);
         //Gestión Movil
-        this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
-        this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
         this.gestionGrafico(15, this.fechas);
         //Gestión Escenarios comerciales
-        this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
-        this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
         this.gestionGrafico(17, this.fechas);
         //Gestión Objeto cliente
-        this.fechas.fromDesde = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 07:00:00';
-        this.fechas.fromHasta = fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day + ' 21:59:00';
         this.gestionGrafico(16, this.fechas);
     };
     return Seguimiento;

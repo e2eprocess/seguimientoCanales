@@ -12,7 +12,9 @@ import { AppComponent }  from './app.component';
 import { Comparativa }  from './components/comparativa.component';
 import { Highstock }  from './components/highstock.component';
 import { Seguimiento }  from './components/seguimiento.component';
+import { Transacciones }  from './components/transacciones.component';
 import { Informe }  from './components/informe.component';
+import { VisionMaquina }  from './components/visionMaquina.component';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { Informe }  from './components/informe.component';
                 Comparativa,
                 Highstock,
                 Seguimiento,
-                Informe
+                Informe,
+                VisionMaquina,
+                Transacciones
                 ],
   exports: [
                 MyDatePickerModule

@@ -1,0 +1,57 @@
+<div id="submenu"> <span class="activo">Seguimiento Transacciones </span></div>
+
+<div> 
+	<form id="comparador" #myForm="ngForm" novalidate> 
+	    <my-date-picker name="mydate" [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)"
+	                    [(ngModel)]="fecha" required [locale]="locale"></my-date-picker>	 	
+	</form> 
+</div>
+
+<div class="titulo" style="margin-bottom: -15px;">	
+	<h1>{{fechaTitulo}}</h1>
+</div>
+
+<fieldset class="recuadro">
+	<div id="host"></div>
+</fieldset>
+<fieldset class="recuadro">
+	<div id="apx"></div>
+</fieldset>
+<fieldset class="recuadroCpu">
+	<div id="acumulado"></div>
+</fieldset>
+
+<table>
+	<tr>
+		<th>Fecha</th>
+		<th>Peticiones Host</th>
+		<th>Porcentaje Host</th>
+		<th>Peticiones APX</th>
+		<th>Porcentaje APX</th>
+		<th>Total Peticiones</th>
+	</tr>
+	<tr>
+		<td>{{valoresTabla.fechaPeticion}}</td>
+		<td>{{valoresTabla.peticionesHost}}</td>
+		<td>{{valoresTabla.porcentajeHost}} %</td>
+		<td>{{valoresTabla.peticionesApx}}</td>
+		<td>{{valoresTabla.porcentajeApx}} %</td>
+		<td>{{valoresTabla.sumPeticiones}}</td>
+	</tr>
+	<tr>
+		<th>Fecha max. pet.</th>
+		<th>Pet. Host día max.</th>
+		<th>Porcentaje Host día max.</th>
+		<th>Peticiones APX día max.</th>
+		<th>Porcentaje APX día max.</th>
+		<th>Total Peticiones día max.</th>
+	</tr>
+	<tr>
+		<td>{{valoresTabla.fechaMaxPeticiones}}</td>
+		<td>{{valoresTabla.maxPeticionesHost}}</td>
+		<td>{{valoresTabla.maxPorcentajeHost}} %</td>
+		<td>{{valoresTabla.maxPeticionesApx}}</td>
+		<td>{{valoresTabla.maxPorcentajeApx}} %</td>
+		<td>{{valoresTabla.sumMaxPeticiones}}</td>
+	</tr>
+</table>

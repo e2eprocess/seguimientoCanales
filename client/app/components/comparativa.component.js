@@ -107,11 +107,11 @@ var Comparativa = (function () {
                 yAxisMax = 100;
                 break;
             case "cpuPar":
-                var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas pares)</font>', yAxisTitleText = 'CPU %', yAxislabelsFormat = '{value} %';
+                var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas pares)</font>', chartHeight = 250, yAxisTitleText = 'CPU %', yAxislabelsFormat = '{value} %';
                 yAxisMax = 100;
                 break;
             case "cpuImpar":
-                var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas impares)</font>', yAxisTitleText = 'CPU %', yAxislabelsFormat = '{value} %';
+                var textTitle = 'Consumo CPU% <br/><font style="font-size:10px;">(maquinas impares)</font>', chartHeight = 250, yAxisTitleText = 'CPU %', yAxislabelsFormat = '{value} %';
                 yAxisMax = 100;
                 break;
         }
@@ -287,29 +287,54 @@ var Comparativa = (function () {
         var color = i % properties.colorHost.length;
         serie.color = properties.colorHost[color];
         if (busqueda.includes('from')) {
-            serie.type = 'column',
+            serie.type = 'column';
+            if (id < 17) {
                 serie.name = id.name + '_' + uuaa + ' (F)';
+            }
+            else {
+                serie.name = id.name;
+            }
         }
         else {
-            serie.type = 'line',
+            serie.type = 'line';
+            if (id < 17) {
                 serie.name = id.name + '_' + uuaa + ' (T)';
+            }
+            else {
+                serie.name = id.name;
+            }
         }
         ;
         return new Promise(function (resolve, reject) {
             switch (kpi) {
                 case "CPU":
-                    _this._comparativaService.getDatavalueClonByHost(id.idhost, desde, hasta, idchannel, uuaa, kpi)
-                        .subscribe(function (response) {
-                        _this.visibleCPU = true;
-                        serie.data = response.data;
-                        resolve(serie);
-                    }, function (error) {
-                        _this.errorMessage = error;
-                        if (_this.errorMessage != null) {
-                            console.log(_this.errorMessage);
-                        }
-                        reject();
-                    });
+                    if (id < 17) {
+                        _this._comparativaService.getDatavalueClonByHost(id.idhost, desde, hasta, idchannel, uuaa, kpi)
+                            .subscribe(function (response) {
+                            _this.visibleCPU = true;
+                            serie.data = response.data;
+                            resolve(serie);
+                        }, function (error) {
+                            _this.errorMessage = error;
+                            if (_this.errorMessage != null) {
+                                console.log(_this.errorMessage);
+                            }
+                            reject();
+                        });
+                    }
+                    else {
+                        _this._comparativaService.getDatavalueHost(id.name, kpi, desde, hasta).subscribe(function (response) {
+                            _this.visibleCPU = true;
+                            serie.data = response.data;
+                            resolve(serie);
+                        }, function (error) {
+                            _this.errorMessage = error;
+                            if (_this.errorMessage != null) {
+                                console.log(_this.errorMessage);
+                            }
+                            reject();
+                        });
+                    }
                     break;
                 case "Memory":
                     _this._comparativaService.getDatavalueClon(id.idclon, desde, hasta, kpi)
@@ -426,14 +451,38 @@ var Comparativa = (function () {
         var _this = this;
         //Obtención idHost asociado al canal y a la UUAA informada
         if (idchannel != 4) {
-            this._comparativaService.getIdHost(idchannel, name).subscribe(function (response) {
-                _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
-            }, function (error) {
-                _this.errorMessage = error;
-                if (_this.errorMessage != null) {
-                    alert('Error en la obtención de los IDHOST asociados al Canal');
+            if (idchannel == 6) {
+                this._comparativaService.getIdHostChannelAsoApx(idchannel, channel).subscribe(function (response) {
+                    _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la obtención de los IDHOST asociados al Canal');
+                    }
+                });
+            }
+            else {
+                if (name.indexOf('ASO') != -1) {
+                    this._comparativaService.getIdHostChannelAsoApx(idchannel, name.substring(0, 3)).subscribe(function (response) {
+                        _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
+                    }, function (error) {
+                        _this.errorMessage = error;
+                        if (_this.errorMessage != null) {
+                            alert('Error en la obtención de los IDHOST asociados al Canal');
+                        }
+                    });
                 }
-            });
+                else {
+                    this._comparativaService.getIdHost(idchannel, name).subscribe(function (response) {
+                        _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
+                    }, function (error) {
+                        _this.errorMessage = error;
+                        if (_this.errorMessage != null) {
+                            alert('Error en la obtención de los IDHOST asociados al Canal');
+                        }
+                    });
+                }
+            }
         }
         else {
             this.visibleCPU = false;
@@ -479,6 +528,9 @@ var Comparativa = (function () {
     };
     Comparativa.prototype.comparativa = function (from, to) {
         var _this = this;
+        this.visibleCPU = false;
+        this.visibleMemoria = false;
+        this.visibleCPUOficinas = false;
         //Gestión fechas From y To. Si To es el día actual se realiza la busqueda hasta la hora actual - menos 20 minutos;
         this.fechas = new fechas_1.Fechas('', '', '', '', '', '');
         var horaMenos20 = new Date().getTime() - 1200000;
@@ -499,17 +551,32 @@ var Comparativa = (function () {
             var name = params['name'];
             var channel = params['channel'];
             _this.name = name;
-            //Obtención idchannel asociado al canal
-            _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
-                var idchannel = response.data.idchannel;
-                _this.gestionMonitores(idchannel, name);
-                _this.gestionRecursos(idchannel, channel, name);
-            }, function (error) {
-                _this.errorMessage = error;
-                if (_this.errorMessage != null) {
-                    alert('Error en la obtención del ID del canal');
-                }
-            });
+            if (channel == 'APX') {
+                var monitor = [{
+                        idmonitor: 361,
+                        name: 'Transacciones APX'
+                    }];
+                _this.name = "APX";
+                _this.uuaa = {
+                    description: 'Acumulado Transacciones'
+                };
+                _this.gestionGraficoMonitores(monitor, 'Time');
+                _this.gestionGraficoMonitores(monitor, 'Throughput');
+                _this.gestionRecursos(6, channel, "");
+            }
+            else {
+                //Obtención idchannel asociado al canal
+                _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
+                    var idchannel = response.data.idchannel;
+                    _this.gestionMonitores(idchannel, name);
+                    _this.gestionRecursos(idchannel, channel, name);
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la obtención del ID del canal');
+                    }
+                });
+            }
         });
     };
     return Comparativa;

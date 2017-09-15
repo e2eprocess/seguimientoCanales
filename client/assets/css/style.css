@@ -56,7 +56,6 @@ body{
 }
 
 .recuadroMemoria {
-  width: 48%;
   height: 400px;
   margin: 1;
   float:left;
@@ -65,12 +64,15 @@ body{
 }
 
 .recuadroCpu {
-  width: 48%;
   height: 250px;
   margin: 1;
   float:left;
   width:97.9%;
   margin-top:0.5em;
+}
+
+#visionmaquina {
+  width:97.9%;
 }
 
 #highstock {
@@ -79,17 +81,39 @@ body{
 }
 
 .informeApli {
-  width: : 50%;
+  width: : 60%;
   height: 400px;
-  margin: 1 auto;
+  /*margin: 1 auto;*/
   float: left;
 }
 
 .informeRec {
-  width: : 50%;
+  width: : 48%;
   height: 275px;
-  margin: 1 auto;
+  /*margin: 1 auto;*/
   float: left;
+}
+
+table {
+  width: 99.5%;
+  padding: 5px;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 690px;
+}
+
+table th {
+  background:  #BDBDBD;
+  font-weight: normal;
+}
+table th, td {
+  border: 1px solid grey;
+  text-align: center;
+  padding: 0.5em;
+}
+
+table td {
+  font-weight: bold;
 }
 
 

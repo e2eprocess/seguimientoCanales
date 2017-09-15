@@ -19,11 +19,13 @@ export class ComparativaService {
 	public nameKpi: string;
 	public desde: string;
 	public hasta: string;
+	public desc: string;
+	public type: string;
 	
 
 	constructor(private _http: Http) {		
-		this.url = 'http://15.17.167.155:3845/api/';
-		//this.url = 'http://localhost:3845/api/';
+		//this.url = 'http://15.17.167.155:3845/api/';
+		this.url = 'http://localhost:3845/api/';
 		//this.url = 'http://v1128scp451.ad.bbva.com:3845/api/';
 	}
 
@@ -89,6 +91,40 @@ export class ComparativaService {
 
 	getDatavalueHost(maquina,kpi,desde,hasta){
 		return this._http.get(this.url+'getDatavalueHost/'+maquina+'/'+kpi+'/fechas/'+desde+'/'+hasta)
+							.map(res => res.json());
+	}
+
+	getIdHostChannel(idchannel){
+		return this._http.get(this.url+'getIdHostChannel/'+idchannel).map(res => res.json());
+	}
+
+	getDateAndDataMachine(idhost,interval,kpi){
+		return this._http.get(this.url+'getDateAndDataMachine/'+idhost+'/intervalo/'+interval+'/'+kpi)
+							.map(res => res.json());
+	}
+
+	getMaxThroughput(desde){
+		return this._http.get(this.url+'getMaxEjecuciones/'+desde)
+							.map(res => res.json());
+	}
+
+	getIdHostChannelAsoApx(idchannel,desc){
+		return this._http.get(this.url+'getIdHostChannelAsoApx/'+idchannel+'/'+desc)
+							.map(res => res.json());
+	}
+
+	getGroupedWaterMark(canal,fecha){
+		return this._http.get(this.url+'getGroupedWaterMark/'+canal+'/'+fecha)
+							.map(res => res.json());
+	}
+
+	getThroughputToday(idmonitor,kpi){
+		return this._http.get(this.url+'getThroughputToday/'+idmonitor+'/'+kpi)
+							.map(res => res.json());
+	}
+
+	getDateAndThroughputGrouped(type,canal,fecha){
+		return this._http.get(this.url+'getDateAndThroughputGrouped/agrupacion/'+type+'/'+canal+'/'+fecha)
 							.map(res => res.json());
 	}
 

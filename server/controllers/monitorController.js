@@ -134,7 +134,7 @@ function getDataValueMonitor (req, res, next) {
 
 			//Lectura datos y transformación de json a Array
 			var array = data.map((elem) => {
-				return parseFloat(elem.y)
+				return [parseFloat(elem.y)]
 			})
 
 			//Devuelve el array si es una ejecuión correcta
@@ -265,6 +265,36 @@ function getDataMonitorInformeTime(req, res, next){
 		});
 }
 
+function getThroughputToday(req, res, next){
+	var idmonitor = req.params.idmonitor,
+		kpi = req.params.kpi;
+
+	var parametros = {
+
+		$idmonitor: idmonitor,
+		$kpi: kpi
+	};
+
+	db.one('SELECT to_char(date(md.timedata),\'DD-MM-YYYY\') as fecha, \
+					sum(md.datavalue) as valor \
+			FROM \"E2E\".monitordata md, \"E2E\".kpi kp \
+			WHERE kp.name = ${$kpi} \
+			AND kp.idkpi = md.idkpi \
+			AND md.idmonitor = ${$idmonitor}\
+			AND date(md.timedata) = date(now()) \
+			GROUP BY 1', parametros)
+		.then((data)=>{
+			res.status(200).json({
+					date: data.fecha,
+					datavalue: parseFloat(data.valor)
+			});
+		}).catch((err)=>{
+			logger.error(err);
+			res.status(500).send({message: 'Error al devolver el numero de peticiones del día'});
+		});
+
+}
+
 
 module.exports = {
   getMonitors,
@@ -274,5 +304,6 @@ module.exports = {
   getNameDescriptionMonitor,
   getDate,
   getDataMonitorInformePeticiones,
-  getDataMonitorInformeTime
+  getDataMonitorInformeTime,
+  getThroughputToday
 }
