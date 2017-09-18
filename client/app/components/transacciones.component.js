@@ -313,7 +313,7 @@ var Transacciones = (function () {
     Transacciones.prototype.transacciones = function (fecha) {
         var _this = this;
         this.fechas = new fechas_1.Fechas('', '', '', '', '', '');
-        this.valoresTabla = new valoresTabla_1.ValoresTabla('', 0, 0, 0, '', 0, 0, 0);
+        this.valoresTabla = new valoresTabla_1.ValoresTabla('', 0, 0, 0, 0, 0, '', 0, 0, 0, 0, 0);
         var promesasGraficos = [];
         var datosCanal = {
             name: '',

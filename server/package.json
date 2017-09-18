@@ -15,6 +15,7 @@
     "body-parser": "^1.17.1",
     "dateformat": "^2.0.0",
     "express": "^4.15.2",
+    "format-number": "^3.0.0",
     "ibm_db": "^2.1.0",
     "pg": "^6.1.4",
     "pg-promise": "^5.6.4",

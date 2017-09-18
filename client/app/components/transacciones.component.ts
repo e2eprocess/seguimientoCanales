@@ -382,7 +382,7 @@ export class Transacciones implements OnInit {
  
 	transacciones(fecha){
 		this.fechas = new Fechas('','','','','','');
-        this.valoresTabla = new ValoresTabla('',0,0,0,'',0,0,0);
+        this.valoresTabla = new ValoresTabla('',0,0,0,0,0,'',0,0,0,0,0);
 
         const promesasGraficos = [];
         const datosCanal = {
