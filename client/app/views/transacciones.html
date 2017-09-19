@@ -32,11 +32,11 @@
 	</tr>
 	<tr>
 		<td>{{valoresTabla.fechaPeticion}}</td>
-		<td>{{valoresTabla.peticionesHost}}</td>
-		<td>{{valoresTabla.porcentajeHost}} %</td>
-		<td>{{valoresTabla.peticionesApx}}</td>
-		<td>{{valoresTabla.porcentajeApx}} %</td>
-		<td>{{valoresTabla.sumPeticiones}}</td>
+		<td>{{valoresTabla.peticionesHost|number:"2.0"}}</td>
+		<td>{{valoresTabla.porcentajeHost|percent:".2-2"}}</td>
+		<td>{{valoresTabla.peticionesApx|number:"2.0"}}</td>
+		<td>{{valoresTabla.porcentajeApx|percent:".2-2"}}</td>
+		<td>{{valoresTabla.sumPeticiones|number:"2.0"}}</td>
 	</tr>
 	<tr>
 		<th>Fecha max. pet.</th>
@@ -48,10 +48,10 @@
 	</tr>
 	<tr>
 		<td>{{valoresTabla.fechaMaxPeticiones}}</td>
-		<td>{{valoresTabla.maxPeticionesHost}}</td>
-		<td>{{valoresTabla.maxPorcentajeHost}} %</td>
-		<td>{{valoresTabla.maxPeticionesApx}}</td>
-		<td>{{valoresTabla.maxPorcentajeApx}} %</td>
-		<td>{{valoresTabla.sumMaxPeticiones}}</td>
+		<td>{{valoresTabla.maxPeticionesHost|number:"2.0"}}</td>
+		<td>{{valoresTabla.maxPorcentajeHost|percent:".2-2"}}</td>
+		<td>{{valoresTabla.maxPeticionesApx|number:"2.0"}}</td>
+		<td>{{valoresTabla.maxPorcentajeApx|percent:".2-2"}}</td>
+		<td>{{valoresTabla.sumMaxPeticiones|number:"2.0"}}</td>
 	</tr>
 </table>

@@ -674,36 +674,43 @@ export class Comparativa implements OnInit {
             let channel = params['channel'];    
             this.name = name;
 
-            if (channel == 'APX') {
+            switch (channel) {
+                case "APX":
+                    var monitor = [{
+                        idmonitor: 361,
+                        name: 'Transacciones APX'
+                    }];
+
+                    this.name = "APX";
+                    this.uuaa = {
+                        description: 'Acumulado Transacciones'
+                    }
+        
+                    this.gestionGraficoMonitores(monitor,'Time');
+                    this.gestionGraficoMonitores(monitor,'Throughput');
+                    this.gestionRecursos(6,channel,"");
+                    break;
                 
-                var monitor = [{
-                    idmonitor: 361,
-                    name: 'Transacciones APX'
-                }];
+                case "ASO":
+                        console.log(channel);
+                    break;
 
-                this.name = "APX";
-                this.uuaa = {
-                    description: 'Acumulado Transacciones'
-                }
-    
-                this.gestionGraficoMonitores(monitor,'Time');
-                this.gestionGraficoMonitores(monitor,'Throughput');
-                this.gestionRecursos(6,channel,"");
-            }else{
-                //Obtención idchannel asociado al canal
-                this._comparativaService.getIdChannel(channel).subscribe(
-                response => {
-                    var idchannel = response.data.idchannel;
-                    this.gestionMonitores(idchannel,name);
-                    this.gestionRecursos(idchannel,channel,name);
+                default:
+                    //Obtención idchannel asociado al canal
+                    this._comparativaService.getIdChannel(channel).subscribe(
+                    response => {
+                        var idchannel = response.data.idchannel;
+                        this.gestionMonitores(idchannel,name);
+                        this.gestionRecursos(idchannel,channel,name);
 
-                },
-                error => {
-                    this.errorMessage = <any>error;
-                    if(this.errorMessage != null){
-                        alert('Error en la obtención del ID del canal');
-                    }   
-                });    
+                    },
+                    error => {
+                        this.errorMessage = <any>error;
+                        if(this.errorMessage != null){
+                            alert('Error en la obtención del ID del canal');
+                        }   
+                    });    
+                    break;
             }
         });
 

@@ -1,5 +1,6 @@
 var db = require('./controllerPg').db;
 var logger = require('../gestionLog').logger;
+var format = require('format-number');
 
 function getNameDescriptionMonitor (req, res, next) {
 	var idmonitor = req.params.idmonitor;
@@ -284,6 +285,7 @@ function getThroughputToday(req, res, next){
 			AND date(md.timedata) = date(now()) \
 			GROUP BY 1', parametros)
 		.then((data)=>{
+
 			res.status(200).json({
 					date: data.fecha,
 					datavalue: parseFloat(data.valor)

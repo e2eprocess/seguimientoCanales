@@ -551,31 +551,36 @@ var Comparativa = (function () {
             var name = params['name'];
             var channel = params['channel'];
             _this.name = name;
-            if (channel == 'APX') {
-                var monitor = [{
-                        idmonitor: 361,
-                        name: 'Transacciones APX'
-                    }];
-                _this.name = "APX";
-                _this.uuaa = {
-                    description: 'Acumulado Transacciones'
-                };
-                _this.gestionGraficoMonitores(monitor, 'Time');
-                _this.gestionGraficoMonitores(monitor, 'Throughput');
-                _this.gestionRecursos(6, channel, "");
-            }
-            else {
-                //Obtención idchannel asociado al canal
-                _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
-                    var idchannel = response.data.idchannel;
-                    _this.gestionMonitores(idchannel, name);
-                    _this.gestionRecursos(idchannel, channel, name);
-                }, function (error) {
-                    _this.errorMessage = error;
-                    if (_this.errorMessage != null) {
-                        alert('Error en la obtención del ID del canal');
-                    }
-                });
+            switch (channel) {
+                case "APX":
+                    var monitor = [{
+                            idmonitor: 361,
+                            name: 'Transacciones APX'
+                        }];
+                    _this.name = "APX";
+                    _this.uuaa = {
+                        description: 'Acumulado Transacciones'
+                    };
+                    _this.gestionGraficoMonitores(monitor, 'Time');
+                    _this.gestionGraficoMonitores(monitor, 'Throughput');
+                    _this.gestionRecursos(6, channel, "");
+                    break;
+                case "ASO":
+                    console.log(channel);
+                    break;
+                default:
+                    //Obtención idchannel asociado al canal
+                    _this._comparativaService.getIdChannel(channel).subscribe(function (response) {
+                        var idchannel = response.data.idchannel;
+                        _this.gestionMonitores(idchannel, name);
+                        _this.gestionRecursos(idchannel, channel, name);
+                    }, function (error) {
+                        _this.errorMessage = error;
+                        if (_this.errorMessage != null) {
+                            alert('Error en la obtención del ID del canal');
+                        }
+                    });
+                    break;
             }
         });
     };

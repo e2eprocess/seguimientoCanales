@@ -8,7 +8,7 @@ var monitorController = require('../controllers/monitorController');
 var hostController = require('../controllers/hostController');
 var clonController = require('../controllers/clonController');
 var groupedMonitorController = require('../controllers/groupedMonitorController');
-var netezzaController = require('../controllers/ODBCController');
+//var netezzaController = require('../controllers/ODBCController');
 
 api.get('/getIdUuaa/:idchannel/:name', controller.getIdUuaa);
 api.get('/getIdChannel/:channel', controller.getIdChannel);
@@ -44,8 +44,8 @@ api.get('/getClonDataComparativa/:idclon/fechas/:desde/:hasta/:kpi', clonControl
 api.get('/getDatavalueClon/:idclon/fechas/:desde/:hasta/:kpi', clonController.getDatavalueClon);
 api.get('/getDataValueClonInforme/:idclon/:fecha/:interval/:kpi', clonController.getDataValueClonInforme);
 
-api.get('/getPeticionesDia/:fecha', netezzaController.getPeticionesDia);
-api.get('/getMaxEjecuciones/:fecha', netezzaController.getMaxEjecuciones);
+//api.get('/getPeticionesDia/:fecha', netezzaController.getPeticionesDia);
+//api.get('/getMaxEjecuciones/:fecha', netezzaController.getMaxEjecuciones);
 
 
 module.exports = api;

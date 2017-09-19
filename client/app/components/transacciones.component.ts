@@ -82,7 +82,33 @@ export class Transacciones implements OnInit {
 
         var grafHeight = 0;
 
+        var toolTip = {
+            shared: true,
+            followpointer: true,
+            borderColor: 'grey',
+            formatter: undefined
+        };
+
         if(canal.name == 'acumulado'){
+
+            toolTip = {
+                shared: true,
+                followpointer: true,
+                borderColor: 'grey',
+                formatter: function(){
+                    var s = '<b>Detalle:</b>';
+                    this.points.forEach((point,index)=>{
+                        if(index < 2){
+                            console.log(point.color);
+                            s += '<br/><b>' + point.series.name + ': </b>' +
+                            point.y + ' - <b>' +point.percentage.toFixed(2) +' %</b>'
+                        }else{
+                            s += '<br/><b>' + point.series.name.substr(0,12) + ': </b>' + point.y;
+                        }
+                    })
+                    return s;
+                }
+            }
 
             
             series.forEach((serie)=>{
@@ -91,7 +117,7 @@ export class Transacciones implements OnInit {
                     case "APX":
                         serie.name = 'APX';
                         serie.index = 0;
-                        serie.legendIndex = 1;                   
+                        serie.legendIndex = 1;                
                         break;
                     
                     case "HOST":
@@ -104,7 +130,6 @@ export class Transacciones implements OnInit {
                     case "acumuladoTrx":
                         serie.index = 2;
                         serie.legendIndex = 2;
-
                         break;
                     
                 }
@@ -130,11 +155,7 @@ export class Transacciones implements OnInit {
             yAxis: [{
                     title: {text: 'Peticiones'}
             }],
-            tooltip: {
-              shared: true,
-              followPointer:true,
-              borderColor: 'grey'
-            },
+            tooltip: toolTip,
             legend: {
               layout: 'horizontal',
               align: 'center',
@@ -427,13 +448,11 @@ export class Transacciones implements OnInit {
                        this.valoresTabla.sumPeticiones = this.valoresTabla.peticionesApx + this.valoresTabla.peticionesHost;
                        this.valoresTabla.sumMaxPeticiones = this.valoresTabla.maxPeticionesApx + this.valoresTabla.maxPeticionesHost;
                        
-                       this.valoresTabla.porcentajeHost = (this.valoresTabla.peticionesHost*100)/this.valoresTabla.sumPeticiones;
-                       this.valoresTabla.porcentajeApx = (this.valoresTabla.peticionesApx*100)/this.valoresTabla.sumPeticiones;
-                       this.valoresTabla.maxPorcentajeHost = (this.valoresTabla.maxPeticionesHost*100)/this.valoresTabla.sumMaxPeticiones;
-                       this.valoresTabla.maxPorcentajeApx = (this.valoresTabla.maxPeticionesApx*100)/this.valoresTabla.sumMaxPeticiones;
+                       this.valoresTabla.porcentajeHost = (this.valoresTabla.peticionesHost)/this.valoresTabla.sumPeticiones;
+                       this.valoresTabla.porcentajeApx = (this.valoresTabla.peticionesApx)/this.valoresTabla.sumPeticiones;
+                       this.valoresTabla.maxPorcentajeHost = (this.valoresTabla.maxPeticionesHost)/this.valoresTabla.sumMaxPeticiones;
+                       this.valoresTabla.maxPorcentajeApx = (this.valoresTabla.maxPeticionesApx)/this.valoresTabla.sumMaxPeticiones;
 
-
-                       console.log(this.valoresTabla);
                     });
                 });
             });       

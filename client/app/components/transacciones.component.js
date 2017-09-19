@@ -57,7 +57,32 @@ var Transacciones = (function () {
     Transacciones.prototype.pintarGrafico = function (series, canal) {
         var fecha = ((new Date(this.fechas.from)).getTime()) + 7200000;
         var grafHeight = 0;
+        var toolTip = {
+            shared: true,
+            followpointer: true,
+            borderColor: 'grey',
+            formatter: undefined
+        };
         if (canal.name == 'acumulado') {
+            toolTip = {
+                shared: true,
+                followpointer: true,
+                borderColor: 'grey',
+                formatter: function () {
+                    var s = '<b>Detalle:</b>';
+                    this.points.forEach(function (point, index) {
+                        if (index < 2) {
+                            console.log(point.color);
+                            s += '<br/><b>' + point.series.name + ': </b>' +
+                                point.y + ' - <b>' + point.percentage.toFixed(2) + ' %</b>';
+                        }
+                        else {
+                            s += '<br/><b>' + point.series.name.substr(0, 12) + ': </b>' + point.y;
+                        }
+                    });
+                    return s;
+                }
+            };
             series.forEach(function (serie) {
                 switch (serie.id) {
                     case "APX":
@@ -97,11 +122,7 @@ var Transacciones = (function () {
             yAxis: [{
                     title: { text: 'Peticiones' }
                 }],
-            tooltip: {
-                shared: true,
-                followPointer: true,
-                borderColor: 'grey'
-            },
+            tooltip: toolTip,
             legend: {
                 layout: 'horizontal',
                 align: 'center',
@@ -346,11 +367,10 @@ var Transacciones = (function () {
                         _this.valoresTabla.maxPeticionesHost = resultObj.datavalue;
                         _this.valoresTabla.sumPeticiones = _this.valoresTabla.peticionesApx + _this.valoresTabla.peticionesHost;
                         _this.valoresTabla.sumMaxPeticiones = _this.valoresTabla.maxPeticionesApx + _this.valoresTabla.maxPeticionesHost;
-                        _this.valoresTabla.porcentajeHost = (_this.valoresTabla.peticionesHost * 100) / _this.valoresTabla.sumPeticiones;
-                        _this.valoresTabla.porcentajeApx = (_this.valoresTabla.peticionesApx * 100) / _this.valoresTabla.sumPeticiones;
-                        _this.valoresTabla.maxPorcentajeHost = (_this.valoresTabla.maxPeticionesHost * 100) / _this.valoresTabla.sumMaxPeticiones;
-                        _this.valoresTabla.maxPorcentajeApx = (_this.valoresTabla.maxPeticionesApx * 100) / _this.valoresTabla.sumMaxPeticiones;
-                        console.log(_this.valoresTabla);
+                        _this.valoresTabla.porcentajeHost = (_this.valoresTabla.peticionesHost) / _this.valoresTabla.sumPeticiones;
+                        _this.valoresTabla.porcentajeApx = (_this.valoresTabla.peticionesApx) / _this.valoresTabla.sumPeticiones;
+                        _this.valoresTabla.maxPorcentajeHost = (_this.valoresTabla.maxPeticionesHost) / _this.valoresTabla.sumMaxPeticiones;
+                        _this.valoresTabla.maxPorcentajeApx = (_this.valoresTabla.maxPeticionesApx) / _this.valoresTabla.sumMaxPeticiones;
                     });
                 });
             });
