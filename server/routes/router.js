@@ -28,6 +28,7 @@ api.get('/getWaterMark/:monitors', monitorController.getWaterMark);
 
 api.get('/getGroupedWaterMark/:monitor/:fecha', groupedMonitorController.getGroupedWaterMark);
 api.get('/getDateAndThroughputGrouped/agrupacion/:tipo/:canal/:fecha', groupedMonitorController.getDateAndThroughputGrouped);
+api.get('/getDataGrouped/:monitor/agrupacion/:tipo/:kpi/:fechaDesde/:fechaHasta', groupedMonitorController.getDataGrouped);
 
 api.get('/getIdHost/:idchannel/:name', hostController.getIdHost);
 api.get('/getIdHostChannel/:idchannel', hostController.getIdHostChannel);

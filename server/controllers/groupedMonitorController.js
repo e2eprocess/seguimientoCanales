@@ -65,7 +65,51 @@ function getDateAndThroughputGrouped(req, res, next){
 		});
 }
 
+function getDataGrouped(req,res,next){
+	var monitor = req.params.monitor,
+		tipo = req.params.tipo,
+		kpi = req.params.kpi,
+		fechaDesde = req.params.fechaDesde,
+		fechaHasta = req.params.fechaHasta;
+
+	var parametros = {
+		$monitor: monitor,
+		$tipo: tipo,
+		$kpi: kpi,
+		$fechaDesde: fechaDesde,
+		$fechaHasta: fechaHasta
+	};
+
+	console.log(parametros);
+	
+	db.any('SELECT gd.datavalue as y \
+			FROM \"E2E\".groupedmonitordata gd, \"E2E\".groupedmonitor gm, \"E2E\".kpi kp \
+			WHERE gm.name = ${$monitor} \
+			AND gm.idmonitor = gd.idmonitor \
+			AND gd.type =${$tipo} \
+			AND kp.name = ${$kpi} \
+			AND gd.idkpi = kp.idkpi \
+			AND gd.timedata BETWEEN ${$fechaDesde} AND ${$fechaHasta} \
+			ORDER BY timedata', parametros)
+		.then((data)=>{
+
+			var array = data.map((elem)=>{
+				return parseFloat(elem.y)
+			})
+			res.status(200)
+			.json({
+				data : array
+			});
+		})
+		.catch((err)=>{
+			logger.error(err);
+			res.status(500).send({message: 'Error en el servidor al devolver datos desdegroupedmonitordata '});
+		});
+
+}
+
 module.exports = {
 	getGroupedWaterMark,
-	getDateAndThroughputGrouped
+	getDateAndThroughputGrouped,
+	getDataGrouped
 }

@@ -128,4 +128,9 @@ export class ComparativaService {
 							.map(res => res.json());
 	}
 
+	getDataGrouped(monitor,type,kpi,desde,hasta){
+		return this._http.get(this.url+'getDataGrouped/'+monitor+/agrupacion/+type+'/'+kpi+'/'+desde+'/'+hasta)
+							.map(res => res.json());
+	}
+
 }

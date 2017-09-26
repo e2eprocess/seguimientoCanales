@@ -465,18 +465,36 @@ export class Comparativa implements OnInit {
                 serie.dashStyle = '';
            };
 
-            this._comparativaService.getDatavalueMonitor(monitor.idmonitor,kpi,desde,hasta).subscribe(
-                response => {
-                    serie.data = response.data;
-                    resolve(serie)
-                },
-                error => {
-                    this.errorMessage = <any>error;
-                    if(this.errorMessage != null){
-                        alert('Error en la obtención del '+kpi+' del monitor '+monitor.name);
-                    }                    
-                    reject()
-                });
+           if (monitor.name.includes('ASO')){
+               this._comparativaService.getDataGrouped(monitor.name,'F',kpi,desde,hasta).subscribe(
+                   response => {
+                       serie.data = response.data
+                       resolve(serie)
+                   },
+                   error =>{
+                       this.errorMessage = <any>error;
+                       if(this.errorMessage != null){
+                           alert('Error en la obtención del '+kpi+' del monitor '+monitor.name);
+                       }                    
+                       reject()
+                   }
+               );
+
+           }else{
+               this._comparativaService.getDatavalueMonitor(monitor.idmonitor,kpi,desde,hasta).subscribe(
+                   response => {
+                       serie.data = response.data;
+                       resolve(serie)
+                    },
+                    error => {
+                       this.errorMessage = <any>error;
+                       if(this.errorMessage != null){
+                           alert('Error en la obtención del '+kpi+' del monitor '+monitor.name);
+                       }                    
+                       reject()
+                    }
+                );
+           }
         })
 
     }
@@ -527,8 +545,7 @@ export class Comparativa implements OnInit {
     gestionGraficoMonitores(monitores, kpi){
 
         var promesas = [];
-        //var series = [];
-
+        
         monitores.forEach((monitor, index)=>{
             promesas.push(this.obtencionSeriesMonitores(monitor,index,kpi,'from',this.fechas.fromDesde,this.fechas.fromHasta));
         });
@@ -550,7 +567,23 @@ export class Comparativa implements OnInit {
         });
     }
 
+    gestionGraficaMonitoresAso(channel,name,kpi){
 
+        var promesas = [];
+
+        var monitor = {
+            name: name
+        };
+
+        promesas.push(this.obtencionSeriesMonitores(monitor,1,kpi,'from',this.fechas.fromDesde,this.fechas.fromHasta));
+        promesas.push(this.obtencionSeriesMonitores(monitor,1,kpi,'to',this.fechas.toDesde,this.fechas.toHasta));
+
+        Promise.all(promesas).then((resultado)=>{
+            this.series = resultado;
+            this.pintarGrafica(kpi);
+        })
+        
+    }
 
     gestionRecursos(idchannel,channel,name){      
     //Obtención idHost asociado al canal y a la UUAA informada
@@ -692,7 +725,12 @@ export class Comparativa implements OnInit {
                     break;
                 
                 case "ASO":
-                        console.log(channel);
+                    this.name = 'ASO';
+                    this.uuaa = {
+                        description: 'Pruebas'
+                    };
+                    this.gestionGraficaMonitoresAso(channel,name,'Time');
+                    this.gestionGraficaMonitoresAso(channel,name,'Throughput');
                     break;
 
                 default:

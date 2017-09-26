@@ -380,16 +380,30 @@ var Comparativa = (function () {
                 serie.dashStyle = '';
             }
             ;
-            _this._comparativaService.getDatavalueMonitor(monitor.idmonitor, kpi, desde, hasta).subscribe(function (response) {
-                serie.data = response.data;
-                resolve(serie);
-            }, function (error) {
-                _this.errorMessage = error;
-                if (_this.errorMessage != null) {
-                    alert('Error en la obtención del ' + kpi + ' del monitor ' + monitor.name);
-                }
-                reject();
-            });
+            if (monitor.name.includes('ASO')) {
+                _this._comparativaService.getDataGrouped(monitor.name, 'F', kpi, desde, hasta).subscribe(function (response) {
+                    serie.data = response.data;
+                    resolve(serie);
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la obtención del ' + kpi + ' del monitor ' + monitor.name);
+                    }
+                    reject();
+                });
+            }
+            else {
+                _this._comparativaService.getDatavalueMonitor(monitor.idmonitor, kpi, desde, hasta).subscribe(function (response) {
+                    serie.data = response.data;
+                    resolve(serie);
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la obtención del ' + kpi + ' del monitor ' + monitor.name);
+                    }
+                    reject();
+                });
+            }
         });
     };
     Comparativa.prototype.gestionCPUOficinas = function (maquinas, parOImpar) {
@@ -428,7 +442,6 @@ var Comparativa = (function () {
     Comparativa.prototype.gestionGraficoMonitores = function (monitores, kpi) {
         var _this = this;
         var promesas = [];
-        //var series = [];
         monitores.forEach(function (monitor, index) {
             promesas.push(_this.obtencionSeriesMonitores(monitor, index, kpi, 'from', _this.fechas.fromDesde, _this.fechas.fromHasta));
         });
@@ -445,6 +458,19 @@ var Comparativa = (function () {
                     _this.pintarGrafica(kpi);
                 });
             });
+        });
+    };
+    Comparativa.prototype.gestionGraficaMonitoresAso = function (channel, name, kpi) {
+        var _this = this;
+        var promesas = [];
+        var monitor = {
+            name: name
+        };
+        promesas.push(this.obtencionSeriesMonitores(monitor, 1, kpi, 'from', this.fechas.fromDesde, this.fechas.fromHasta));
+        promesas.push(this.obtencionSeriesMonitores(monitor, 1, kpi, 'to', this.fechas.toDesde, this.fechas.toHasta));
+        Promise.all(promesas).then(function (resultado) {
+            _this.series = resultado;
+            _this.pintarGrafica(kpi);
         });
     };
     Comparativa.prototype.gestionRecursos = function (idchannel, channel, name) {
@@ -566,7 +592,12 @@ var Comparativa = (function () {
                     _this.gestionRecursos(6, channel, "");
                     break;
                 case "ASO":
-                    console.log(channel);
+                    _this.name = 'ASO';
+                    _this.uuaa = {
+                        description: 'Pruebas'
+                    };
+                    _this.gestionGraficaMonitoresAso(channel, name, 'Time');
+                    _this.gestionGraficaMonitoresAso(channel, name, 'Throughput');
                     break;
                 default:
                     //Obtención idchannel asociado al canal

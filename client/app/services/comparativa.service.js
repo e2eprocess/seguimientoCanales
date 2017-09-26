@@ -98,6 +98,10 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getDateAndThroughputGrouped/agrupacion/' + type + '/' + canal + '/' + fecha)
             .map(function (res) { return res.json(); });
     };
+    ComparativaService.prototype.getDataGrouped = function (monitor, type, kpi, desde, hasta) {
+        return this._http.get(this.url + 'getDataGrouped/' + monitor + /agrupacion/ + type + '/' + kpi + '/' + desde + '/' + hasta)
+            .map(function (res) { return res.json(); });
+    };
     return ComparativaService;
 }());
 ComparativaService = __decorate([
