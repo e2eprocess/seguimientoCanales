@@ -292,7 +292,7 @@ var Comparativa = (function () {
                 serie.name = id.name + '_' + uuaa + ' (F)';
             }
             else {
-                serie.name = id.name;
+                serie.name = id.name + ' (F)';
             }
         }
         else {
@@ -301,7 +301,7 @@ var Comparativa = (function () {
                 serie.name = id.name + '_' + uuaa + ' (T)';
             }
             else {
-                serie.name = id.name;
+                serie.name = id.name + ' (T)';
             }
         }
         ;
@@ -475,10 +475,22 @@ var Comparativa = (function () {
     };
     Comparativa.prototype.gestionRecursos = function (idchannel, channel, name) {
         var _this = this;
-        //Obtención idHost asociado al canal y a la UUAA informada
-        if (idchannel != 4) {
-            if (idchannel == 6) {
-                this._comparativaService.getIdHostChannelAsoApx(idchannel, channel).subscribe(function (response) {
+        this.visibleCPU = false;
+        this.visibleMemoria = false;
+        this.visibleCPUOficinas = false;
+        if (channel == 'APX' || channel == 'ASO') {
+            this._comparativaService.getIdHostChannelAsoApx(idchannel, channel).subscribe(function (response) {
+                _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
+            }, function (error) {
+                _this.errorMessage = error;
+                if (_this.errorMessage != null) {
+                    alert('Error en la obtención de los IDHOST asociados al Canal');
+                }
+            });
+        }
+        else {
+            if (idchannel != 4) {
+                this._comparativaService.getIdHost(idchannel, name).subscribe(function (response) {
                     _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
                 }, function (error) {
                     _this.errorMessage = error;
@@ -488,46 +500,24 @@ var Comparativa = (function () {
                 });
             }
             else {
-                if (name.indexOf('ASO') != -1) {
-                    this._comparativaService.getIdHostChannelAsoApx(idchannel, name.substring(0, 3)).subscribe(function (response) {
-                        _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
-                    }, function (error) {
-                        _this.errorMessage = error;
-                        if (_this.errorMessage != null) {
-                            alert('Error en la obtención de los IDHOST asociados al Canal');
-                        }
-                    });
-                }
-                else {
-                    this._comparativaService.getIdHost(idchannel, name).subscribe(function (response) {
-                        _this.gestionGraficoRecursos(response.data, idchannel, 'CPU');
-                    }, function (error) {
-                        _this.errorMessage = error;
-                        if (_this.errorMessage != null) {
-                            alert('Error en la obtención de los IDHOST asociados al Canal');
-                        }
-                    });
-                }
+                this.visibleCPU = false;
+                this.visibleMemoria = false;
+                var cpuPar = ['spnac006', 'spnac008', 'spnac010', 'spnac012'];
+                var cpuImpar = ['spnac005', 'spnac007', 'spnac009'];
+                this.gestionCPUOficinas(cpuPar, 'cpuPar');
+                this.gestionCPUOficinas(cpuImpar, 'cpuImpar');
             }
-        }
-        else {
-            this.visibleCPU = false;
-            this.visibleMemoria = false;
-            var cpuPar = ['spnac006', 'spnac008', 'spnac010', 'spnac012'];
-            var cpuImpar = ['spnac005', 'spnac007', 'spnac009'];
-            this.gestionCPUOficinas(cpuPar, 'cpuPar');
-            this.gestionCPUOficinas(cpuImpar, 'cpuImpar');
-        }
-        //Obtención idclon asociado al canal y a la UUAA informada
-        if (idchannel < 4) {
-            this._comparativaService.getIdClon(idchannel, name).subscribe(function (response) {
-                _this.gestionGraficoRecursos(response.data, idchannel, 'Memory');
-            }, function (error) {
-                _this.errorMessage = error;
-                if (_this.errorMessage != null) {
-                    alert('Error en la obtención de los IDHOST asociados al Canal');
-                }
-            });
+            //Pintado Memoria
+            if (idchannel < 4) {
+                this._comparativaService.getIdClon(idchannel, name).subscribe(function (response) {
+                    _this.gestionGraficoRecursos(response.data, idchannel, 'Memory');
+                }, function (error) {
+                    _this.errorMessage = error;
+                    if (_this.errorMessage != null) {
+                        alert('Error en la obtención de los IDHOST asociados al Canal');
+                    }
+                });
+            }
         }
     };
     Comparativa.prototype.gestionMonitores = function (idchannel, name) {
@@ -554,10 +544,8 @@ var Comparativa = (function () {
     };
     Comparativa.prototype.comparativa = function (from, to) {
         var _this = this;
-        this.visibleCPU = false;
-        this.visibleMemoria = false;
-        this.visibleCPUOficinas = false;
-        //Gestión fechas From y To. Si To es el día actual se realiza la busqueda hasta la hora actual - menos 20 minutos;
+        //Gestión fechas From y To. 
+        //Si To es el día actual se realiza la busqueda hasta la hora actual - menos 20 minutos;
         this.fechas = new fechas_1.Fechas('', '', '', '', '', '');
         var horaMenos20 = new Date().getTime() - 1200000;
         if (new Date().toDateString() === new Date(to.date.year + '-' + to.date.month + '-' + to.date.day).toDateString()) {
@@ -572,11 +560,12 @@ var Comparativa = (function () {
         this.fechas.fromHasta = from.date.year + '-' + from.date.month + '-' + from.date.day + ' 23:59:00';
         this.fechas.to = to.date.day + '-' + to.date.month + '-' + to.date.year;
         this.fechas.from = from.date.day + '-' + from.date.month + '-' + from.date.year;
+        //Obtención datos URL.
         this._route.params.forEach(function (params) {
-            //Recupera parametros URL.
             var name = params['name'];
             var channel = params['channel'];
             _this.name = name;
+            //Comportamiento según entorno
             switch (channel) {
                 case "APX":
                     var monitor = [{
@@ -587,17 +576,27 @@ var Comparativa = (function () {
                     _this.uuaa = {
                         description: 'Acumulado Transacciones'
                     };
-                    _this.gestionGraficoMonitores(monitor, 'Time');
-                    _this.gestionGraficoMonitores(monitor, 'Throughput');
-                    _this.gestionRecursos(6, channel, "");
+                    _this._comparativaService.getIdChannel(channel.toLowerCase()).subscribe(function (response) {
+                        var idchannel = response.data.idchannel;
+                        _this.gestionGraficoMonitores(monitor, 'Time');
+                        _this.gestionGraficoMonitores(monitor, 'Throughput');
+                        _this.gestionRecursos(idchannel, channel, "APX");
+                    }, function (error) {
+                    });
                     break;
                 case "ASO":
                     _this.name = 'ASO';
                     _this.uuaa = {
-                        description: 'Pruebas'
+                        description: params['description']
                     };
+                    var channelASO = (name.substr(4)).toLowerCase();
                     _this.gestionGraficaMonitoresAso(channel, name, 'Time');
                     _this.gestionGraficaMonitoresAso(channel, name, 'Throughput');
+                    _this._comparativaService.getIdChannel(channelASO).subscribe(function (response) {
+                        var idchannel = response.data.idchannel;
+                        _this.gestionRecursos(idchannel, channel, name);
+                    }, function (error) {
+                    });
                     break;
                 default:
                     //Obtención idchannel asociado al canal

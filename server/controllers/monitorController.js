@@ -297,6 +297,39 @@ function getThroughputToday(req, res, next){
 
 }
 
+function getComments(req, res, next){
+	
+	var desde = req.params.desde,
+		hasta = req.params.hasta;
+
+	var parametros = {
+		$idmonitor: req.params.idmonitor,
+		$kpi: req.params.kpi,
+		$desde: desde,
+		$hasta: hasta
+	};
+	
+	db.any('SELECT ((extract(epoch from a.timestart))::numeric)*1000 as x, \
+			\'<b>\'||a.type||\'</b>\' as title, \
+			a.description as text \
+			FROM \"E2E\".comments a, \"E2E\".kpi b\
+			WHERE a.idmonitor = ${$idmonitor}\
+			AND b.name = ${$kpi} \
+			AND a.idkpi = b.idkpi \
+			AND a.timestart between ${$desde} and ${$hasta}', parametros)
+		.then((data)=>{
+			var array = data.map((elem) => {
+				return { x: parseInt(elem.x), 
+						title: elem.title, 
+						text: elem.text}
+			});
+			res.status(200).json({data:array});
+		}).catch((err)=>{
+			logger.error(err);
+			res.status(500).send({message: 'Error al devolver el numero de peticiones del día'});
+		});
+
+}
 
 module.exports = {
   getMonitors,
@@ -307,5 +340,6 @@ module.exports = {
   getDate,
   getDataMonitorInformePeticiones,
   getDataMonitorInformeTime,
-  getThroughputToday
+  getThroughputToday,
+  getComments
 }

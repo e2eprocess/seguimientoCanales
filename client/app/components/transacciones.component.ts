@@ -194,6 +194,17 @@ export class Transacciones implements OnInit {
         })       
     }
 
+    obtencionComentarios(idmonitor,kpi,fechas){
+        return  new Promise((resolve,reject)=>{
+            this._comparativaService.getComments(idmonitor,kpi,fechas.fromDesde,fechas.fromHasta).subscribe(
+            response=>{
+                resolve(response.data);
+            },error=>{})
+
+        });
+        
+    }
+
     obtencionDatos(idmonitor,kpi,fechas){
 
         return new Promise((resolve,reject)=>{
@@ -226,6 +237,36 @@ export class Transacciones implements OnInit {
                         reject() 
                     });
         });
+    }
+
+    gestionComentarios(idmonitor, fechas, kpi, canal){
+
+        const serieTags = {
+             type: 'flags',
+             color: '#333333',
+             fillColor: 'rgba(255,255,255,0.8)',
+             data: [],
+             onSeries: canal,
+             tooltip: {
+                      xDateFormat: '%e %B %Y %H:%MM'
+             },
+             showInLegend: false
+        }
+        
+        return new Promise((resolve,reject)=>{
+            this.obtencionComentarios(idmonitor,kpi,fechas).then((resultado)=>{
+                const result = JSON.stringify(resultado);
+                const resultObj = JSON.parse(result);
+                console.log(resultObj);
+                resultObj.forEach((elem)=>{
+                    serieTags.data.push(elem);         
+                });
+                
+                resolve(serieTags)
+            });
+
+        });
+        
     }
 
     maxPeti(canal,fecha){
@@ -375,15 +416,19 @@ export class Transacciones implements OnInit {
             description: ''
         };
 
+        var idmonitor = 0;
+
         switch (canal) {
             case "HOST":
                 datosCanal.name = 'host';
                 datosCanal.description = 'Trx Host';
+                idmonitor = 362;
                 break;
 
             case "APX":
                 datosCanal.name = 'apx';
                 datosCanal.description = 'Trx APX';
+                idmonitor = 361;
                 break;
             
         }
@@ -391,6 +436,7 @@ export class Transacciones implements OnInit {
         return new Promise((resolve,reject)=>{
             promesasSeries.push(this.estandar(canal,fechas));
             promesasSeries.push(this.maxPeti(canal,fechas));
+            promesasSeries.push(this.gestionComentarios(idmonitor,fechas,'Throughput',canal));
 
             Promise.all(promesasSeries).then((resultado)=>{
                 this.pintarGrafico(resultado,datosCanal)

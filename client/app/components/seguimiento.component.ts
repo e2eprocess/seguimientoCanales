@@ -41,6 +41,7 @@ export class Seguimiento implements OnInit {
     private fecha: Object;
     private fechaTitulo: string;
     private fechas: Fechas;
+    private tags: Object;
 	
 	constructor(
 		private _comparativaService: ComparativaService,
@@ -74,7 +75,8 @@ export class Seguimiento implements OnInit {
     }
 
     pintarGrafico(series, canal){
-        jQuery('#'+canal.name).highcharts({
+        
+        var options = {
             chart: {
                 zoomType: 'xy'
             },
@@ -94,12 +96,13 @@ export class Seguimiento implements OnInit {
                     },
                     title: {
                       text: 'Tiempo de respuesta (ms.)'
-                    }
+                    }, min:0
                 },{
                     title: {
                       text: 'Peticiones'
                     },
                     opposite: true,
+                    min: 0
             }],
             tooltip: {
               shared: true,
@@ -131,7 +134,51 @@ export class Seguimiento implements OnInit {
                   }   
             },
             series: series
-        })
+        }
+
+        jQuery('#'+canal.name).highcharts(options);
+        
+    }
+
+    obtencionComentarios(idmonitor,kpi,fechas){
+        return  new Promise((resolve,reject)=>{
+            this._comparativaService.getComments(idmonitor,kpi,fechas.fromDesde,fechas.fromHasta).subscribe(
+            response=>{
+                resolve(response.data);
+            },error=>{})
+
+        });
+        
+    }
+
+    gestionComentarios(idmonitor, fechas, kpi){
+
+        const serieTags = {
+             type: 'flags',
+             color: '#333333',
+             fillColor: 'rgba(255,255,255,0.8)',
+             data: [],
+             onSeries: kpi,
+             tooltip: {
+                      xDateFormat: '%e %B %Y %H:%MM'
+             },
+             showInLegend: false
+        }
+        
+        return new Promise((resolve,reject)=>{
+            this.obtencionComentarios(idmonitor,kpi,fechas).then((resultado)=>{
+                serieTags.onSeries = kpi;
+                const result = JSON.stringify(resultado);
+                const resultObj = JSON.parse(result);
+                console.log(resultObj);
+                resultObj.forEach((elem)=>{
+                    serieTags.data.push(elem);         
+                });
+                
+                resolve(serieTags)
+            });
+
+        });
         
     }
 
@@ -176,7 +223,7 @@ export class Seguimiento implements OnInit {
     obtencionDatos(idmonitor,kpi,fechas){
     	const serieTime = {
 				name: 'Tiempo Respuesta',
-				id: 'Tiempo',
+				id: 'Time',
 				color: '#2DCCCD',
 	            type: 'line',
 	            index: 1,
@@ -189,7 +236,7 @@ export class Seguimiento implements OnInit {
 	        };
         const seriePeticiones = {
 				name: 'Peticiones',
-				id: 'Peticiones',
+				id: 'Throughput',
 				color: '#0A5FB4',
 	            type: 'column',
 	            yAxis: 1,
@@ -261,9 +308,11 @@ export class Seguimiento implements OnInit {
             promesas.push(this.obtencionDatos(idmonitor,'Throughput',fechas));
             promesas.push(this.obtencionDatos(idmonitor,'Time',fechas));
             promesas.push(this.obtencionWaterMakr(idmonitor, fechas));
+            promesas.push(this.gestionComentarios(idmonitor,fechas,'Throughput'));
+            promesas.push(this.gestionComentarios(idmonitor,fechas,'Time'));
             
             Promise.all(promesas).then((resultado)=>{
-                this.pintarGrafico(resultado, canal);
+                this.pintarGrafico(resultado, canal);                   
             });
         });
 

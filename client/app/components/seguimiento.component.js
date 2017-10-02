@@ -52,7 +52,7 @@ var Seguimiento = (function () {
         this.seguimiento(this.fecha);
     };
     Seguimiento.prototype.pintarGrafico = function (series, canal) {
-        jQuery('#' + canal.name).highcharts({
+        var options = {
             chart: {
                 zoomType: 'xy'
             },
@@ -72,12 +72,13 @@ var Seguimiento = (function () {
                     },
                     title: {
                         text: 'Tiempo de respuesta (ms.)'
-                    }
+                    }, min: 0
                 }, {
                     title: {
                         text: 'Peticiones'
                     },
                     opposite: true,
+                    min: 0
                 }],
             tooltip: {
                 shared: true,
@@ -109,6 +110,41 @@ var Seguimiento = (function () {
                 }
             },
             series: series
+        };
+        jQuery('#' + canal.name).highcharts(options);
+    };
+    Seguimiento.prototype.obtencionComentarios = function (idmonitor, kpi, fechas) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._comparativaService.getComments(idmonitor, kpi, fechas.fromDesde, fechas.fromHasta).subscribe(function (response) {
+                resolve(response.data);
+            }, function (error) { });
+        });
+    };
+    Seguimiento.prototype.gestionComentarios = function (idmonitor, fechas, kpi) {
+        var _this = this;
+        var serieTags = {
+            type: 'flags',
+            color: '#333333',
+            fillColor: 'rgba(255,255,255,0.8)',
+            data: [],
+            onSeries: kpi,
+            tooltip: {
+                xDateFormat: '%e %B %Y %H:%MM'
+            },
+            showInLegend: false
+        };
+        return new Promise(function (resolve, reject) {
+            _this.obtencionComentarios(idmonitor, kpi, fechas).then(function (resultado) {
+                serieTags.onSeries = kpi;
+                var result = JSON.stringify(resultado);
+                var resultObj = JSON.parse(result);
+                console.log(resultObj);
+                resultObj.forEach(function (elem) {
+                    serieTags.data.push(elem);
+                });
+                resolve(serieTags);
+            });
         });
     };
     Seguimiento.prototype.obtencionWaterMakr = function (idmonitor, fechas) {
@@ -144,7 +180,7 @@ var Seguimiento = (function () {
         var _this = this;
         var serieTime = {
             name: 'Tiempo Respuesta',
-            id: 'Tiempo',
+            id: 'Time',
             color: '#2DCCCD',
             type: 'line',
             index: 1,
@@ -157,7 +193,7 @@ var Seguimiento = (function () {
         };
         var seriePeticiones = {
             name: 'Peticiones',
-            id: 'Peticiones',
+            id: 'Throughput',
             color: '#0A5FB4',
             type: 'column',
             yAxis: 1,
@@ -221,6 +257,8 @@ var Seguimiento = (function () {
             promesas.push(_this.obtencionDatos(idmonitor, 'Throughput', fechas));
             promesas.push(_this.obtencionDatos(idmonitor, 'Time', fechas));
             promesas.push(_this.obtencionWaterMakr(idmonitor, fechas));
+            promesas.push(_this.gestionComentarios(idmonitor, fechas, 'Throughput'));
+            promesas.push(_this.gestionComentarios(idmonitor, fechas, 'Time'));
             Promise.all(promesas).then(function (resultado) {
                 _this.pintarGrafico(resultado, canal);
             });

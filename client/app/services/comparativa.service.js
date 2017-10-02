@@ -102,6 +102,10 @@ var ComparativaService = (function () {
         return this._http.get(this.url + 'getDataGrouped/' + monitor + /agrupacion/ + type + '/' + kpi + '/' + desde + '/' + hasta)
             .map(function (res) { return res.json(); });
     };
+    ComparativaService.prototype.getComments = function (idmonitor, kpi, desde, hasta) {
+        return this._http.get(this.url + 'getComments/' + idmonitor + '/' + kpi + '/' + desde + '/' + hasta)
+            .map(function (res) { return res.json(); });
+    };
     return ComparativaService;
 }());
 ComparativaService = __decorate([

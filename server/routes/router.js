@@ -23,8 +23,9 @@ api.get('/getDataMonitorInformePeticiones/:idmonitor/:fecha/:interval/:kpi', mon
 api.get('/getDataMonitorInformeTime/:idmonitor/:fecha/:interval/:kpi', monitorController.getDataMonitorInformeTime);
 api.get('/getThroughputToday/:idmonitor/:kpi', monitorController.getThroughputToday);
 
-
 api.get('/getWaterMark/:monitors', monitorController.getWaterMark);
+
+api.get('/getComments/:idmonitor/:kpi/:desde/:hasta', monitorController.getComments);
 
 api.get('/getGroupedWaterMark/:monitor/:fecha', groupedMonitorController.getGroupedWaterMark);
 api.get('/getDateAndThroughputGrouped/agrupacion/:tipo/:canal/:fecha', groupedMonitorController.getDateAndThroughputGrouped);

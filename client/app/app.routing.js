@@ -13,6 +13,7 @@ var appRoutes = [
     { path: 'seguimiento_transacciones', component: transacciones_component_1.Transacciones },
     { path: 'comparativa/:channel', component: comparativa_component_1.Comparativa },
     { path: 'comparativa/:channel/:name', component: comparativa_component_1.Comparativa },
+    { path: 'comparativa/:channel/:name/:description', component: comparativa_component_1.Comparativa },
     { path: 'informe/:channel/:name', component: informe_component_1.Informe },
     { path: 'highstock/:channel/:idMonitor', component: highstock_component_1.Highstock },
     { path: 'V_MQ/:channel', component: visionMaquina_component_1.VisionMaquina },

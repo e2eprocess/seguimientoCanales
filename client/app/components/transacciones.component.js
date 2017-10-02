@@ -160,6 +160,14 @@ var Transacciones = (function () {
             series: series
         });
     };
+    Transacciones.prototype.obtencionComentarios = function (idmonitor, kpi, fechas) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._comparativaService.getComments(idmonitor, kpi, fechas.fromDesde, fechas.fromHasta).subscribe(function (response) {
+                resolve(response.data);
+            }, function (error) { });
+        });
+    };
     Transacciones.prototype.obtencionDatos = function (idmonitor, kpi, fechas) {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -187,6 +195,31 @@ var Transacciones = (function () {
                     alert('Error en la obtención número de peticiones');
                 }
                 reject();
+            });
+        });
+    };
+    Transacciones.prototype.gestionComentarios = function (idmonitor, fechas, kpi, canal) {
+        var _this = this;
+        var serieTags = {
+            type: 'flags',
+            color: '#333333',
+            fillColor: 'rgba(255,255,255,0.8)',
+            data: [],
+            onSeries: canal,
+            tooltip: {
+                xDateFormat: '%e %B %Y %H:%MM'
+            },
+            showInLegend: false
+        };
+        return new Promise(function (resolve, reject) {
+            _this.obtencionComentarios(idmonitor, kpi, fechas).then(function (resultado) {
+                var result = JSON.stringify(resultado);
+                var resultObj = JSON.parse(result);
+                console.log(resultObj);
+                resultObj.forEach(function (elem) {
+                    serieTags.data.push(elem);
+                });
+                resolve(serieTags);
             });
         });
     };
@@ -312,19 +345,23 @@ var Transacciones = (function () {
             name: '',
             description: ''
         };
+        var idmonitor = 0;
         switch (canal) {
             case "HOST":
                 datosCanal.name = 'host';
                 datosCanal.description = 'Trx Host';
+                idmonitor = 362;
                 break;
             case "APX":
                 datosCanal.name = 'apx';
                 datosCanal.description = 'Trx APX';
+                idmonitor = 361;
                 break;
         }
         return new Promise(function (resolve, reject) {
             promesasSeries.push(_this.estandar(canal, fechas));
             promesasSeries.push(_this.maxPeti(canal, fechas));
+            promesasSeries.push(_this.gestionComentarios(idmonitor, fechas, 'Throughput', canal));
             Promise.all(promesasSeries).then(function (resultado) {
                 _this.pintarGrafico(resultado, datosCanal);
                 resolve();

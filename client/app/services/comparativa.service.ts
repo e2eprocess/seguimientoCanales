@@ -133,4 +133,9 @@ export class ComparativaService {
 							.map(res => res.json());
 	}
 
+	getComments(idmonitor,kpi,desde,hasta){
+		return this._http.get(this.url+'getComments/'+idmonitor+'/'+kpi+'/'+desde+'/'+hasta)
+							.map(res => res.json());
+	}
+
 }

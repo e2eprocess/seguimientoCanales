@@ -365,14 +365,14 @@ export class Comparativa implements OnInit {
             if(id < 17){
             	serie.name = id.name+'_'+uuaa + ' (F)'
             }else{
-            	serie.name = id.name;
+            	serie.name = id.name + ' (F)'
             }
         }else{
          	serie.type = 'line' 
             if(id < 17){
             	serie.name = id.name+'_'+uuaa + ' (T)'
          	}else{
-         		serie.name = id.name;	
+         		serie.name = id.name + ' (T)'
          	}
         };
 
@@ -585,70 +585,60 @@ export class Comparativa implements OnInit {
         
     }
 
-    gestionRecursos(idchannel,channel,name){      
-    //Obtención idHost asociado al canal y a la UUAA informada
-        if (idchannel!=4){
-        	if (idchannel==6){
-        		this._comparativaService.getIdHostChannelAsoApx(idchannel,channel).subscribe(
-        			response =>{
-        				this.gestionGraficoRecursos(response.data,idchannel,'CPU');
-        			},error => {
-        				this.errorMessage = <any>error;
-	                    if(this.errorMessage != null){
-	                    	alert('Error en la obtención de los IDHOST asociados al Canal');
-	                  	}
-        			}
-    			);
-        	}else{
-        		if(name.indexOf('ASO')!=-1){
-        			this._comparativaService.getIdHostChannelAsoApx(idchannel,name.substring(0,3)).subscribe(
-        				response => {
-        					this.gestionGraficoRecursos(response.data,idchannel,'CPU');
-        				},
-        				error => {
-	                		this.errorMessage = <any>error;
-		                    if(this.errorMessage != null){
-		                    	alert('Error en la obtención de los IDHOST asociados al Canal');
-		                  	}
-		            	}
-        			);
-        		}else{
-		            this._comparativaService.getIdHost(idchannel,name).subscribe(
-		                response => {
-		                    this.gestionGraficoRecursos(response.data,idchannel,'CPU');
-		                },
-		                error => {
-	                		this.errorMessage = <any>error;
-		                    if(this.errorMessage != null){
-		                    	alert('Error en la obtención de los IDHOST asociados al Canal');
-		                  	}
-		            	}
-	            	);
-            	}
-            }
-        }else{
-            this.visibleCPU = false;
-            this.visibleMemoria = false;
-            var cpuPar = ['spnac006','spnac008','spnac010','spnac012'];
-            var cpuImpar = ['spnac005','spnac007','spnac009'];
-            this.gestionCPUOficinas(cpuPar,'cpuPar');
-            this.gestionCPUOficinas(cpuImpar,'cpuImpar');
+    gestionRecursos(idchannel,channel,name){   
 
-        }
-     //Obtención idclon asociado al canal y a la UUAA informada
-         if (idchannel < 4){
-            this._comparativaService.getIdClon(idchannel,name).subscribe(
-                response => {
-                    this.gestionGraficoRecursos(response.data, idchannel, 'Memory');
-                },
-                error => {
+        this.visibleCPU = false;
+        this.visibleMemoria = false;
+        this.visibleCPUOficinas = false;
+   
+    
+        if(channel=='APX'||channel=='ASO'){
+            this._comparativaService.getIdHostChannelAsoApx(idchannel,channel).subscribe(
+                response =>{
+                    this.gestionGraficoRecursos(response.data,idchannel,'CPU');
+                },error => {
                     this.errorMessage = <any>error;
+                    if(this.errorMessage != null){
+                        alert('Error en la obtención de los IDHOST asociados al Canal');
+                      }
+                }
+            );
+        }else{
+            if (idchannel!=4){
+                this._comparativaService.getIdHost(idchannel,name).subscribe(
+                    response => {
+                        this.gestionGraficoRecursos(response.data,idchannel,'CPU');
+                    },
+                    error => {
+                        this.errorMessage = <any>error;
                         if(this.errorMessage != null){
-                    alert('Error en la obtención de los IDHOST asociados al Canal');
-                  }
-            });     
-         }
-        
+                            alert('Error en la obtención de los IDHOST asociados al Canal');
+                          }
+                    }
+                );
+            }else{
+                this.visibleCPU = false;
+                this.visibleMemoria = false;
+                var cpuPar = ['spnac006','spnac008','spnac010','spnac012'];
+                var cpuImpar = ['spnac005','spnac007','spnac009'];
+                this.gestionCPUOficinas(cpuPar,'cpuPar');
+                this.gestionCPUOficinas(cpuImpar,'cpuImpar');
+            }
+
+            //Pintado Memoria
+            if (idchannel < 4){
+                this._comparativaService.getIdClon(idchannel,name).subscribe(
+                    response => {
+                        this.gestionGraficoRecursos(response.data, idchannel, 'Memory');
+                    },
+                    error => {
+                        this.errorMessage = <any>error;
+                            if(this.errorMessage != null){
+                        alert('Error en la obtención de los IDHOST asociados al Canal');
+                      }
+                });     
+             }
+        }
     }
 
     gestionMonitores(idchannel,name){
@@ -681,11 +671,8 @@ export class Comparativa implements OnInit {
 
     comparativa(from, to){
 
-    	this.visibleCPU = false;
-        this.visibleMemoria = false;
-        this.visibleCPUOficinas = false;
-
-        //Gestión fechas From y To. Si To es el día actual se realiza la busqueda hasta la hora actual - menos 20 minutos;
+        //Gestión fechas From y To. 
+        //Si To es el día actual se realiza la busqueda hasta la hora actual - menos 20 minutos;
         this.fechas = new Fechas('','','','','','');
         var horaMenos20 = new Date().getTime()-1200000;
         if(new Date().toDateString() === new Date(to.date.year+'-'+to.date.month+'-'+to.date.day).toDateString() ){
@@ -700,13 +687,14 @@ export class Comparativa implements OnInit {
         this.fechas.to = to.date.day+'-'+to.date.month+'-'+to.date.year;
         this.fechas.from = from.date.day+'-'+from.date.month+'-'+from.date.year;
 
+        //Obtención datos URL.
         this._route.params.forEach((params: Params) => {
 
-            //Recupera parametros URL.
             let name = params['name'];
             let channel = params['channel'];    
             this.name = name;
 
+            //Comportamiento según entorno
             switch (channel) {
                 case "APX":
                     var monitor = [{
@@ -718,19 +706,40 @@ export class Comparativa implements OnInit {
                     this.uuaa = {
                         description: 'Acumulado Transacciones'
                     }
-        
-                    this.gestionGraficoMonitores(monitor,'Time');
-                    this.gestionGraficoMonitores(monitor,'Throughput');
-                    this.gestionRecursos(6,channel,"");
+
+                    this._comparativaService.getIdChannel(channel.toLowerCase()).subscribe(
+                        response =>{
+                            var idchannel = response.data.idchannel;
+                            this.gestionGraficoMonitores(monitor,'Time');
+                            this.gestionGraficoMonitores(monitor,'Throughput');
+                            this.gestionRecursos(idchannel,channel,"APX");
+
+                        },error => {
+
+                        }
+                    )
                     break;
                 
                 case "ASO":
                     this.name = 'ASO';
                     this.uuaa = {
-                        description: 'Pruebas'
+                        description: params['description']
                     };
+
+                    var channelASO = (name.substr(4)).toLowerCase();
+
                     this.gestionGraficaMonitoresAso(channel,name,'Time');
                     this.gestionGraficaMonitoresAso(channel,name,'Throughput');
+
+                    this._comparativaService.getIdChannel(channelASO).subscribe(
+                        response => {
+                            var idchannel = response.data.idchannel;
+                            this.gestionRecursos(idchannel,channel,name);
+                        },error => {
+
+                        });
+
+
                     break;
 
                 default:

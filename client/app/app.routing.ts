@@ -14,6 +14,7 @@ const appRoutes: Routes = [
 	{path:'seguimiento_transacciones', component: Transacciones},
 	{path:'comparativa/:channel', component: Comparativa},
 	{path:'comparativa/:channel/:name', component: Comparativa},
+	{path:'comparativa/:channel/:name/:description', component: Comparativa},
 	{path:'informe/:channel/:name', component: Informe},
 	{path:'highstock/:channel/:idMonitor', component: Highstock},
 	{path:'V_MQ/:channel', component: VisionMaquina},
