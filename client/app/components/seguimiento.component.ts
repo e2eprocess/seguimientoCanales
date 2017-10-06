@@ -51,16 +51,29 @@ export class Seguimiento implements OnInit {
 	){}
 
 	ngOnInit(){
-    var today = new Date();
-    var date = new Date(today.setDate(today.getDate()-1));
-    
-    this.fecha = {date:{
-      year: date.getFullYear(),
-      month: date.getMonth()+1,
-      day: date.getDate()
-    }};
+            this._route.params.forEach((params: Params) => {
+            let fechaUrl = params['fechaUrl'];
 
-    this.seguimiento(this.fecha)
+            if (fechaUrl != null){
+                var date = new Date(fechaUrl);    
+
+            }else{
+                var today = new Date();
+                var date = new Date(today.setDate(today.getDate()-1));    
+            }
+
+            this.fecha = {
+                date:{
+                      year: date.getFullYear(),
+                      month: date.getMonth()+1,
+                      day: date.getDate()
+                }
+            }
+            
+            this.seguimiento(this.fecha)
+        });
+
+    
 	}
 
 	onDateChanged(event: IMyDateModel) {
@@ -170,7 +183,6 @@ export class Seguimiento implements OnInit {
                 serieTags.onSeries = kpi;
                 const result = JSON.stringify(resultado);
                 const resultObj = JSON.parse(result);
-                console.log(resultObj);
                 resultObj.forEach((elem)=>{
                     serieTags.data.push(elem);         
                 });

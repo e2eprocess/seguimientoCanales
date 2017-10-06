@@ -11,7 +11,9 @@ import { VisionMaquina } from './components/visionMaquina.component';
 const appRoutes: Routes = [
 	{path:'', component: Seguimiento},
 	{path:'seguimiento_canales', component: Seguimiento},
+	{path:'seguimiento_canales/fecha/:fechaUrl', component: Seguimiento},
 	{path:'seguimiento_transacciones', component: Transacciones},
+	{path:'seguimiento_transacciones/fecha/:fechaUrl', component: Transacciones},
 	{path:'comparativa/:channel', component: Comparativa},
 	{path:'comparativa/:channel/:name', component: Comparativa},
 	{path:'comparativa/:channel/:name/:description', component: Comparativa},

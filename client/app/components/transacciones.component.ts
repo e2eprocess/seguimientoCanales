@@ -52,17 +52,27 @@ export class Transacciones implements OnInit {
 	){}
 
 	ngOnInit(){
-		var today = new Date();
-    	var date = new Date(today.setDate(today.getDate()-1));
-    
-    	this.fecha = {
-    		date:{
-      			year: date.getFullYear(),
-      			month: date.getMonth()+1,
-      			day: date.getDate()
-    		}
-    	}
-    	this.transacciones(this.fecha)
+        this._route.params.forEach((params: Params) => {
+            let fechaUrl = params['fechaUrl'];
+
+            if (fechaUrl != null){
+                var date = new Date(fechaUrl);    
+
+            }else{
+                var today = new Date();
+                var date = new Date(today.setDate(today.getDate()-1));    
+            }
+
+        	this.fecha = {
+        		date:{
+          			year: date.getFullYear(),
+          			month: date.getMonth()+1,
+          			day: date.getDate()
+        		}
+        	}
+
+        	this.transacciones(this.fecha);
+        });
 	}
 
     onDateChanged(event: IMyDateModel) {
@@ -99,7 +109,6 @@ export class Transacciones implements OnInit {
                     var s = '<b>Detalle:</b>';
                     this.points.forEach((point,index)=>{
                         if(index < 2){
-                            console.log(point.color);
                             s += '<br/><b>' + point.series.name + ': </b>' +
                             point.y + ' - <b>' +point.percentage.toFixed(2) +' %</b>'
                         }else{
@@ -257,7 +266,6 @@ export class Transacciones implements OnInit {
             this.obtencionComentarios(idmonitor,kpi,fechas).then((resultado)=>{
                 const result = JSON.stringify(resultado);
                 const resultObj = JSON.parse(result);
-                console.log(resultObj);
                 resultObj.forEach((elem)=>{
                     serieTags.data.push(elem);         
                 });

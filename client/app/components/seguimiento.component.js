@@ -34,14 +34,25 @@ var Seguimiento = (function () {
         this.locale = 'es';
     }
     Seguimiento.prototype.ngOnInit = function () {
-        var today = new Date();
-        var date = new Date(today.setDate(today.getDate() - 1));
-        this.fecha = { date: {
-                year: date.getFullYear(),
-                month: date.getMonth() + 1,
-                day: date.getDate()
-            } };
-        this.seguimiento(this.fecha);
+        var _this = this;
+        this._route.params.forEach(function (params) {
+            var fechaUrl = params['fechaUrl'];
+            if (fechaUrl != null) {
+                var date = new Date(fechaUrl);
+            }
+            else {
+                var today = new Date();
+                var date = new Date(today.setDate(today.getDate() - 1));
+            }
+            _this.fecha = {
+                date: {
+                    year: date.getFullYear(),
+                    month: date.getMonth() + 1,
+                    day: date.getDate()
+                }
+            };
+            _this.seguimiento(_this.fecha);
+        });
     };
     Seguimiento.prototype.onDateChanged = function (event) {
         this.fecha = { date: {
@@ -139,7 +150,6 @@ var Seguimiento = (function () {
                 serieTags.onSeries = kpi;
                 var result = JSON.stringify(resultado);
                 var resultObj = JSON.parse(result);
-                console.log(resultObj);
                 resultObj.forEach(function (elem) {
                     serieTags.data.push(elem);
                 });

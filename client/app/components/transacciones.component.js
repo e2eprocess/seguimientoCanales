@@ -35,16 +35,25 @@ var Transacciones = (function () {
         this.series = [];
     }
     Transacciones.prototype.ngOnInit = function () {
-        var today = new Date();
-        var date = new Date(today.setDate(today.getDate() - 1));
-        this.fecha = {
-            date: {
-                year: date.getFullYear(),
-                month: date.getMonth() + 1,
-                day: date.getDate()
+        var _this = this;
+        this._route.params.forEach(function (params) {
+            var fechaUrl = params['fechaUrl'];
+            if (fechaUrl != null) {
+                var date = new Date(fechaUrl);
             }
-        };
-        this.transacciones(this.fecha);
+            else {
+                var today = new Date();
+                var date = new Date(today.setDate(today.getDate() - 1));
+            }
+            _this.fecha = {
+                date: {
+                    year: date.getFullYear(),
+                    month: date.getMonth() + 1,
+                    day: date.getDate()
+                }
+            };
+            _this.transacciones(_this.fecha);
+        });
     };
     Transacciones.prototype.onDateChanged = function (event) {
         this.fecha = { date: {
@@ -72,7 +81,6 @@ var Transacciones = (function () {
                     var s = '<b>Detalle:</b>';
                     this.points.forEach(function (point, index) {
                         if (index < 2) {
-                            console.log(point.color);
                             s += '<br/><b>' + point.series.name + ': </b>' +
                                 point.y + ' - <b>' + point.percentage.toFixed(2) + ' %</b>';
                         }
@@ -215,7 +223,6 @@ var Transacciones = (function () {
             _this.obtencionComentarios(idmonitor, kpi, fechas).then(function (resultado) {
                 var result = JSON.stringify(resultado);
                 var resultObj = JSON.parse(result);
-                console.log(resultObj);
                 resultObj.forEach(function (elem) {
                     serieTags.data.push(elem);
                 });

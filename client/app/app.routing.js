@@ -10,7 +10,9 @@ var visionMaquina_component_1 = require("./components/visionMaquina.component");
 var appRoutes = [
     { path: '', component: seguimiento_component_1.Seguimiento },
     { path: 'seguimiento_canales', component: seguimiento_component_1.Seguimiento },
+    { path: 'seguimiento_canales/fecha/:fechaUrl', component: seguimiento_component_1.Seguimiento },
     { path: 'seguimiento_transacciones', component: transacciones_component_1.Transacciones },
+    { path: 'seguimiento_transacciones/fecha/:fechaUrl', component: transacciones_component_1.Transacciones },
     { path: 'comparativa/:channel', component: comparativa_component_1.Comparativa },
     { path: 'comparativa/:channel/:name', component: comparativa_component_1.Comparativa },
     { path: 'comparativa/:channel/:name/:description', component: comparativa_component_1.Comparativa },
