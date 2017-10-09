@@ -173,7 +173,7 @@ export class Seguimiento implements OnInit {
              data: [],
              onSeries: kpi,
              tooltip: {
-                      xDateFormat: '%e %B %Y %H:%MM'
+                      xDateFormat: '%e %B %Y %H:%M'
              },
              showInLegend: false
         }
@@ -209,7 +209,7 @@ export class Seguimiento implements OnInit {
         return new Promise((resolve, reject)=>{
             this._comparativaService.getWaterMark(idmonitor).subscribe(
                 response => {
-                    serieMaxPeti.name = 'Max. peticiones' + response.data.fecha
+                    serieMaxPeti.name = 'Max. peticiones ' + response.data.fecha
                     var valor = response.data.max_peticiones;
                     this._comparativaService.getDate(idmonitor, fechas.fromDesde,fechas.fromHasta)
                         .subscribe(
